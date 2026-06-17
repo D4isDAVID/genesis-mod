@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "genesis",
+  "version": "${version}",
+  "name": "${name}",
+  "description": "${description}",
+  "authors": ["David Malchin <malchin459@gmail.com>"],
+  "contact": {
+    "sources": "https://github.com/D4isDAVID/ursa-mod"
+  },
+  "license": "MIT",
+  "environment": "server",
+  "entrypoints": {
+    "server": [
+      {
+        "value": "${group}.server.Genesis",
+        "adapter": "kotlin"
+      }
+    ]
+  },
+  "mixins": [
+    "genesis.mixins.json"
+  ],
+  "depends": {
+    "java": ">=21",
+    "minecraft": "~1.21.11",
+    "fabricloader": ">=0.19.3",
+    "fabric-api": "*",
+    "fabric-language-kotlin": "*"
+  }
+}

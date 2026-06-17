@@ -1,0 +1,16 @@
+# Gradle Cache
+.gradle/
+.kotlin/
+
+# Output
+run/
+build/
+
+# IDE
+.idea/
+.vscode/
+.zed/
+
+# OS
+.DS_Store
+Thumbs.db

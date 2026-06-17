@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "${group}.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "LungeMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}
