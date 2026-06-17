@@ -3,8 +3,7 @@ package dev.d4vid.mods.genesis.server
 import net.minecraft.ChatFormatting
 import net.minecraft.network.chat.Component
 
-fun genesisComponent(context: Component, message: Component):
-    Component {
+fun genesisComponent(context: Component, message: Component): Component {
     return Component.empty()
         .append(
             Component.literal("GenesisMod")

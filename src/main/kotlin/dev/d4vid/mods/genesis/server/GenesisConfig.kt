@@ -13,9 +13,9 @@ object GenesisConfig {
 
     fun load(raw: String) {
         val json = Json.parseToJsonElement(raw).jsonObject
-        val cooldowns = json.getValue("cooldowns").jsonObject
 
-        cooldowns.entries.forEach { (key, valueElement) ->
+        cooldowns.clear()
+        json.getValue("cooldowns").jsonObject.entries.forEach { (key, valueElement) ->
             val enum = CooldownType.fromKey(key)
             val value = valueElement.jsonPrimitive.double
 
@@ -25,11 +25,11 @@ object GenesisConfig {
             }
 
             if (value < 0) {
-                Genesis.logger.warn("Cooldown $key cannot be negative!")
+                Genesis.logger.warn("Cooldown for $key cannot be negative!")
                 return@forEach
             }
 
-            this.cooldowns[enum] = Duration.ofMillis((value * 1000).toLong())
+            cooldowns[enum] = Duration.ofMillis((value * 1000).toLong())
         }
     }
 

@@ -30,21 +30,22 @@ object Genesis : DedicatedServerModInitializer {
         }
 
         CommandRegistrationCallback.EVENT.register { dispatcher, context, selection ->
-            dispatcher.register(Commands.literal("genesis:reload")
-                .requires { source -> source.permissions().hasPermission(Permissions.COMMANDS_MODERATOR) }
-                .executes { context ->
-                try {
-                    context.source.sendSystemMessage(configComponent("Reloading config..."))
-                    loadConfig()
-                    context.source.sendSuccess({ configComponent("Successfully reloaded config!") }, false)
+            dispatcher.register(
+                Commands.literal("genesis:reload")
+                    .requires { source -> source.permissions().hasPermission(Permissions.COMMANDS_MODERATOR) }
+                    .executes { context ->
+                        try {
+                            context.source.sendSystemMessage(configComponent("Reloading config..."))
+                            loadConfig()
+                            context.source.sendSuccess({ configComponent("Successfully reloaded config!") }, false)
 
-                    0
-                } catch (e: Exception) {
-                    context.source.sendFailure(configComponent("Failed to reload config: ${e.message}"))
+                            0
+                        } catch (e: Exception) {
+                            context.source.sendFailure(configComponent("Failed to reload config: ${e.message}"))
 
-                    1
-                }
-            })
+                            1
+                        }
+                    })
         }
     }
 

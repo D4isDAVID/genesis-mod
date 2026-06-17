@@ -4,9 +4,11 @@
   "version": "${version}",
   "name": "${name}",
   "description": "${description}",
-  "authors": ["David Malchin <malchin459@gmail.com>"],
+  "authors": [
+    "David Malchin <malchin459@gmail.com>"
+  ],
   "contact": {
-    "sources": "https://github.com/D4isDAVID/ursa-mod"
+    "sources": "https://github.com/D4isDAVID/genesis-mod"
   },
   "license": "MIT",
   "environment": "server",

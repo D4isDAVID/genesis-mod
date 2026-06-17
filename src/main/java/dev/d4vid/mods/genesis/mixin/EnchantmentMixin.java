@@ -17,11 +17,11 @@ import java.time.Duration;
 
 @SuppressWarnings("unused")
 @Mixin(Enchantment.class)
-public class LungeMixin {
+public class EnchantmentMixin {
     private final CooldownManager cooldown = new CooldownManager(CooldownType.Lunge);
 
     @Inject(method = "doLunge", at = @At("HEAD"), cancellable = true)
-    private void onLunge(ServerLevel serverLevel, int i, EnchantedItemInUse item, Entity entity, CallbackInfo info) {
+    private void onLunge(ServerLevel serverLevel, int lungePower, EnchantedItemInUse item, Entity entity, CallbackInfo callback) {
         if (!(entity instanceof ServerPlayer player)) {
             return;
         }
@@ -38,6 +38,6 @@ public class LungeMixin {
             return;
         }
 
-        info.cancel();
+        callback.cancel();
     }
 }
