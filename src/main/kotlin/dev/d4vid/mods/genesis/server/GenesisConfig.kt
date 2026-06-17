@@ -2,11 +2,11 @@ package dev.d4vid.mods.genesis.server
 
 import dev.d4vid.mods.genesis.server.cooldown.CooldownType
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.double
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
-import kotlinx.serialization.json.long
 import java.time.Duration
-import java.util.EnumMap
+import java.util.*
 
 object GenesisConfig {
     private var cooldowns = EnumMap<CooldownType, Duration>(CooldownType::class.java)
@@ -15,19 +15,25 @@ object GenesisConfig {
         val json = Json.parseToJsonElement(raw).jsonObject
         val cooldowns = json.getValue("cooldowns").jsonObject
 
-        cooldowns.entries.forEach { (key, value) ->
+        cooldowns.entries.forEach { (key, valueElement) ->
             val enum = CooldownType.fromKey(key)
+            val value = valueElement.jsonPrimitive.double
 
             if (enum == null) {
-                Genesis.logger.warn("Unknown cooldown key ${key}!")
+                Genesis.logger.warn("Unknown cooldown key $key!")
                 return@forEach
             }
 
-            this.cooldowns[enum] = Duration.ofSeconds(value.jsonPrimitive.long)
+            if (value < 0) {
+                Genesis.logger.warn("Cooldown $key cannot be negative!")
+                return@forEach
+            }
+
+            this.cooldowns[enum] = Duration.ofMillis((value * 1000).toLong())
         }
     }
 
     fun getCooldownDuration(type: CooldownType): Duration {
-        return cooldowns[type]!!
+        return cooldowns[type] ?: Duration.ofMillis(0)
     }
 }
