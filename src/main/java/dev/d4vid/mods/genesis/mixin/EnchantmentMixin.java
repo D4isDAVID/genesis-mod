@@ -8,6 +8,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantedItemInUse;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.effects.EnchantmentEntityEffect;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -18,10 +19,10 @@ import java.time.Duration;
 @SuppressWarnings("unused")
 @Mixin(Enchantment.class)
 public class EnchantmentMixin {
-    private final CooldownManager cooldown = new CooldownManager(CooldownType.Lunge);
+    private static final CooldownManager cooldown = new CooldownManager(CooldownType.Lunge);
 
-    @Inject(method = "doLunge", at = @At("HEAD"), cancellable = true)
-    private void onLunge(ServerLevel serverLevel, int lungePower, EnchantedItemInUse item, Entity entity, CallbackInfo callback) {
+    @Inject(method = "method_75252", at = @At("HEAD"), cancellable = true)
+    private static void genesis$doLunge(ServerLevel serverLevel, int lungePower, EnchantedItemInUse item, Entity entity, EnchantmentEntityEffect effect, CallbackInfo callback) {
         if (!(entity instanceof ServerPlayer player)) {
             return;
         }
