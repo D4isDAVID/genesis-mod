@@ -1,13 +1,10 @@
 package dev.d4vid.mods.genesis.server.cooldown
 
-enum class CooldownType(val key: String) {
-    Lunge("spear_lunge");
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-    companion object {
-        private val keyMap = entries.associateBy { it.key }
-
-        fun fromKey(key: String): CooldownType? {
-            return keyMap[key]
-        }
-    }
+@Serializable
+enum class CooldownType {
+    @SerialName("spear_lunge")
+    Lunge,
 }

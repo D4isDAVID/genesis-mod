@@ -1,49 +1,64 @@
 package dev.d4vid.mods.genesis.server
 
+import dev.d4vid.mods.genesis.server.Genesis.logger
 import dev.d4vid.mods.genesis.server.cooldown.CooldownType
-import kotlinx.serialization.json.*
+import dev.d4vid.mods.genesis.server.serialization.CooldownsSerializer
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
+import java.io.File
+import java.nio.file.Files
 import java.time.Duration
 import java.util.*
 
+@Serializable
+private data class ConfigData(
+    val disableNether: Boolean,
+    val disableEnd: Boolean,
+    @Serializable(with = CooldownsSerializer::class)
+    val cooldowns: EnumMap<CooldownType, Duration>,
+)
+
 object GenesisConfig {
-    private var disableNether = true
-    private var disableEnd = true
+    const val RESOURCE = "/config.json"
+    const val PATH = "./config/genesis.json"
 
-    private var cooldowns = EnumMap<CooldownType, Duration>(CooldownType::class.java)
+    private var data = ConfigData(
+        disableNether = false,
+        disableEnd = false,
+        cooldowns = EnumMap(CooldownType::class.java),
+    )
 
-    fun load(raw: String) {
-        val json = Json.parseToJsonElement(raw).jsonObject
+    fun loadFile() {
+        try {
+            logger.info("Loading config...")
 
-        disableNether = json.getValue("disableNether").jsonPrimitive.boolean
-        disableEnd = json.getValue("disableEnd").jsonPrimitive.boolean
+            var file = File(PATH)
+            if (!file.exists()) {
+                Files.createDirectories(file.parentFile.toPath())
 
-        cooldowns.clear()
-        json.getValue("cooldowns").jsonObject.entries.forEach { (key, valueElement) ->
-            val enum = CooldownType.fromKey(key)
-            if (enum == null) {
-                Genesis.logger.warn("Unknown cooldown key $key!")
-                return@forEach
+                val stream = this.javaClass.getResourceAsStream(RESOURCE)!!
+                Files.copy(stream, file.toPath())
+
+                file = File(PATH)
             }
 
-            val value = valueElement.jsonPrimitive.double
-            if (value < 0) {
-                Genesis.logger.warn("Cooldown for $key cannot be negative!")
-                return@forEach
-            }
+            data = Json.decodeFromString(ConfigData.serializer(), file.readText())
 
-            cooldowns[enum] = Duration.ofMillis((value * 1000).toLong())
+            logger.info("Successfully loaded config!")
+        } catch (e: Exception) {
+            logger.error("Failed to load config: ${e.stackTraceToString()}")
         }
     }
 
     fun isNetherDisabled(): Boolean {
-        return disableNether
+        return data.disableEnd
     }
 
     fun isEndDisabled(): Boolean {
-        return disableEnd
+        return data.disableNether
     }
 
     fun getCooldownDuration(type: CooldownType): Duration {
-        return cooldowns[type] ?: Duration.ofMillis(0)
+        return data.cooldowns[type] ?: Duration.ofMillis(0)
     }
 }
