@@ -1,6 +1,9 @@
 {
   "disableNether": true,
   "disableEnd": true,
+  "friendlyTeams": [
+    "peaceful"
+  ],
   "cooldowns": {
     "spear_lunge": 5.0
   }

@@ -1,5 +1,6 @@
 package dev.d4vid.mods.genesis.server
 
+import dev.d4vid.mods.genesis.server.combat.manageFriendlyTeams
 import net.fabricmc.api.DedicatedServerModInitializer
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -11,6 +12,7 @@ object Genesis : DedicatedServerModInitializer {
 
     override fun onInitializeServer() {
         registerCommand()
+        manageFriendlyTeams()
 
         GenesisConfig.loadFile()
     }
