@@ -32,7 +32,6 @@ public class EnchantmentMixin {
 
         if (duration != null) {
             float tickRate = serverLevel.getServer().tickRateManager().tickrate();
-            System.out.println(player.getCooldowns().getCooldownGroup(stack));
 
             player.getCooldowns().addCooldown(stack, (int) (duration.toSeconds() * tickRate));
 

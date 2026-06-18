@@ -1,15 +1,14 @@
 package dev.d4vid.mods.genesis.server
 
 import dev.d4vid.mods.genesis.server.cooldown.CooldownType
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.double
-import kotlinx.serialization.json.jsonObject
-import kotlinx.serialization.json.jsonPrimitive
+import kotlinx.serialization.json.*
 import java.time.Duration
 import java.util.*
 
 object GenesisConfig {
     private var cooldowns = EnumMap<CooldownType, Duration>(CooldownType::class.java)
+    private var disableNether = true
+    private var disableEnd = true
 
     fun load(raw: String) {
         val json = Json.parseToJsonElement(raw).jsonObject
@@ -31,9 +30,20 @@ object GenesisConfig {
 
             cooldowns[enum] = Duration.ofMillis((value * 1000).toLong())
         }
+
+        disableNether = json.getValue("disableNether").jsonPrimitive.boolean
+        disableEnd = json.getValue("disableEnd").jsonPrimitive.boolean
     }
 
     fun getCooldownDuration(type: CooldownType): Duration {
         return cooldowns[type] ?: Duration.ofMillis(0)
+    }
+
+    fun isNetherDisabled(): Boolean {
+        return disableNether
+    }
+
+    fun isEndDisabled(): Boolean {
+        return disableEnd
     }
 }
