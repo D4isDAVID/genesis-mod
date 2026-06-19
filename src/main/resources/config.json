@@ -12,6 +12,12 @@
     }
   },
   "combatDetection": {
+    "spawnProtection": {
+      "enabled": true,
+      "x": 155.0,
+      "z": 71.0,
+      "radius": 32.0
+    },
     "minDamage": 1.0,
     "damageScaling": 10.0,
     "maxTimer": 30.0,

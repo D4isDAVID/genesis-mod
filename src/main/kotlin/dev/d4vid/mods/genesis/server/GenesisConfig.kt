@@ -29,7 +29,16 @@ private data class CooldownData(
 )
 
 @Serializable
+private data class SpawnProtectionData(
+    val enabled: Boolean = false,
+    val x: Double = 0.0,
+    val z: Double = 0.0,
+    val radius: Double = 0.0,
+)
+
+@Serializable
 private data class CombatDetectionData(
+    val spawnProtection: SpawnProtectionData = SpawnProtectionData(),
     val minDamage: Double = 0.0,
     val damageScaling: Double = 1.0,
     val maxTimer: Double = 30.0,
@@ -133,6 +142,10 @@ object GenesisConfig {
     fun getCooldownDuration(type: CooldownType): Duration = data.cooldowns[type]?.duration ?: Duration.ofMillis(0)
     fun isCooldownCombatOnly(type: CooldownType) = data.cooldowns[type]?.combatOnly ?: false
 
+    fun isCombatSpawnProtectionEnabled() = data.combatDetection.spawnProtection.enabled
+    fun getCombatSpawnProtectionX() = data.combatDetection.spawnProtection.x
+    fun getCombatSpawnProtectionZ() = data.combatDetection.spawnProtection.z
+    fun getCombatSpawnProtectionRadius() = data.combatDetection.spawnProtection.radius
     fun getCombatDetectionMinDamage() = data.combatDetection.minDamage
     fun getCombatDetectionDamageScaling() = data.combatDetection.damageScaling
     fun getCombatDetectionMaxTimer() = data.combatDetection.maxTimer
