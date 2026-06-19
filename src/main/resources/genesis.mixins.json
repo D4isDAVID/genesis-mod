@@ -11,7 +11,7 @@
     "portals.EnderEyeItemMixin",
     "portals.EndPortalBlockMixin",
     "portals.NetherPortalBlockMixin",
-    "resourcePack.ResourcePackResponseMixin"
+    "resourcePack.ServerCommonPacketListenerImplMixin"
   ],
   "injectors": {
     "defaultRequire": 1

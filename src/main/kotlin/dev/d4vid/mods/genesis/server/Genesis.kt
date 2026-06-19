@@ -2,12 +2,11 @@ package dev.d4vid.mods.genesis.server
 
 import dev.d4vid.mods.genesis.server.combat.registerFriendlyTeamManager
 import dev.d4vid.mods.genesis.server.combat.registerInCombatDetector
+import dev.d4vid.mods.genesis.server.resourcePack.ResourcePackPlayerData
+import dev.d4vid.mods.genesis.server.resourcePack.registerResourcePackLoader
 import net.fabricmc.api.DedicatedServerModInitializer
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
-import dev.d4vid.mods.genesis.server.mixin.resourcePack.ResourcePackPlayerData
 
 @Suppress("unused")
 object Genesis : DedicatedServerModInitializer {
@@ -18,11 +17,9 @@ object Genesis : DedicatedServerModInitializer {
         registerCommand()
         registerFriendlyTeamManager()
         registerInCombatDetector()
+        registerResourcePackLoader()
 
         GenesisConfig.loadFile()
-        registerResourcePackLoader()
-        ServerLifecycleEvents.SERVER_STARTED.register { server ->
-            ResourcePackPlayerData.load(server)
-        }
+        ResourcePackPlayerData.load()
     }
 }

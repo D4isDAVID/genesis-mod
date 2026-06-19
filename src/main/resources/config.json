@@ -19,10 +19,10 @@
       "minecraft:ender_pearl"
     ]
   },
-  "ResourcePackStuff": {
-    "Url": "",
-    "Sha1": "",
-    "KickOnDecline" : true,
-    "Prompt" : "This Server Requires A Resource Pack To Function, On Decline You WILL BE KICKED, also your choice will be remembered"
+  "resourcePack": {
+    "url": "",
+    "sha1": "",
+    "prompt": "This Server Requires A Resource Pack To Function, On Decline You WILL BE KICKED, also your choice will be remembered",
+    "kickOnDecline": true
   }
 }

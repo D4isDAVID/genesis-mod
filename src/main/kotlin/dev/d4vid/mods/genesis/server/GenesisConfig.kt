@@ -5,7 +5,6 @@ import dev.d4vid.mods.genesis.server.cooldown.CooldownType
 import dev.d4vid.mods.genesis.server.serialization.DurationSecondsSerializer
 import dev.d4vid.mods.genesis.server.serialization.EnumMapSerializer
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.json.Json
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.world.item.Item
@@ -38,6 +37,14 @@ private data class CombatDetectionData(
 )
 
 @Serializable
+private data class ResourcePackData(
+    val url: String,
+    val sha1: String,
+    val prompt: String,
+    val kickOnDecline: Boolean,
+)
+
+@Serializable
 private data class ConfigData(
     val disableNether: Boolean,
     val disableEnd: Boolean,
@@ -45,16 +52,7 @@ private data class ConfigData(
     @Serializable(with = CooldownsSerializer::class)
     val cooldowns: EnumMap<CooldownType, CooldownData>,
     val combatDetection: CombatDetectionData,
-    @SerialName("ResourcePackStuff")
-    val resourcePack: ResourcePackStuff,
-)
-
-@Serializable
-private data class ResourcePackStuff(
-    val Url: String,
-    val Sha1: String,
-    val KickOnDecline: Boolean,
-    val Prompt: String
+    val resourcePack: ResourcePackData,
 )
 
 object GenesisConfig {
@@ -73,11 +71,11 @@ object GenesisConfig {
             combatLog = true,
             disableItems = setOf(),
         ),
-        resourcePack = ResourcePackStuff(
-            Url = "",
-            Sha1 = "",
-            KickOnDecline = true,
-            Prompt = "This Server Requires A Resource Pack To Function, On Decline You WILL BE KICKED, also your choice will be remembered"
+        resourcePack = ResourcePackData(
+            url = "",
+            sha1 = "",
+            prompt = "This Server Requires A Resource Pack To Function, On Decline You WILL BE KICKED, also your choice will be remembered",
+            kickOnDecline = true,
         ),
     )
 
@@ -146,8 +144,8 @@ object GenesisConfig {
         return data.combatDetection.disableItems.contains(id)
     }
 
-    fun getResourcePackUrl(): String = data.resourcePack.Url
-    fun getResourcePackSha1(): String = data.resourcePack.Sha1
-    fun isResourcePackKickOnDecline(): Boolean = data.resourcePack.KickOnDecline
-    fun getResourcePackPrompt(): String = data.resourcePack.Prompt
+    fun getResourcePackUrl(): String = data.resourcePack.url
+    fun getResourcePackSha1(): String = data.resourcePack.sha1
+    fun getResourcePackPrompt(): String = data.resourcePack.prompt
+    fun shouldKickOnResourcePackDecline(): Boolean = data.resourcePack.kickOnDecline
 }
