@@ -1,6 +1,7 @@
 {
   "disableNether": true,
   "disableEnd": true,
+  "disableTotemDeathProtection": true,
   "friendlyTeams": [
     "peaceful"
   ],

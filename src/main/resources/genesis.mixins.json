@@ -12,7 +12,8 @@
     "portals.EnderEyeItemMixin",
     "portals.EndPortalBlockMixin",
     "portals.NetherPortalBlockMixin",
-    "resourcePack.ServerCommonPacketListenerImplMixin"
+    "resourcePack.ServerCommonPacketListenerImplMixin",
+    "totem.LivingEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1

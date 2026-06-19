@@ -54,6 +54,7 @@ private data class DisableRecipesData(
 private data class ConfigData(
     val disableNether: Boolean,
     val disableEnd: Boolean,
+    val disableTotemDeathProtection: Boolean,
     val friendlyTeams: Set<String>,
     @Serializable(with = CooldownsSerializer::class)
     val cooldowns: EnumMap<CooldownType, CooldownData>,
@@ -69,6 +70,7 @@ object GenesisConfig {
     private var data = ConfigData(
         disableNether = false,
         disableEnd = false,
+        disableTotemDeathProtection = false,
         friendlyTeams = setOf(),
         cooldowns = EnumMap(CooldownType::class.java),
         combatDetection = CombatDetectionData(
@@ -114,6 +116,8 @@ object GenesisConfig {
 
     fun isNetherDisabled() = data.disableEnd
     fun isEndDisabled() = data.disableNether
+
+    fun isTotemDeathProtectionDisabled() = data.disableTotemDeathProtection
 
     fun isTeamFriendly(team: Team) = data.friendlyTeams.contains(team.name)
 
