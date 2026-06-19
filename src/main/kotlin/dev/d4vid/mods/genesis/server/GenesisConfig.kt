@@ -112,46 +112,19 @@ object GenesisConfig {
         }
     }
 
-    fun isNetherDisabled(): Boolean {
-        return data.disableEnd
-    }
+    fun isNetherDisabled() = data.disableEnd
+    fun isEndDisabled() = data.disableNether
 
-    fun isEndDisabled(): Boolean {
-        return data.disableNether
-    }
+    fun isTeamFriendly(team: Team) = data.friendlyTeams.contains(team.name)
 
-    fun isTeamFriendly(team: Team): Boolean {
-        println(team.name)
-        return data.friendlyTeams.contains(team.name)
-    }
+    fun getCooldownDuration(type: CooldownType): Duration = data.cooldowns[type]?.duration ?: Duration.ofMillis(0)
+    fun isCooldownCombatOnly(type: CooldownType) = data.cooldowns[type]?.combatOnly ?: false
 
-    fun getCooldownDuration(type: CooldownType): Duration {
-        return data.cooldowns[type]?.duration ?: Duration.ofMillis(0)
-    }
-
-    fun isCooldownCombatOnly(type: CooldownType): Boolean {
-        return data.cooldowns[type]?.combatOnly ?: false
-    }
-
-    fun getCombatDetectionMinDamage(): Double {
-        return data.combatDetection.minDamage
-    }
-
-    fun getCombatDetectionDamageScaling(): Double {
-        return data.combatDetection.damageScaling
-    }
-
-    fun getCombatDetectionMaxTimer(): Double {
-        return data.combatDetection.maxTimer
-    }
-
-    fun isCombatLogEnabled(): Boolean {
-        return data.combatDetection.combatLog
-    }
-
-    fun isItemDisabledInCombat(item: Item): Boolean {
-        return data.combatDetection.disableItems.contains(getItemKey(item))
-    }
+    fun getCombatDetectionMinDamage() = data.combatDetection.minDamage
+    fun getCombatDetectionDamageScaling() = data.combatDetection.damageScaling
+    fun getCombatDetectionMaxTimer() = data.combatDetection.maxTimer
+    fun isCombatLogEnabled() = data.combatDetection.combatLog
+    fun isItemDisabledInCombat(item: Item) = data.combatDetection.disableItems.contains(getItemKey(item))
 
     fun getResourcePackUrl(): String = data.resourcePack.url
     fun getResourcePackSha1(): String = data.resourcePack.sha1
