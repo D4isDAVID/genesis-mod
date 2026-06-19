@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class BaseFireBlockMixin {
     @Inject(method = "inPortalDimension", at = @At("HEAD"), cancellable = true)
     private static void genesis$inPortalDimension(Level level, CallbackInfoReturnable<Boolean> callback) {
-        if (GenesisConfig.INSTANCE.isEndDisabled()) {
+        if (GenesisConfig.INSTANCE.isNetherDisabled()) {
             callback.setReturnValue(level.dimension() == Level.NETHER);
         }
     }
