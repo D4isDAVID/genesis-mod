@@ -55,15 +55,15 @@
     ],
     "groups": [
       {
-        "limit": 32,
+        "limit": 128,
         "items": [
           {
             "material": "minecraft:wind_charge",
-            "scaling": 8
+            "scaling": 1
           },
           {
             "material": "minecraft:breeze_rod",
-            "scaling": 1
+            "scaling": 8
           }
         ]
       },
