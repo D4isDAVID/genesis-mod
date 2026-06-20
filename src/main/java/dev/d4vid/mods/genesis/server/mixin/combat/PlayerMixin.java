@@ -30,7 +30,7 @@ public class PlayerMixin {
 
             serverAttacker.sendSystemMessage(
                 Component.literal("You cannot attack while protected. Run /genesis protection disable to remove it.")
-                    .withStyle(ChatFormatting.RED), true
+                    .withStyle(ChatFormatting.RED), false
             );
 
             callback.setReturnValue(false);
@@ -46,7 +46,7 @@ public class PlayerMixin {
 
             ((ServerPlayer) attacker).sendSystemMessage(
                 Component.literal(victim.getName().getString() + " is protected for " + timeStr)
-                    .withStyle(ChatFormatting.RED), true
+                    .withStyle(ChatFormatting.RED), false
             );
 
             victim.sendSystemMessage(
