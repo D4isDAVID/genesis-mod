@@ -2,6 +2,7 @@ package dev.d4vid.mods.genesis.server
 
 import dev.d4vid.mods.genesis.server.combat.PvpProtectionData
 import dev.d4vid.mods.genesis.server.combat.registerInCombatDetector
+import dev.d4vid.mods.genesis.server.combat.registerPvpProtection
 import dev.d4vid.mods.genesis.server.limit.registerInventoryLimitEnforcer
 import dev.d4vid.mods.genesis.server.recipe.registerRecipeDisabler
 import dev.d4vid.mods.genesis.server.resourcePack.ResourcePackPlayerData
@@ -22,7 +23,7 @@ object Genesis : DedicatedServerModInitializer {
         registerResourcePackLoader()
         registerRecipeDisabler()
         registerInventoryLimitEnforcer()
-        PvpProtectionData.load()
+        registerPvpProtection()
         GenesisConfig.loadFile()
         ResourcePackPlayerData.load()
         registerBloodlustKillTracker()

@@ -30,8 +30,9 @@ object PvpProtectionData {
         try {
             val writer = dataFile.writer()
             for ((uuid, expires) in protectedPlayers) {
-                writer.appendLine("$uuid : $expires")
+                writer.appendLine("$uuid,$expires")
             }
+            writer.close()
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -53,5 +54,10 @@ object PvpProtectionData {
     fun getTimeLeft(uuid: UUID): Long {
         val expires = protectedPlayers[uuid] ?: return 0L
         return maxOf(0L, expires - System.currentTimeMillis())
+    }
+
+    fun removeProtection(uuid: UUID) {
+        protectedPlayers.remove(uuid)
+        save()
     }
 }
