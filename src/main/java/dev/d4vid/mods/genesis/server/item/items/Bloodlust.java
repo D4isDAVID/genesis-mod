@@ -62,7 +62,8 @@ public class Bloodlust implements CustomItem {
 
         String killedUUID = killed.getUUID().toString();
         for (int i = 0; i < killedList.size(); i++) {
-            if (killedList.get(i).asString().equals(killedUUID)) {
+            String stored = killedList.get(i).asString().orElse("");
+            if (stored.equals(killedUUID) || stored.equals("\"" + killedUUID + "\"")) {
                 return;
             }
         }
@@ -88,7 +89,7 @@ public class Bloodlust implements CustomItem {
                 )
             );
         }
-
+        //System.out.println("Bloodlust tag on hit: " + tag);
         setData(stack, tag);
     }
 
