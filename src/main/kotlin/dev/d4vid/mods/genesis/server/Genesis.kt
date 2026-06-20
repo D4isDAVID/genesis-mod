@@ -8,7 +8,7 @@ import dev.d4vid.mods.genesis.server.resourcePack.registerResourcePackLoader
 import net.fabricmc.api.DedicatedServerModInitializer
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import dev.d4vid.mods.genesis.server.event.registerBloodlustKillTracker
+import dev.d4vid.mods.genesis.server.item.registerBloodlustKillTracker
 
 @Suppress("unused")
 object Genesis : DedicatedServerModInitializer {

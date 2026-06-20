@@ -1,4 +1,4 @@
-package dev.d4vid.mods.genesis.server.event
+package dev.d4vid.mods.genesis.server.item
 
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents
 import net.minecraft.core.component.DataComponents
