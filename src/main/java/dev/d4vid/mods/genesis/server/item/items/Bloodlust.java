@@ -15,9 +15,13 @@ import net.minecraft.world.item.Items;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Bloodlust implements CustomItem {
 
@@ -90,9 +94,27 @@ public class Bloodlust implements CustomItem {
             );
         }
         //System.out.println("Bloodlust tag on hit: " + tag);
+        updateLore(stack, kills);
         setData(stack, tag);
     }
+    private static void updateLore(ItemStack stack, int kills) {
+        List<Component> lines = new ArrayList<>();
 
+        String killsText;
+        if (kills > 9) {
+            killsText = "MAX Level";
+        } else {
+            int next = kills >= 5 ? 9 : kills >= 3 ? 5 : kills >= 1 ? 3 : 1;
+            killsText = kills + " unique kills | Next level: " + next;
+        }
+
+        lines.add(Component.literal(killsText).withStyle(s ->s
+            .withItalic(false)
+            .withColor(0xAA0000)
+        ));
+
+        stack.set(DataComponents.LORE, new ItemLore(lines));
+    }
     @Override
     public String getCommandName() {
         return "bloodlust";
