@@ -37,7 +37,8 @@
       "minecraft:netherite_upgrade_smithing_template"
     ],
     "withResult": [
-      "minecraft:mace"
+      "minecraft:mace",
+      "minecraft:filled_map"
     ]
   },
   "unbreakableBlocks": [

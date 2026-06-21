@@ -6,14 +6,13 @@ import net.minecraft.world.InteractionResult
 
 fun registerRecipeDisabler() {
     RecipeAssembleCallback.EVENT.register { input, result ->
+        println(result)
         if (GenesisConfig.isRecipeDisabledForResult(result.item)) {
             return@register InteractionResult.FAIL
         }
 
-        for (i in 0..<input.size()) {
-            val item = input.getItem(i).item
-
-            if (GenesisConfig.isRecipeDisabledForInput(item)) {
+        for (item in input) {
+            if (GenesisConfig.isRecipeDisabledForInput(item.item)) {
                 return@register InteractionResult.FAIL
             }
         }
