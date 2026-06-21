@@ -14,9 +14,6 @@ fun registerResourcePackLoader() {
 }
 
 private fun sendResourcePack(player: ServerPlayer) {
-    if (ResourcePackPlayerData.hasPlayerAccepted(player.uuid)) {
-        return
-    }
 
     val url = GenesisConfig.getResourcePackUrl()
     val hash = GenesisConfig.getResourcePackSha1()

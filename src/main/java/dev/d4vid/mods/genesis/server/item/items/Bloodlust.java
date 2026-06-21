@@ -34,6 +34,22 @@ public class Bloodlust implements CustomItem {
         );
         ItemStack stack = CustomItemBuilder.build(Items.DIAMOND_SWORD, name, getModel());
 
+        ItemEnchantments.Mutable enchantments = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
+
+        Holder<Enchantment> sharpness = registries.lookupOrThrow(Registries.ENCHANTMENT)
+            .getOrThrow(Enchantments.SHARPNESS);
+        Holder<Enchantment> fire = registries.lookupOrThrow(Registries.ENCHANTMENT)
+            .getOrThrow(Enchantments.FIRE_ASPECT);
+        Holder<Enchantment> loot = registries.lookupOrThrow(Registries.ENCHANTMENT)
+            .getOrThrow(Enchantments.LOOTING);
+        Holder<Enchantment> sweep = registries.lookupOrThrow(Registries.ENCHANTMENT)
+            .getOrThrow(Enchantments.SWEEPING_EDGE);
+
+        enchantments.set(sharpness, 2);
+        enchantments.set(fire, 2);
+        enchantments.set(loot, 3);
+        enchantments.set(sweep, 3);
+
         Holder<Enchantment> sharpness = registries.lookupOrThrow(Registries.ENCHANTMENT)
             .getOrThrow(Enchantments.SHARPNESS);
 
@@ -80,6 +96,18 @@ public class Bloodlust implements CustomItem {
 
         Holder<Enchantment> sharpness = registries.lookupOrThrow(Registries.ENCHANTMENT)
             .getOrThrow(Enchantments.SHARPNESS);
+        Holder<Enchantment> fire = registries.lookupOrThrow(Registries.ENCHANTMENT)
+            .getOrThrow(Enchantments.FIRE_ASPECT);
+        Holder<Enchantment> loot = registries.lookupOrThrow(Registries.ENCHANTMENT)
+            .getOrThrow(Enchantments.LOOTING);
+        Holder<Enchantment> sweep = registries.lookupOrThrow(Registries.ENCHANTMENT)
+            .getOrThrow(Enchantments.SWEEPING_EDGE);
+
+        ItemEnchantments.Mutable enchantments = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
+        enchantments.set(sharpness, sharpnessLevel);
+        enchantments.set(fire, 2);
+        enchantments.set(loot, 3);
+        enchantments.set(sweep, 3);
         ItemEnchantments.Mutable enchantments = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
         enchantments.set(sharpness, sharpnessLevel);
         stack.set(DataComponents.ENCHANTMENTS, enchantments.toImmutable());
@@ -101,7 +129,7 @@ public class Bloodlust implements CustomItem {
         List<Component> lines = new ArrayList<>();
 
         String killsText;
-        if (kills > 9) {
+        if (kills >= 9) {
             killsText = "MAX Level";
         } else {
             int next = kills >= 5 ? 9 : kills >= 3 ? 5 : kills >= 1 ? 3 : 1;

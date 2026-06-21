@@ -16,14 +16,14 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 
-public class MegaDrill implements CustomItem {
+public class Drill implements CustomItem {
 
     @Override
     public ItemStack create(RegistryAccess registries) {
-        Component name = Component.literal("Mega Drill").withStyle(s -> s
+        Component name = Component.literal("Drill").withStyle(s -> s
             .withItalic(false)
             .withBold(true)
-            .withColor(0x64C4FF)
+            //.withColor(0x64C4FF)
         );
         ItemStack stack = CustomItemBuilder.build(Items.NETHERITE_PICKAXE, name, getModel());
 
@@ -34,16 +34,15 @@ public class MegaDrill implements CustomItem {
         Holder<Enchantment> fortune = registries.lookupOrThrow(Registries.ENCHANTMENT)
             .getOrThrow(Enchantments.FORTUNE);
 
-        enchantments.set(efficency, 12);
+        enchantments.set(efficency, 5);
         enchantments.set(fortune, 3);
 
         stack.set(DataComponents.ENCHANTMENTS, enchantments.toImmutable());
-
         return stack;
     }
     @Override
     public Identifier getModel() {
-        return Identifier.tryParse("genesis:megadrill");
+        return Identifier.tryParse("genesis:drill");
     }
 
     private static CompoundTag getData(ItemStack stack) {
@@ -54,6 +53,7 @@ public class MegaDrill implements CustomItem {
     private static void setData(ItemStack stack, CompoundTag tag) {
         stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
     }
+
     public static boolean isSilkTouch(ItemStack stack) {
         CompoundTag tag = getData(stack);
         return tag.getBoolean("silkTouch").orElse(false);
@@ -62,11 +62,9 @@ public class MegaDrill implements CustomItem {
     public static void toggleMode(ItemStack stack, RegistryAccess registry) {
         CompoundTag tag = getData(stack);
         boolean currentlySilk = tag.getBoolean("silkTouch").orElse(false);
-        System.out.println("Before toggle: silkTouch = " + currentlySilk);
         tag.putBoolean("silkTouch", !currentlySilk);
         setData(stack, tag);
         applyEnchantments(stack, !currentlySilk, registry);
-        System.out.println("After toggle: silkTouch = " + !currentlySilk);
     }
 
     private static void applyEnchantments(ItemStack stack, boolean silkTouch, RegistryAccess registries) {
@@ -78,7 +76,7 @@ public class MegaDrill implements CustomItem {
             .getOrThrow(Enchantments.FORTUNE);
 
         ItemEnchantments.Mutable enchantments = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
-        enchantments.set(efficiency, 12);
+        enchantments.set(efficiency, 5);
         if (silkTouch) {
             enchantments.set(silk, 1);
         } else {
@@ -89,6 +87,6 @@ public class MegaDrill implements CustomItem {
 
     @Override
     public String getCommandName() {
-        return "megadrill";
+        return "drill";
     }
 }

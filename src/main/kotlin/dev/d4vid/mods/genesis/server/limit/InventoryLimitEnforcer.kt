@@ -36,7 +36,7 @@ fun registerInventoryLimitEnforcer() {
             val player = server.playerList.getPlayer(uuid)
 
             player?.addEffect(MobEffectInstance(MobEffects.SLOWNESS, 20, 4))
-            player?.addEffect(MobEffectInstance(MobEffects.SLOWNESS, 30, 0))
+            player?.addEffect(MobEffectInstance(MobEffects.BLINDNESS, 30, 0))
         }
     }
 }

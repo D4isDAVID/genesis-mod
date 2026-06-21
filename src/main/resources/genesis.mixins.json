@@ -17,7 +17,11 @@
     "portals.EndPortalBlockMixin",
     "portals.NetherPortalBlockMixin",
     "resourcePack.ServerCommonPacketListenerImplMixin",
-    "totem.LivingEntityMixin"
+    "totem.LivingEntityMixin",
+    "item.AnvilProtectionMixin",
+    "item.GrindstoneProtectionMixin",
+    "item.EnchantmentProtectionMixin",
+    "item.DrillToggleMixin"
   ],
   "injectors": {
     "defaultRequire": 1

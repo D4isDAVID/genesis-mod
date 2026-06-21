@@ -21,9 +21,11 @@ fun isPlayerInCombat(player: Player): Boolean {
     return timers[player.uuid]?.isAfter(Instant.now()) ?: false
 }
 
-private val outOfCombatComponent = Component.literal("You are out of combat!").withStyle(ChatFormatting.GOLD)
+private val outOfCombatComponent = Component.literal("You are out of combat!")
+    .withStyle(ChatFormatting.GOLD)
 private fun inCombatComponent(remaining: Long): Component {
-    return Component.literal("In combat for $remaining seconds").withStyle(ChatFormatting.RED)
+    return Component.literal("In combat for $remaining seconds")
+        .withStyle(ChatFormatting.RED)
 }
 
 fun registerInCombatDetector() {
@@ -64,15 +66,12 @@ fun registerInCombatDetector() {
 
             if (player == null || now.isAfter(timer)) {
                 player?.sendSystemMessage(outOfCombatComponent, true)
-
                 true
             } else {
                 player.sendSystemMessage(inCombatComponent(Duration.between(now, timer).seconds), true)
-
                 false
             }
         }
-
         for (player in server.playerList.players) {
             if (!isPlayerInCombat(player) && PvpProtectionData.isProtected(player.uuid)) {
                 val millisLeft = PvpProtectionData.getTimeLeft(player.uuid)

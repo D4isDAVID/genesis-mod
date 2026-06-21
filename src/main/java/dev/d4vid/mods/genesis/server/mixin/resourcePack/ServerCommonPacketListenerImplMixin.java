@@ -2,7 +2,6 @@ package dev.d4vid.mods.genesis.server.mixin.resourcePack;
 
 import com.mojang.authlib.GameProfile;
 import dev.d4vid.mods.genesis.server.GenesisConfig;
-import dev.d4vid.mods.genesis.server.resourcePack.ResourcePackPlayerData;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.common.ServerboundResourcePackPacket;
 import net.minecraft.server.network.ServerCommonPacketListenerImpl;
@@ -33,8 +32,6 @@ public abstract class ServerCommonPacketListenerImplMixin {
             }
             case SUCCESSFULLY_LOADED -> {
                 System.out.println(player.name() + " accepted");
-                ResourcePackPlayerData.INSTANCE.registerPlayerAccepted(player.id());
-                ResourcePackPlayerData.INSTANCE.save();
             }
             default -> {
             }

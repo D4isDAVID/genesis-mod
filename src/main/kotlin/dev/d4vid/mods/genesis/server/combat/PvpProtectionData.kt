@@ -1,7 +1,9 @@
 package dev.d4vid.mods.genesis.server.combat
 
-import java.io.File
-import java.util.*
+import kotlinx.io.files.Path
+import net.minecraft.world.entity.player.Player
+import java.util.UUID
+import java.io.File;
 
 object PvpProtectionData {
     const val PATH = "genesis_pvp_protection.txt"
@@ -24,7 +26,6 @@ object PvpProtectionData {
             e.printStackTrace()
         }
     }
-
     fun save() {
         try {
             val writer = dataFile.writer()
@@ -36,7 +37,6 @@ object PvpProtectionData {
             e.printStackTrace()
         }
     }
-
     fun grantProtection(uuid: UUID) {
         protectedPlayers[uuid] = System.currentTimeMillis() + (60 * 60 * 1000L)
         save()

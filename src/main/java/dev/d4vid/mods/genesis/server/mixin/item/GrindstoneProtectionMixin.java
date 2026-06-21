@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(GrindstoneMenu.class)
 public class GrindstoneProtectionMixin {
 
-    @Inject(method = "slotsChanged", at = @At("HEAD"))
+    @Inject(method = "slotsChanged", at = @At("TAIL"))
     private void genesis$slotsChanged(Container container, CallbackInfo info) {
         GrindstoneMenu menu = (GrindstoneMenu) (Object) this;
         ItemStack input1 = menu.getSlot(0).getItem();

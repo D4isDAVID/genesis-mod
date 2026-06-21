@@ -1,5 +1,6 @@
 package dev.d4vid.mods.genesis.server
 
+import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import dev.d4vid.mods.genesis.server.combat.PvpProtectionData
 import dev.d4vid.mods.genesis.server.item.CustomItems
@@ -18,7 +19,7 @@ fun registerCommand() {
 
 private fun command(): LiteralArgumentBuilder<CommandSourceStack> {
     return Commands.literal("genesis")
-//        .requires { source -> source.permissions().hasPermission(Permissions.COMMANDS_OWNER) }
+        //.requires { source -> source.permissions().hasPermission(Permissions.COMMANDS_OWNER) }
         .then(reloadCommand())
         .then(giveCommand())
         .then(protectionCommand())
@@ -36,7 +37,7 @@ private fun reloadCommand(): LiteralArgumentBuilder<CommandSourceStack> {
 
 private fun giveCommand(): LiteralArgumentBuilder<CommandSourceStack> {
     val command = Commands.literal("give")
-
+        .requires { source -> source.permissions().hasPermission(Permissions.COMMANDS_OWNER) }
     CustomItems.REGISTERY.forEach { name, item ->
         command.then(
             Commands.literal(name)
@@ -67,35 +68,25 @@ private fun protectionCommand(): LiteralArgumentBuilder<CommandSourceStack> {
 private fun adminProtectionCommand(): LiteralArgumentBuilder<CommandSourceStack> {
     return Commands.literal("admin")
         .requires { source -> source.permissions().hasPermission(Permissions.COMMANDS_OWNER) }
-        .then(
-            Commands.literal("on")
-                .then(
-                    Commands.argument("target", EntityArgument.player())
-                        .executes { ctx ->
-                            val target = EntityArgument.getPlayer(ctx, "target")
-                            PvpProtectionData.grantProtection(target.uuid)
-                            ctx.source.sendSuccess(
-                                { Component.literal("Granted protection to ${target.name.string}.") },
-                                false
-                            )
-                            0
-                        }
-                )
+        .then(Commands.literal("on")
+            .then(Commands.argument("target", EntityArgument.player())
+                .executes { ctx ->
+                    val target = EntityArgument.getPlayer(ctx, "target")
+                    PvpProtectionData.grantProtection(target.uuid)
+                    ctx.source.sendSuccess({ Component.literal("Granted protection to ${target.name.string}.") }, false)
+                    0
+                }
+            )
         )
-        .then(
-            Commands.literal("off")
-                .then(
-                    Commands.argument("target", EntityArgument.player())
-                        .executes { ctx ->
-                            val target = EntityArgument.getPlayer(ctx, "target")
-                            PvpProtectionData.removeProtection(target.uuid)
-                            ctx.source.sendSuccess(
-                                { Component.literal("Removed protection from ${target.name.string}.") },
-                                false
-                            )
-                            0
-                        }
-                )
+        .then(Commands.literal("off")
+            .then(Commands.argument("target", EntityArgument.player())
+                .executes { ctx ->
+                    val target = EntityArgument.getPlayer(ctx, "target")
+                    PvpProtectionData.removeProtection(target.uuid)
+                    ctx.source.sendSuccess({ Component.literal("Removed protection from ${target.name.string}.") }, false)
+                    0
+                }
+            )
         )
 }
 
@@ -106,7 +97,7 @@ private fun disableOwnProtectionCommand(): LiteralArgumentBuilder<CommandSourceS
             val player = ctx.source.playerOrException
             if (!PvpProtectionData.isProtected(player.uuid)) {
                 ctx.source.sendFailure(Component.literal("You wern't protected to begin with gangalang."))
-            } else {
+            } else  {
                 PvpProtectionData.removeProtection(player.uuid)
                 ctx.source.sendSuccess({ Component.literal("Your protection has been disabled.") }, false)
             }
