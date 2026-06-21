@@ -50,7 +50,6 @@ private fun discardItems(player: ServerPlayer) {
         val stack = inventory.getItem(i).item
 
         if (GenesisConfig.shouldDiscardItem(stack)) {
-            println(stack)
             inventory.setItem(i, ItemStack.EMPTY)
         }
     }
