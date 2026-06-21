@@ -5,7 +5,6 @@ import dev.d4vid.mods.genesis.server.combat.registerInCombatDetector
 import dev.d4vid.mods.genesis.server.combat.registerPvpProtection
 import dev.d4vid.mods.genesis.server.limit.registerInventoryLimitEnforcer
 import dev.d4vid.mods.genesis.server.recipe.registerRecipeDisabler
-import dev.d4vid.mods.genesis.server.resourcePack.ResourcePackPlayerData
 import dev.d4vid.mods.genesis.server.resourcePack.registerResourcePackLoader
 import net.fabricmc.api.DedicatedServerModInitializer
 import org.slf4j.Logger
@@ -25,7 +24,7 @@ object Genesis : DedicatedServerModInitializer {
         registerInventoryLimitEnforcer()
         registerPvpProtection()
         GenesisConfig.loadFile()
-        ResourcePackPlayerData.load()
+
         registerBloodlustKillTracker()
     }
 }

@@ -27,11 +27,16 @@ public class MegaDrill implements CustomItem {
         );
         ItemStack stack = CustomItemBuilder.build(Items.NETHERITE_PICKAXE, name, getModel());
 
+        ItemEnchantments.Mutable enchantments = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
+
         Holder<Enchantment> efficency = registries.lookupOrThrow(Registries.ENCHANTMENT)
             .getOrThrow(Enchantments.EFFICIENCY);
+        Holder<Enchantment> fortune = registries.lookupOrThrow(Registries.ENCHANTMENT)
+            .getOrThrow(Enchantments.FORTUNE);
 
-        ItemEnchantments.Mutable enchantments = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
-        enchantments.set(efficency, 10);
+        enchantments.set(efficency, 12);
+        enchantments.set(fortune, 3);
+
         stack.set(DataComponents.ENCHANTMENTS, enchantments.toImmutable());
 
         return stack;
@@ -48,6 +53,38 @@ public class MegaDrill implements CustomItem {
 
     private static void setData(ItemStack stack, CompoundTag tag) {
         stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
+    }
+    public static boolean isSilkTouch(ItemStack stack) {
+        CompoundTag tag = getData(stack);
+        return tag.getBoolean("silkTouch").orElse(false);
+    }
+
+    public static void toggleMode(ItemStack stack, RegistryAccess registry) {
+        CompoundTag tag = getData(stack);
+        boolean currentlySilk = tag.getBoolean("silkTouch").orElse(false);
+        System.out.println("Before toggle: silkTouch = " + currentlySilk);
+        tag.putBoolean("silkTouch", !currentlySilk);
+        setData(stack, tag);
+        applyEnchantments(stack, !currentlySilk, registry);
+        System.out.println("After toggle: silkTouch = " + !currentlySilk);
+    }
+
+    private static void applyEnchantments(ItemStack stack, boolean silkTouch, RegistryAccess registries) {
+        Holder<Enchantment> efficiency = registries.lookupOrThrow(Registries.ENCHANTMENT)
+            .getOrThrow(Enchantments.EFFICIENCY);
+        Holder<Enchantment> silk = registries.lookupOrThrow(Registries.ENCHANTMENT)
+            .getOrThrow(Enchantments.SILK_TOUCH);
+        Holder<Enchantment> fortune = registries.lookupOrThrow(Registries.ENCHANTMENT)
+            .getOrThrow(Enchantments.FORTUNE);
+
+        ItemEnchantments.Mutable enchantments = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
+        enchantments.set(efficiency, 12);
+        if (silkTouch) {
+            enchantments.set(silk, 1);
+        } else {
+            enchantments.set(fortune, 3);
+        }
+        stack.set(DataComponents.ENCHANTMENTS, enchantments.toImmutable());
     }
 
     @Override

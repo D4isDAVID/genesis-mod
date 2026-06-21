@@ -19,7 +19,8 @@
     "totem.LivingEntityMixin",
     "item.AnvilProtectionMixin",
     "item.GrindstoneProtectionMixin",
-    "item.EnchantmentProtectionMixin"
+    "item.EnchantmentProtectionMixin",
+    "item.DrillToggleMixin"
   ],
   "injectors": {
     "defaultRequire": 1
