@@ -2,8 +2,10 @@ package dev.d4vid.mods.genesis.server.item.items;
 
 import dev.d4vid.mods.genesis.server.item.CustomItem;
 import dev.d4vid.mods.genesis.server.item.CustomItemBuilder;
+import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -12,8 +14,6 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.core.Holder;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -34,8 +34,6 @@ public class Bloodlust implements CustomItem {
         );
         ItemStack stack = CustomItemBuilder.build(Items.DIAMOND_SWORD, name, getModel());
 
-        ItemEnchantments.Mutable enchantments = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
-
         Holder<Enchantment> sharpness = registries.lookupOrThrow(Registries.ENCHANTMENT)
             .getOrThrow(Enchantments.SHARPNESS);
         Holder<Enchantment> fire = registries.lookupOrThrow(Registries.ENCHANTMENT)
@@ -45,20 +43,17 @@ public class Bloodlust implements CustomItem {
         Holder<Enchantment> sweep = registries.lookupOrThrow(Registries.ENCHANTMENT)
             .getOrThrow(Enchantments.SWEEPING_EDGE);
 
+        ItemEnchantments.Mutable enchantments = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
         enchantments.set(sharpness, 2);
         enchantments.set(fire, 2);
         enchantments.set(loot, 3);
         enchantments.set(sweep, 3);
 
-        Holder<Enchantment> sharpness = registries.lookupOrThrow(Registries.ENCHANTMENT)
-            .getOrThrow(Enchantments.SHARPNESS);
-
-        ItemEnchantments.Mutable enchantments = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
-        enchantments.set(sharpness, 2);
         stack.set(DataComponents.ENCHANTMENTS, enchantments.toImmutable());
 
         return stack;
     }
+
     @Override
     public Identifier getModel() {
         return Identifier.tryParse("genesis:bloodlust");
@@ -73,7 +68,7 @@ public class Bloodlust implements CustomItem {
         stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
     }
 
-    public static void onKill(ItemStack stack,ServerPlayer attacker, ServerPlayer killed, RegistryAccess registries) {
+    public static void onKill(ItemStack stack, ServerPlayer attacker, ServerPlayer killed, RegistryAccess registries) {
         CompoundTag tag = getData(stack);
 
         ListTag killedList = tag.contains("killedPlayers")
@@ -108,8 +103,6 @@ public class Bloodlust implements CustomItem {
         enchantments.set(fire, 2);
         enchantments.set(loot, 3);
         enchantments.set(sweep, 3);
-        ItemEnchantments.Mutable enchantments = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
-        enchantments.set(sharpness, sharpnessLevel);
         stack.set(DataComponents.ENCHANTMENTS, enchantments.toImmutable());
 
         if (kills == 1 || kills == 3 || kills == 5 || kills == 9) {
@@ -125,6 +118,7 @@ public class Bloodlust implements CustomItem {
         updateLore(stack, kills);
         setData(stack, tag);
     }
+
     private static void updateLore(ItemStack stack, int kills) {
         List<Component> lines = new ArrayList<>();
 
@@ -136,13 +130,14 @@ public class Bloodlust implements CustomItem {
             killsText = kills + " unique kills | Next level: " + next;
         }
 
-        lines.add(Component.literal(killsText).withStyle(s ->s
+        lines.add(Component.literal(killsText).withStyle(s -> s
             .withItalic(false)
             .withColor(0xAA0000)
         ));
 
         stack.set(DataComponents.LORE, new ItemLore(lines));
     }
+
     @Override
     public String getCommandName() {
         return "bloodlust";
