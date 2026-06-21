@@ -1,5 +1,6 @@
 package dev.d4vid.mods.genesis.server
 
+import dev.d4vid.mods.genesis.server.block.registerBlockDestroyPrevention
 import dev.d4vid.mods.genesis.server.combat.registerInCombatDetector
 import dev.d4vid.mods.genesis.server.combat.registerPvpProtection
 import dev.d4vid.mods.genesis.server.item.registerBloodlustKillTracker
@@ -17,6 +18,7 @@ object Genesis : DedicatedServerModInitializer {
 
     override fun onInitializeServer() {
         registerCommand()
+        registerBlockDestroyPrevention()
         registerInCombatDetector()
         registerResourcePackLoader()
         registerRecipeDisabler()
