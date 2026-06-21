@@ -44,6 +44,11 @@ class RecipeManagerMixin {
         T recipe = recipeHolder.value();
         ItemStack stack = recipe.assemble(recipeInput, level.registryAccess());
 
-        return RecipeAssembleCallback.Companion.getEVENT().invoker().interact(recipeInput, stack);
+        ItemStack[] input = new ItemStack[recipeInput.size()];
+        for (int i = 0; i < recipeInput.size(); i++) {
+            input[i] = recipeInput.getItem(i);
+        }
+
+        return RecipeAssembleCallback.Companion.getEVENT().invoker().interact(input, stack);
     }
 }

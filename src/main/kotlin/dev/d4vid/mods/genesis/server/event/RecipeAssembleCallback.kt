@@ -3,7 +3,6 @@ package dev.d4vid.mods.genesis.server.event
 import net.fabricmc.fabric.api.event.EventFactory
 import net.minecraft.world.InteractionResult
 import net.minecraft.world.item.ItemStack
-import net.minecraft.world.item.crafting.RecipeInput
 
 fun interface RecipeAssembleCallback {
     companion object {
@@ -23,7 +22,7 @@ fun interface RecipeAssembleCallback {
     }
 
     fun interact(
-        input: RecipeInput,
+        input: Array<ItemStack>,
         result: ItemStack
     ): InteractionResult
 }
