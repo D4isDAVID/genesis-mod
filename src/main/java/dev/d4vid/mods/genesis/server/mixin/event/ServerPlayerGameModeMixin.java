@@ -1,5 +1,6 @@
 package dev.d4vid.mods.genesis.server.mixin.event;
 
+import dev.d4vid.mods.genesis.server.event.PlayerBlockDestroyCallback;
 import dev.d4vid.mods.genesis.server.event.PlayerItemUseCallback;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -22,6 +23,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @SuppressWarnings("unused")
 @Mixin(ServerPlayerGameMode.class)
 public class ServerPlayerGameModeMixin {
+    @Shadow
+    protected ServerPlayer player;
+
     @Inject(method = "useItem", at = @At("HEAD"), cancellable = true)
     private void genesis$useItem(ServerPlayer player, Level level, ItemStack stack, InteractionHand hand, CallbackInfoReturnable<InteractionResult> callback) {
         InteractionResult result = PlayerItemUseCallback.Companion.getEVENT().invoker().interact(player, level, stack, hand, null);
