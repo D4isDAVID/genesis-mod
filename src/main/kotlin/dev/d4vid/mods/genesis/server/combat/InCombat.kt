@@ -72,6 +72,18 @@ fun registerInCombatDetector() {
                 false
             }
         }
+
+        for (player in server.playerList.players) {
+            if (!isPlayerInCombat(player) && PvpProtectionData.isProtected(player.uuid)) {
+                val millisLeft = PvpProtectionData.getTimeLeft(player.uuid)
+                val minutesLeft = millisLeft / 60000
+                val secondsLeft = (millisLeft % 60000) / 1000
+                player.sendSystemMessage(
+                    Component.literal("Protected for ${minutesLeft}m ${secondsLeft}s")
+                        .withStyle(ChatFormatting.GREEN), true
+                )
+            }
+        }
     }
 }
 
