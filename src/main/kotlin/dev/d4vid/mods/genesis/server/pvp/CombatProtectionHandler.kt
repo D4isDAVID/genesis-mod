@@ -1,6 +1,7 @@
 package dev.d4vid.mods.genesis.server.pvp
 
 import dev.d4vid.mods.genesis.server.config.GenesisConfig
+import dev.d4vid.mods.genesis.server.event.GenesisCombatEvents
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
@@ -44,6 +45,22 @@ class CombatProtectionHandler(private val config: GenesisConfig) {
     private val data = mutableMapOf<UUID, CombatProtectionData>()
 
     fun initialize() {
+        GenesisCombatEvents.ALLOW_PET_DAMAGE.register { _, pet, source, _ ->
+            if (!config.data.pvp.protectHarmlessPets) {
+                return@register true
+            }
+
+            var attacker = source.entity
+            if (attacker is AbstractArrow) {
+                attacker = attacker.owner
+            }
+            if (attacker !is ServerPlayer) {
+                return@register true
+            }
+
+            return@register attacker == pet.owner || pet.target is ServerPlayer
+        }
+
         ServerPlayerEvents.JOIN.register { player ->
             data[player.uuid] = CombatProtectionData(
                 player,

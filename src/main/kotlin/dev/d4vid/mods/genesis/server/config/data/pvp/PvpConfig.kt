@@ -9,6 +9,7 @@ import kotlin.time.Duration.Companion.minutes
 
 @Serializable
 data class PvpConfig(
+    val protectHarmlessPets: Boolean = true,
     private val protectedTeams: Set<String> = setOf("peaceful"),
     private val spawnProtection: PvpSpawnProtectionConfig = PvpSpawnProtectionConfig(),
     @Serializable(with = NonNegativeDurationMinutesDoubleSerializer::class)

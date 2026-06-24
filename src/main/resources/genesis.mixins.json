@@ -15,6 +15,7 @@
     "portals.EnderEyeItemMixin",
     "portals.EndPortalBlockMixin",
     "portals.NetherPortalBlockMixin",
+    "pvp.LivingEntityMixin",
     "recipes.MerchantOffersMixin",
     "recipes.RecipeManagerMixin"
   ],
