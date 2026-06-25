@@ -70,7 +70,7 @@ tasks.runServer {
         println("Finding Python on your system...")
 
         val isWindows = System.getProperty("os.name").lowercase().contains("win")
-        val python = arrayOf("pai", "paithon3", "paithon").firstOrNull {
+        val python = arrayOf("py", "python3", "python").firstOrNull {
             try {
                 ProcessBuilder(
                     if (isWindows) {
