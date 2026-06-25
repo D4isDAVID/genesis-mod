@@ -10,6 +10,7 @@ data class ConfigData(
     val portals: PortalsConfig = PortalsConfig(),
     val blocks: BlocksConfig = BlocksConfig(),
     val recipes: RecipesConfig = RecipesConfig(),
+    val spoofClientPackets: SpoofClientPacketsConfig = SpoofClientPacketsConfig(),
     val cooldowns: CooldownsConfig = CooldownsConfig(),
     val pvp: PvpConfig = PvpConfig(),
     val items: ItemsConfig = ItemsConfig(),

@@ -21,7 +21,8 @@
     "pvp.MinecartTNTMixin",
     "pvp.RespawnAnchorBlockMixin",
     "recipes.MerchantOffersMixin",
-    "recipes.RecipeManagerMixin"
+    "recipes.RecipeManagerMixin",
+    "spoof.SynchedEntityDataDataItemMixin"
   ],
   "injectors": {
     "defaultRequire": 1

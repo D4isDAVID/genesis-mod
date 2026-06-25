@@ -15,6 +15,7 @@ import dev.d4vid.mods.genesis.server.pvp.CombatProtectionHandler
 import dev.d4vid.mods.genesis.server.pvp.initializeArrowEffectHandler
 import dev.d4vid.mods.genesis.server.pvp.initializeCombatDamageMultiplier
 import dev.d4vid.mods.genesis.server.recipes.initializeDisabledRecipeHandler
+import dev.d4vid.mods.genesis.server.spoof.initializePacketSpoofHandler
 import net.fabricmc.api.DedicatedServerModInitializer
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -34,6 +35,8 @@ object Genesis : DedicatedServerModInitializer {
     override fun onInitializeServer() {
         config.initialize()
         registerCommand(genesisCommand(config, combatProtection))
+
+        initializePacketSpoofHandler(config)
 
         initializeDisabledItemsHandler(config, combatDetection)
         itemLimit.initialize()
