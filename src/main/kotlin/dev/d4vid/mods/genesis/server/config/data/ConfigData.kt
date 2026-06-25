@@ -1,5 +1,6 @@
 package dev.d4vid.mods.genesis.server.config.data
 
+import dev.d4vid.mods.genesis.server.config.data.chat.ChatConfig
 import dev.d4vid.mods.genesis.server.config.data.cooldowns.CooldownsConfig
 import dev.d4vid.mods.genesis.server.config.data.items.ItemsConfig
 import dev.d4vid.mods.genesis.server.config.data.pvp.PvpConfig
@@ -14,4 +15,5 @@ data class ConfigData(
     val cooldowns: CooldownsConfig = CooldownsConfig(),
     val pvp: PvpConfig = PvpConfig(),
     val items: ItemsConfig = ItemsConfig(),
+    val chat: ChatConfig = ChatConfig(),
 )

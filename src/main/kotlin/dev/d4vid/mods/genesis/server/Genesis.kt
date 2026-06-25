@@ -1,6 +1,7 @@
 package dev.d4vid.mods.genesis.server
 
 import dev.d4vid.mods.genesis.server.blocks.initializeUnbreakableBlockHandler
+import dev.d4vid.mods.genesis.server.chat.ChatHandler
 import dev.d4vid.mods.genesis.server.command.genesisCommand
 import dev.d4vid.mods.genesis.server.command.registerCommand
 import dev.d4vid.mods.genesis.server.config.GenesisConfig
@@ -26,6 +27,7 @@ object Genesis : DedicatedServerModInitializer {
     private val logger: Logger = LoggerFactory.getLogger(MOD_ID)
 
     private val config = GenesisConfig()
+    private val chat = ChatHandler(config)
     private val itemLimit = ItemLimitHandler(config)
     private val combatDetection = CombatDetectionHandler(config)
     private val combatProtection = CombatProtectionHandler(config)
@@ -52,6 +54,8 @@ object Genesis : DedicatedServerModInitializer {
         combatProtection.initialize()
         initializeCombatDamageMultiplier(config)
         initializeArrowEffectHandler(config)
+
+        chat.initialize()
 
         GenesisItems.initialize()
     }
