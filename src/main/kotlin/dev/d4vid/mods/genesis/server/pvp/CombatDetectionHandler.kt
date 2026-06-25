@@ -2,9 +2,9 @@ package dev.d4vid.mods.genesis.server.pvp
 
 import dev.d4vid.mods.genesis.server.config.GenesisConfig
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents
+import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
-import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents
 import net.minecraft.ChatFormatting
 import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerPlayer
@@ -50,18 +50,14 @@ class CombatDetectionHandler(private val config: GenesisConfig) {
             applyCombatTimer(attacker, damage)
         }
 
-        ServerPlayConnectionEvents.DISCONNECT.register { handler, server ->
-            val player = handler.player
-
+        ServerPlayerEvents.LEAVE.register { player ->
             if (!config.data.pvp.killPlayerOnCombatLog || !isPlayerInCombat(player)) {
                 return@register
             }
 
             instants.remove(player.uuid)
 
-            server.execute {
-                player.kill(player.level())
-            }
+            player.kill(player.level())
         }
 
         ServerLifecycleEvents.SERVER_STOPPING.register { _ ->
