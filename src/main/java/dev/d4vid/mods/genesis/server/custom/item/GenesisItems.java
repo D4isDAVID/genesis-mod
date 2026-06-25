@@ -14,6 +14,7 @@ public class GenesisItems {
         register(new BloodlustItem());
         register(new DrillItem());
         register(new MegaDrillItem());
+        register(new HermesBootsItem());
     }
 
     public static void initialize() {

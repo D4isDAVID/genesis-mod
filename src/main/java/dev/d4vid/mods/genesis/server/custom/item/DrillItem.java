@@ -37,6 +37,8 @@ public class DrillItem extends GenesisItem {
                 .add(BlockTags.MINEABLE_WITH_PICKAXE, Optional.of(9.0f), Optional.of(true))
                 .add(BlockTags.MINEABLE_WITH_SHOVEL, Optional.of(9.0f), Optional.of(true))
                 .add(BlockTags.MINEABLE_WITH_AXE, Optional.of(9.0f), Optional.of(true))
+                .add(BlockTags.MINEABLE_WITH_HOE, Optional.of(9.0f), Optional.of(true))
+                .add(BlockTags.SWORD_INSTANTLY_MINES, Optional.of(9.0f), Optional.of(true))
                 .build(),
             1.0f,
             1,

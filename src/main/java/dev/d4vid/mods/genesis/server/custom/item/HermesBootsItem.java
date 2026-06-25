@@ -28,7 +28,7 @@ public class HermesBootsItem extends GenesisItem {
     @Override
     protected void build(RegistryAccess registries, ItemStack item) {
         enchant(registries, item);
-        applyLore(item, false);
+        applyLore(item);
     }
 
     private void enchant(RegistryAccess registries, ItemStack item) {
@@ -40,7 +40,7 @@ public class HermesBootsItem extends GenesisItem {
         enchantments.enchant(item);
     }
 
-    private void applyLore(ItemStack item, boolean silkTouch) {
+    private void applyLore(ItemStack item) {
         item.set(DataComponents.LORE, new ItemLore(List.of(
             Component.literal(""),
             Component.literal("Increases Speed")

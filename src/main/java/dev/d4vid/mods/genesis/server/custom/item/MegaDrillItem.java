@@ -10,6 +10,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.util.Unit;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ItemLore;
@@ -43,11 +44,14 @@ public class MegaDrillItem extends GenesisItem {
 
     @Override
     protected void build(RegistryAccess registries, ItemStack item) {
+        item.set(DataComponents.UNBREAKABLE, Unit.INSTANCE);
         item.set(DataComponents.TOOL, new Tool(
             new ToolRulesBuilder(registries)
                 .add(BlockTags.MINEABLE_WITH_PICKAXE, Optional.of(9.0f), Optional.of(true))
                 .add(BlockTags.MINEABLE_WITH_SHOVEL, Optional.of(9.0f), Optional.of(true))
                 .add(BlockTags.MINEABLE_WITH_AXE, Optional.of(9.0f), Optional.of(true))
+                .add(BlockTags.MINEABLE_WITH_HOE, Optional.of(9.0f), Optional.of(true))
+                .add(BlockTags.SWORD_INSTANTLY_MINES, Optional.of(9.0f), Optional.of(true))
                 .build(),
             1.0f,
             1,
