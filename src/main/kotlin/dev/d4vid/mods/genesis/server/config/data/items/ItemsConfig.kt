@@ -11,6 +11,10 @@ import net.minecraft.world.item.ItemStack
 
 @Serializable
 data class ItemsConfig(
+    private val maxStacks: List<ItemsMaxStackConfig> = listOf(
+        ItemsMaxStackConfig(16, NbtMatcher(Identifier.withDefaultNamespace("respawn_anchor"))),
+        ItemsMaxStackConfig(16, NbtMatcher(Identifier.withDefaultNamespace("end_crystal"))),
+    ),
     val disableTotemDeathProtection: Boolean = true,
     private val disableUsage: List<ItemsDisableUsageConfig> = listOf(
         ItemsDisableUsageConfig(NbtMatcher(Identifier.withDefaultNamespace("ender_pearl")), true),
@@ -151,6 +155,10 @@ data class ItemsConfig(
         ),
     ),
 ) {
+    fun getMaxStackForItem(stack: ItemStack): Int? {
+        return maxStacks.firstOrNull { it.match.matchItem(stack) }?.max
+    }
+
     fun isItemUsageDisabled(stack: ItemStack, inCombat: Boolean): Boolean {
         return disableUsage.any { (match, requireCombat) ->
             match.matchItem(stack) && (!requireCombat || inCombat)

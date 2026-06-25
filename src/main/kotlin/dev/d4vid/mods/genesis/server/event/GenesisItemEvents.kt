@@ -3,6 +3,7 @@ package dev.d4vid.mods.genesis.server.event
 import net.fabricmc.fabric.api.event.EventFactory
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.damagesource.DamageSource
+import net.minecraft.world.item.ItemStack
 
 object GenesisItemEvents {
     val ALLOW_TOTEM = EventFactory.createArrayBacked(AllowTotem::class.java) { listeners ->
@@ -43,6 +44,21 @@ object GenesisItemEvents {
         }
     }
 
+    val MODIFY_DEFAULT_MAX_STACK_SIZE =
+        EventFactory.createArrayBacked(ModifyDefaultMaxStackSize::class.java) { listeners ->
+            ModifyDefaultMaxStackSize { stack ->
+                for (listener in listeners) {
+                    val result = listener.modifyDefaultMaxStackSize(stack)
+
+                    if (result != null) {
+                        return@ModifyDefaultMaxStackSize result
+                    }
+                }
+
+                null
+            }
+        }
+
     fun interface AllowTotem {
         fun allowTotem(source: DamageSource): Boolean
     }
@@ -57,5 +73,9 @@ object GenesisItemEvents {
 
     fun interface InventoryClose {
         fun inventoryClose(player: ServerPlayer)
+    }
+
+    fun interface ModifyDefaultMaxStackSize {
+        fun modifyDefaultMaxStackSize(stack: ItemStack): Int?
     }
 }

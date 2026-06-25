@@ -9,6 +9,8 @@
     "custom.item.ItemStackMixin",
     "custom.item.ServerGamePacketListenerImplMixin",
     "items.InventoryMixin",
+    "items.ItemMixin",
+    "items.ItemStackMixin",
     "items.LivingEntityMixin",
     "items.ServerPlayerMixin",
     "portals.BaseFireBlockMixin",

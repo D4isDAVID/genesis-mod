@@ -28,6 +28,10 @@ class ItemLimitHandler(private val config: GenesisConfig) {
         get() = config.data.items
 
     fun initialize() {
+        GenesisItemEvents.MODIFY_DEFAULT_MAX_STACK_SIZE.register { stack ->
+            itemsConfig.getMaxStackForItem(stack)
+        }
+
         GenesisItemEvents.INVENTORY_ADD.register { player ->
             enforceItemLimits(player, true)
         }
