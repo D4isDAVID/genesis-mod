@@ -20,7 +20,64 @@ object GenesisCombatEvents {
         }
     }
 
+    val MODIFY_MINECART_TNT_EXPLOSION_RADIUS =
+        EventFactory.createArrayBacked(ModifyMinecartTntExplosionRadius::class.java) { listeners ->
+            ModifyMinecartTntExplosionRadius { radius ->
+                for (listener in listeners) {
+                    val result = listener.modifyMinecartTntExplosionRadius(radius)
+
+                    if (result != null) {
+                        return@ModifyMinecartTntExplosionRadius result
+                    }
+                }
+
+                null
+            }
+        }
+
+    val MODIFY_RESPAWN_ANCHOR_EXPLOSION_RADIUS =
+        EventFactory.createArrayBacked(ModifyRespawnAnchorExplosionRadius::class.java) { listeners ->
+            ModifyRespawnAnchorExplosionRadius { radius ->
+                for (listener in listeners) {
+                    val result = listener.modifyRespawnAnchorExplosionRadius(radius)
+
+                    if (result != null) {
+                        return@ModifyRespawnAnchorExplosionRadius result
+                    }
+                }
+
+                null
+            }
+        }
+
+    val MODIFY_END_CRYSTAL_EXPLOSION_RADIUS =
+        EventFactory.createArrayBacked(ModifyEndCrystalExplosionRadius::class.java) { listeners ->
+            ModifyEndCrystalExplosionRadius { radius ->
+                for (listener in listeners) {
+                    val result = listener.modifyEndCrystalExplosionRadius(radius)
+
+                    if (result != null) {
+                        return@ModifyEndCrystalExplosionRadius result
+                    }
+                }
+
+                null
+            }
+        }
+
     fun interface AllowPetDamage {
         fun allowPetDamage(level: ServerLevel, pet: TamableAnimal, source: DamageSource, damage: Float): Boolean
+    }
+
+    fun interface ModifyMinecartTntExplosionRadius {
+        fun modifyMinecartTntExplosionRadius(radius: Float): Float?
+    }
+
+    fun interface ModifyRespawnAnchorExplosionRadius {
+        fun modifyRespawnAnchorExplosionRadius(radius: Float): Float?
+    }
+
+    fun interface ModifyEndCrystalExplosionRadius {
+        fun modifyEndCrystalExplosionRadius(radius: Float): Float?
     }
 }

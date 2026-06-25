@@ -18,6 +18,7 @@ data class PvpConfig(
     val respawnProtectionMinutes: Duration = 60.minutes,
     val detection: PvpDetectionConfig = PvpDetectionConfig(),
     val killPlayerOnCombatLog: Boolean = true,
+    val damageMultipliers: PvpDamageMultipliersConfig = PvpDamageMultipliersConfig()
 ) {
     fun isTeamProtected(team: Team): Boolean {
         return protectedTeams.contains(team.name)
