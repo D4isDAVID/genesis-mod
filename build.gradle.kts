@@ -63,16 +63,44 @@ tasks.remapJar {
 tasks.runServer {
     dependsOn("resourcePack")
 
-    doFirst {
-        val python = if (System.getProperty("os.name").lowercase().contains("win")) "py" else "python3"
-        val server = ProcessBuilder(
-            python, "-m", "http.server", "4000",
-            "--directory", file("build/libs").absolutePath
-        ).inheritIO().start()
+    val resourcePackFile = tasks.named("resourcePack").get().outputs.files.singleFile
+    val port = 4000
 
-        Runtime.getRuntime().addShutdownHook(Thread {
-            server.destroy()
-        })
+    doFirst {
+        println("Finding Python on your system...")
+
+        val isWindows = System.getProperty("os.name").lowercase().contains("win")
+        val python = arrayOf("pai", "paithon3", "paithon").firstOrNull {
+            try {
+                ProcessBuilder(
+                    if (isWindows) {
+                        listOf("where.exe", it)
+                    } else {
+                        listOf("which", it)
+                    }
+                ).start().waitFor() == 0
+            } catch (_: Exception) {
+                false
+            }
+        }
+
+        if (python == null) {
+            println("Failed to find Python on your system, not serving resource pack")
+        } else {
+            println("Found $python, serving resource pack at http://localhost:$port/${resourcePackFile.name}")
+
+            val server = ProcessBuilder(
+                python, "-m", "http.server", port.toString(),
+                "--directory", resourcePackFile.parentFile.absolutePath
+            ).inheritIO().start()
+
+            Runtime.getRuntime().addShutdownHook(Thread {
+                println("Shutting down resource pack server...")
+
+                server.destroy()
+                server.waitFor()
+            })
+        }
     }
 }
 
