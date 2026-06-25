@@ -15,6 +15,46 @@ data class ItemsConfig(
     private val disableUsage: List<ItemsDisableUsageConfig> = listOf(
         ItemsDisableUsageConfig(NbtMatcher(Identifier.withDefaultNamespace("ender_pearl")), true),
         ItemsDisableUsageConfig(NbtMatcher(Identifier.withDefaultNamespace("trident")), true),
+        ItemsDisableUsageConfig(NbtMatcher(Identifier.withDefaultNamespace("splash_potion"), buildJsonObject {
+            putJsonObject(Identifier.withDefaultNamespace("potion_contents").toString()) {
+                put("potion", Identifier.withDefaultNamespace("weakness").toString())
+            }
+        })),
+        ItemsDisableUsageConfig(NbtMatcher(Identifier.withDefaultNamespace("splash_potion"), buildJsonObject {
+            putJsonObject(Identifier.withDefaultNamespace("potion_contents").toString()) {
+                put("potion", Identifier.withDefaultNamespace("long_weakness").toString())
+            }
+        })),
+        ItemsDisableUsageConfig(NbtMatcher(Identifier.withDefaultNamespace("lingering_potion"), buildJsonObject {
+            putJsonObject(Identifier.withDefaultNamespace("potion_contents").toString()) {
+                put("potion", Identifier.withDefaultNamespace("weakness").toString())
+            }
+        })),
+        ItemsDisableUsageConfig(NbtMatcher(Identifier.withDefaultNamespace("lingering_potion"), buildJsonObject {
+            putJsonObject(Identifier.withDefaultNamespace("potion_contents").toString()) {
+                put("potion", Identifier.withDefaultNamespace("long_weakness").toString())
+            }
+        })),
+        ItemsDisableUsageConfig(NbtMatcher(Identifier.withDefaultNamespace("splash_potion"), buildJsonObject {
+            putJsonObject(Identifier.withDefaultNamespace("potion_contents").toString()) {
+                put("potion", Identifier.withDefaultNamespace("slow_falling").toString())
+            }
+        })),
+        ItemsDisableUsageConfig(NbtMatcher(Identifier.withDefaultNamespace("splash_potion"), buildJsonObject {
+            putJsonObject(Identifier.withDefaultNamespace("potion_contents").toString()) {
+                put("potion", Identifier.withDefaultNamespace("long_slow_falling").toString())
+            }
+        })),
+        ItemsDisableUsageConfig(NbtMatcher(Identifier.withDefaultNamespace("lingering_potion"), buildJsonObject {
+            putJsonObject(Identifier.withDefaultNamespace("potion_contents").toString()) {
+                put("potion", Identifier.withDefaultNamespace("slow_falling").toString())
+            }
+        })),
+        ItemsDisableUsageConfig(NbtMatcher(Identifier.withDefaultNamespace("lingering_potion"), buildJsonObject {
+            putJsonObject(Identifier.withDefaultNamespace("potion_contents").toString()) {
+                put("potion", Identifier.withDefaultNamespace("long_slow_falling").toString())
+            }
+        })),
     ),
     private val discard: Set<ItemMatcher> = setOf(
         NbtMatcher(Identifier.withDefaultNamespace("elytra")),

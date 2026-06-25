@@ -3,9 +3,24 @@ package dev.d4vid.mods.genesis.server.event
 import net.fabricmc.fabric.api.event.EventFactory
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.damagesource.DamageSource
+import net.minecraft.world.effect.MobEffectInstance
 import net.minecraft.world.entity.TamableAnimal
 
 object GenesisCombatEvents {
+    val ALLOW_ARROW_EFFECT = EventFactory.createArrayBacked(AllowArrowEffect::class.java) { listeners ->
+        AllowArrowEffect { effect ->
+            for (listener in listeners) {
+                val result = listener.allowArrowEffect(effect)
+
+                if (!result) {
+                    return@AllowArrowEffect false
+                }
+            }
+
+            true
+        }
+    }
+
     val ALLOW_PET_DAMAGE = EventFactory.createArrayBacked(AllowPetDamage::class.java) { listeners ->
         AllowPetDamage { level, pet, source, damage ->
             for (listener in listeners) {
@@ -64,6 +79,10 @@ object GenesisCombatEvents {
                 null
             }
         }
+
+    fun interface AllowArrowEffect {
+        fun allowArrowEffect(effect: MobEffectInstance): Boolean
+    }
 
     fun interface AllowPetDamage {
         fun allowPetDamage(level: ServerLevel, pet: TamableAnimal, source: DamageSource, damage: Float): Boolean

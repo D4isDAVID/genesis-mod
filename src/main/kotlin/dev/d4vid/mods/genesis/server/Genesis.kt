@@ -12,6 +12,7 @@ import dev.d4vid.mods.genesis.server.items.initializeDisabledItemsHandler
 import dev.d4vid.mods.genesis.server.portals.initializePortalsHandler
 import dev.d4vid.mods.genesis.server.pvp.CombatDetectionHandler
 import dev.d4vid.mods.genesis.server.pvp.CombatProtectionHandler
+import dev.d4vid.mods.genesis.server.pvp.initializeArrowEffectHandler
 import dev.d4vid.mods.genesis.server.pvp.initializeCombatDamageMultiplier
 import dev.d4vid.mods.genesis.server.recipes.initializeDisabledRecipeHandler
 import net.fabricmc.api.DedicatedServerModInitializer
@@ -47,6 +48,7 @@ object Genesis : DedicatedServerModInitializer {
         combatDetection.initialize()
         combatProtection.initialize()
         initializeCombatDamageMultiplier(config)
+        initializeArrowEffectHandler(config)
 
         GenesisItems.initialize()
     }
