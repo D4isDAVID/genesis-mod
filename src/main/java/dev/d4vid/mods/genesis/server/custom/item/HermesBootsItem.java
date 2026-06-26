@@ -78,12 +78,13 @@ public class HermesBootsItem extends GenesisItem {
     }
 
     private void enchant(RegistryAccess registries, ItemStack item) {
-        new ItemEnchantmentsBuilder(registries)
+        ItemEnchantmentsBuilder enchantments = new ItemEnchantmentsBuilder(registries)
             .add(Enchantments.PROTECTION, 4)
             .add(Enchantments.FEATHER_FALLING, 4)
             .add(Enchantments.DEPTH_STRIDER, 3)
             .add(Enchantments.SOUL_SPEED, 3)
             .add(Enchantments.SOUL_SPEED, 3);
+            enchantments.enchant(item);
 
     }
 
