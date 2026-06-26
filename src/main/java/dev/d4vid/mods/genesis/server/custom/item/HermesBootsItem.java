@@ -1,9 +1,17 @@
 package dev.d4vid.mods.genesis.server.custom.item;
 
+import dev.d4vid.mods.genesis.server.Genesis;
 import dev.d4vid.mods.genesis.server.custom.item.util.ItemEnchantmentsBuilder;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ItemLore;
@@ -12,6 +20,8 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import java.util.List;
 
 public class HermesBootsItem extends GenesisItem {
+    private static final Identifier SPEED_BOOST = Identifier.fromNamespaceAndPath(Genesis.MOD_ID, "hermes_speed_boost");
+    private static final double SPEED_MODIFIER = 0.1;
     private static final int HERMES_BOOTS_COLOR = 0x64C4FF;
     private static final int LORE_COLOR = 0x888888;
     private static final Component DISPLAY_NAME = Component
@@ -26,6 +36,37 @@ public class HermesBootsItem extends GenesisItem {
     protected void build(RegistryAccess registries, ItemStack item) {
         enchant(registries, item);
         applyLore(item);
+    }
+
+    @Override
+    public void initialize() {
+        ServerEntityEvents.EQUIPMENT_CHANGE.register((entity, slot, previousStack, currentStack) -> {
+            if (slot != EquipmentSlot.FEET || !(entity instanceof ServerPlayer player)) {
+                return;
+            }
+
+            if (this.is(currentStack)) {
+                grantSpeedBoost(player);
+            } else {
+                removeSpeedBoost(player);
+            }
+        });
+    }
+
+    private void grantSpeedBoost(ServerPlayer player) {
+        getSpeedBoost(player).addOrUpdateTransientModifier(new AttributeModifier(
+            SPEED_BOOST,
+            SPEED_MODIFIER,
+            AttributeModifier.Operation.ADD_MULTIPLIED_BASE
+        ));
+    }
+
+    private void removeSpeedBoost(ServerPlayer player) {
+        getSpeedBoost(player).removeModifier(SPEED_BOOST);
+    }
+
+    private AttributeInstance getSpeedBoost(ServerPlayer player) {
+        return player.getAttributes().getInstance(Attributes.MOVEMENT_SPEED);
     }
 
     private void enchant(RegistryAccess registries, ItemStack item) {
