@@ -8,14 +8,14 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-<<<<<<< Updated upstream
+
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-=======
+
 import net.minecraft.world.entity.EquipmentSlotGroup;
->>>>>>> Stashed changes
+
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -82,13 +82,9 @@ public class HermesBootsItem extends GenesisItem {
             .add(Enchantments.PROTECTION, 4)
             .add(Enchantments.FEATHER_FALLING, 4)
             .add(Enchantments.DEPTH_STRIDER, 3)
-<<<<<<< Updated upstream
             .add(Enchantments.SOUL_SPEED, 3)
-            .enchant(item);
-=======
             .add(Enchantments.SOUL_SPEED, 3);
-        enchantments.enchant(item);
->>>>>>> Stashed changes
+
     }
 
     private void applyLore(ItemStack item) {
@@ -98,8 +94,6 @@ public class HermesBootsItem extends GenesisItem {
                 .withStyle(s -> s.withItalic(true).withColor(LORE_COLOR))
         )));
     }
-<<<<<<< Updated upstream
-=======
 
     private void applyAttributes(ItemStack item) {
         AttributeModifier speedModifier = new AttributeModifier(
@@ -123,5 +117,4 @@ public class HermesBootsItem extends GenesisItem {
             .build();
             item.set(DataComponents.ATTRIBUTE_MODIFIERS, modifiers);
     }
->>>>>>> Stashed changes
 }

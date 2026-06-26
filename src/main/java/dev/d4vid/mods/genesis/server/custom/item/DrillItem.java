@@ -28,8 +28,7 @@ public class DrillItem extends GenesisItem {
         .withStyle(s -> s.withItalic(false).withBold(true));
 
     public DrillItem() {
-<<<<<<< Updated upstream
-        super("drill", Items.DIAMOND_PICKAXE, DISPLAY_NAME);
+        super("drill", Items.NETHERITE_PICKAXE, DISPLAY_NAME);
 
         GenesisCustomItemEvents.INSTANCE.getALLOW_ITEM_SWAP().register((player, stack) -> {
             if (this.is(stack)) {
@@ -39,9 +38,6 @@ public class DrillItem extends GenesisItem {
 
             return true;
         });
-=======
-        super("drill", Items.NETHERITE_PICKAXE, DISPLAY_NAME);
->>>>>>> Stashed changes
     }
 
     @Override
