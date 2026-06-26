@@ -2,33 +2,29 @@ package dev.d4vid.mods.genesis.server.custom.item;
 
 import dev.d4vid.mods.genesis.server.Genesis;
 import dev.d4vid.mods.genesis.server.config.GenesisConfig;
+import dev.d4vid.mods.genesis.server.config.data.custom.item.HermesBootsConfig;
 import dev.d4vid.mods.genesis.server.custom.item.util.ItemEnchantmentsBuilder;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
+import dev.d4vid.mods.genesis.server.event.GenesisCustomItemEvents;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-
 import net.minecraft.world.entity.EquipmentSlotGroup;
-
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.enchantment.Enchantments;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-
 
 import java.util.List;
 
 public class HermesBootsItem extends GenesisItem {
-    private static final Identifier SPEED_BOOST = Identifier.fromNamespaceAndPath(Genesis.MOD_ID, "hermes_speed_boost");
+    private static final Identifier SPEED_KEY = Identifier.fromNamespaceAndPath(Genesis.MOD_ID, "hermes_boots_speed");
+    private static final Identifier ARMOR_KEY = Identifier.fromNamespaceAndPath(Genesis.MOD_ID, "hermes_boots_armor");
+    private static final Identifier TOUGHNESS_KEY = Identifier.fromNamespaceAndPath(Genesis.MOD_ID, "hermes_boots_toughness");
     private static final int HERMES_BOOTS_COLOR = 0x64C4FF;
     private static final int LORE_COLOR = 0x888888;
     private static final Component DISPLAY_NAME = Component
@@ -41,17 +37,11 @@ public class HermesBootsItem extends GenesisItem {
         super("hermes_boots", Items.DIAMOND_BOOTS, DISPLAY_NAME);
         this.config = config;
 
-        ServerEntityEvents.EQUIPMENT_CHANGE.register((entity, slot, previousStack, currentStack) -> {
-            if (slot != EquipmentSlot.FEET || !(entity instanceof ServerPlayer player)) {
-                return;
-            }
+        GenesisCustomItemEvents.INSTANCE.getALLOW_PLAYER_FALL_DAMAGE().register(((player, fallDistance, multiplier, source) -> {
+            ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
 
-            if (this.is(currentStack)) {
-                grantSpeedBoost(player);
-            } else {
-                removeSpeedBoost(player);
-            }
-        });
+            return !this.is(boots);
+        }));
     }
 
     @Override
@@ -61,61 +51,43 @@ public class HermesBootsItem extends GenesisItem {
         applyAttributes(item);
     }
 
-    private void grantSpeedBoost(ServerPlayer player) {
-        getSpeedBoost(player).addOrUpdateTransientModifier(new AttributeModifier(
-            SPEED_BOOST,
-            config.getData().getCustom().getItems().getHermesBoots().getAddSpeedMultiplier(),
-            AttributeModifier.Operation.ADD_MULTIPLIED_BASE
-        ));
-    }
-
-    private void removeSpeedBoost(ServerPlayer player) {
-        getSpeedBoost(player).removeModifier(SPEED_BOOST);
-    }
-
-    private AttributeInstance getSpeedBoost(ServerPlayer player) {
-        return player.getAttributes().getInstance(Attributes.MOVEMENT_SPEED);
-    }
-
     private void enchant(RegistryAccess registries, ItemStack item) {
-        ItemEnchantmentsBuilder enchantments = new ItemEnchantmentsBuilder(registries)
+        new ItemEnchantmentsBuilder(registries)
             .add(Enchantments.PROTECTION, 4)
             .add(Enchantments.FEATHER_FALLING, 4)
             .add(Enchantments.DEPTH_STRIDER, 3)
             .add(Enchantments.SOUL_SPEED, 3)
-            .add(Enchantments.SOUL_SPEED, 3);
-            enchantments.enchant(item);
-
+            .enchant(item);
     }
 
     private void applyLore(ItemStack item) {
         item.set(DataComponents.LORE, new ItemLore(List.of(
             Component.empty(),
-            Component.literal("Grants you speed")
-                .withStyle(s -> s.withItalic(true).withColor(LORE_COLOR))
+            Component.literal("Grants you speed and\nprotects you from falling")
+                .withStyle(s -> s.withColor(LORE_COLOR))
         )));
     }
 
     private void applyAttributes(ItemStack item) {
-        AttributeModifier speedModifier = new AttributeModifier(
-            Identifier.fromNamespaceAndPath("genesis", "hermes_boots_speed"),
-            0.25,
-            AttributeModifier.Operation.ADD_MULTIPLIED_BASE
-        );
+        HermesBootsConfig config = this.config.getData().getCustom().getItems().getHermesBoots();
 
         ItemAttributeModifiers modifiers = ItemAttributeModifiers.builder()
             .add(Attributes.ARMOR, new AttributeModifier(
-                Identifier.fromNamespaceAndPath("genesis", "hermes_boots_armor"),
-                3.0,
+                ARMOR_KEY,
+                config.getAddArmor(),
                 AttributeModifier.Operation.ADD_VALUE
             ), EquipmentSlotGroup.FEET)
             .add(Attributes.ARMOR_TOUGHNESS, new AttributeModifier(
-                Identifier.fromNamespaceAndPath("genesis", "hermes_boots_toughness"),
-                2.0,
+                TOUGHNESS_KEY,
+                config.getAddToughness(),
                 AttributeModifier.Operation.ADD_VALUE
             ), EquipmentSlotGroup.FEET)
-            .add(Attributes.MOVEMENT_SPEED, speedModifier, EquipmentSlotGroup.FEET)
+            .add(Attributes.MOVEMENT_SPEED, new AttributeModifier(
+                SPEED_KEY,
+                config.getAddSpeedMultiplier(),
+                AttributeModifier.Operation.ADD_MULTIPLIED_BASE
+            ), EquipmentSlotGroup.FEET)
             .build();
-            item.set(DataComponents.ATTRIBUTE_MODIFIERS, modifiers);
+        item.set(DataComponents.ATTRIBUTE_MODIFIERS, modifiers);
     }
 }

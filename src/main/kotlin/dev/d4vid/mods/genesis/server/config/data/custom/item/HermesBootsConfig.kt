@@ -4,5 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class HermesBootsConfig(
-    val addSpeedMultiplier: Double = 0.1,
+    val addArmor: Double = 3.0,
+    val addToughness: Double = 2.0,
+    val addSpeedMultiplier: Double = 0.25,
 )
