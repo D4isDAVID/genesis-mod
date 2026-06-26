@@ -90,7 +90,10 @@ public class MegaDrillItem extends GenesisItem {
     private void applyLore(ItemStack item, boolean silkTouch) {
         item.set(DataComponents.LORE, new ItemLore(List.of(
             Component.literal(""),
-            Component.literal("Press [F] to toggle:")
+            Component.empty()
+                .append("Press [")
+                .append(Component.keybind("key.swapOffhand"))
+                .append("] to toggle:")
                 .withStyle(s -> s.withItalic(true).withColor(LORE_COLOR)),
             Component.empty()
                 .append(Component.literal("Silk Touch").withStyle(s -> s.withBold(silkTouch)))
