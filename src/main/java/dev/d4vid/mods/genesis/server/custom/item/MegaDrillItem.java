@@ -89,7 +89,7 @@ public class MegaDrillItem extends GenesisItem {
 
     private void applyLore(ItemStack item, boolean silkTouch) {
         item.set(DataComponents.LORE, new ItemLore(List.of(
-            Component.literal(""),
+            Component.empty(),
             Component.empty()
                 .append("Press [")
                 .append(Component.keybind("key.swapOffhand"))
