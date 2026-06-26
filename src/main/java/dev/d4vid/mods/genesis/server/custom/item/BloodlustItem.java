@@ -1,5 +1,8 @@
 package dev.d4vid.mods.genesis.server.custom.item;
 
+import dev.d4vid.mods.genesis.server.config.GenesisConfig;
+import dev.d4vid.mods.genesis.server.config.data.custom.item.bloodlust.BloodlustConfig;
+import dev.d4vid.mods.genesis.server.config.data.custom.item.bloodlust.BloodlustLevelConfig;
 import dev.d4vid.mods.genesis.server.custom.item.util.ItemEnchantmentsBuilder;
 import dev.d4vid.mods.genesis.server.event.GenesisCustomItemEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
@@ -27,7 +30,8 @@ import java.util.UUID;
 
 public class BloodlustItem extends GenesisItem {
     private static final String KILLS_TAG = "killedPlayers";
-    private static final int[] LEVEL_KILLS = {0, 1, 3, 5, 9};
+    private static final int INITIAL_LEVEL = 1;
+    private static final int INITIAL_KILLS = 0;
     private static final int BLOODLUST_RED = 0xAA0000;
     private static final int BLOODLUST_RED_DARK = BLOODLUST_RED - 0x220000;
     private static final Component DISPLAY_NAME = Component
@@ -37,20 +41,12 @@ public class BloodlustItem extends GenesisItem {
         .literal("Bloodlust has leveled up.")
         .withStyle(s -> s.withBold(true).withColor(BLOODLUST_RED));
 
-    public BloodlustItem() {
+    private final GenesisConfig config;
+
+    public BloodlustItem(GenesisConfig config) {
         super("bloodlust", Items.DIAMOND_SWORD, DISPLAY_NAME);
-    }
+        this.config = config;
 
-    @Override
-    protected void build(RegistryAccess registries, ItemStack item) {
-        item.set(DataComponents.UNBREAKABLE, Unit.INSTANCE);
-
-        enchant(registries, item, 0);
-        applyLore(item, 0, 0, 0);
-    }
-
-    @Override
-    public void initialize() {
         ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
             if (!(entity instanceof ServerPlayer victim)) {
                 return;
@@ -74,51 +70,17 @@ public class BloodlustItem extends GenesisItem {
                 return true;
             }
 
-            UserNameToIdResolver resolver = player.level().getServer().services().nameToIdCache();
-            CompoundTag kills = readKills(stack);
-            int players = kills.size();
-            int total = 0;
-
-            MutableComponent playersComponent = Component.empty()
-                .withStyle(s -> s.withColor(BLOODLUST_RED));
-
-            for (Map.Entry<String, Tag> entry : kills.entrySet()) {
-                String uuid = entry.getKey();
-                String name = resolver.get(UUID.fromString(uuid)).map(NameAndId::name).orElse("<unknown-name>");
-                int killCount = entry.getValue().asInt().orElseThrow();
-
-                if (total > 0) {
-                    playersComponent.append(", ");
-                }
-
-                playersComponent.append(Component.literal(name).withStyle(s ->
-                    s.withBold(true).withHoverEvent(new HoverEvent.ShowText(
-                        Component.literal("Deaths: " + killCount + "\n" + uuid)
-                            .withStyle(s2 -> s2.withColor(BLOODLUST_RED))
-                    ))
-                ));
-
-                total += killCount;
-            }
-
-            player.sendSystemMessage(
-                Component
-                    .empty()
-                    .append(Component.literal("Bloodlust Statistics")
-                        .withStyle(s -> s.withBold(true)))
-                    .append(Component.literal("\n| Unique kills: "))
-                    .append(Component.literal(String.valueOf(players))
-                        .withStyle(s -> s.withColor(BLOODLUST_RED).withBold(true)))
-                    .append(Component.literal("\n| Total kills: "))
-                    .append(Component.literal(String.valueOf(total))
-                        .withStyle(s -> s.withColor(BLOODLUST_RED).withBold(true)))
-                    .append(Component.literal("\n| Players felled: "))
-                    .append(playersComponent)
-                    .withStyle(s -> s.withColor(BLOODLUST_RED_DARK))
-            );
-
+            sendStats(player, stack);
             return false;
         });
+    }
+
+    @Override
+    protected void build(RegistryAccess registries, ItemStack item) {
+        item.set(DataComponents.UNBREAKABLE, Unit.INSTANCE);
+
+        enchant(registries, item, INITIAL_LEVEL);
+        applyLore(item, INITIAL_LEVEL, INITIAL_KILLS, INITIAL_KILLS);
     }
 
     private void addKill(ItemStack item, ServerPlayer attacker, ServerPlayer victim) {
@@ -149,8 +111,13 @@ public class BloodlustItem extends GenesisItem {
     }
 
     private void enchant(RegistryAccess registries, ItemStack item, int level) {
+        BloodlustConfig config = getConfig();
+
+        int index = level - 2;
+        int sharpnessLevel = index < 0 ? config.getInitialSharpnessLevel() : config.getLevels().get(index).getSharpnessLevel();
+
         new ItemEnchantmentsBuilder(registries)
-            .add(Enchantments.SHARPNESS, level + 2)
+            .add(Enchantments.SHARPNESS, sharpnessLevel)
             .add(Enchantments.FIRE_ASPECT, 2)
             .add(Enchantments.LOOTING, 3)
             .add(Enchantments.SWEEPING_EDGE, 3)
@@ -176,21 +143,23 @@ public class BloodlustItem extends GenesisItem {
     }
 
     private String getLevelLore(int level, int killCount) {
-        if (level == LEVEL_KILLS.length - 1) {
+        List<BloodlustLevelConfig> levels = getConfig().getLevels();
+        if ((level - 1) == levels.size()) {
             return "Level MAX (" + killCount + " unique kills)";
         }
 
-        int requiredKills = LEVEL_KILLS[level + 1] - killCount;
+        int requiredKills = levels.get(level - 1).getRequiredKills() - killCount;
 
         return "Level " + level + " (next in " + requiredKills + " unique kill" + (requiredKills == 1 ? "" : "s") + ")";
     }
 
     private int getLevel(int killCount) {
-        int level = 0;
+        List<BloodlustLevelConfig> levels = getConfig().getLevels();
+        int level = 1;
 
-        for (int i = 0; i < LEVEL_KILLS.length; i++) {
-            if (killCount >= LEVEL_KILLS[i]) {
-                level = i;
+        for (int i = 0; i < levels.size(); i++) {
+            if (killCount >= levels.get(i).getRequiredKills()) {
+                level = i + 2;
             }
         }
 
@@ -206,7 +175,52 @@ public class BloodlustItem extends GenesisItem {
         return count == 0;
     }
 
-    public CompoundTag readKills(ItemStack item) {
+    private void sendStats(ServerPlayer player, ItemStack stack) {
+        UserNameToIdResolver resolver = player.level().getServer().services().nameToIdCache();
+        CompoundTag kills = readKills(stack);
+        int players = kills.size();
+        int total = 0;
+
+        MutableComponent playersComponent = Component.empty()
+            .withStyle(s -> s.withColor(BLOODLUST_RED));
+
+        for (Map.Entry<String, Tag> entry : kills.entrySet()) {
+            String uuid = entry.getKey();
+            String name = resolver.get(UUID.fromString(uuid)).map(NameAndId::name).orElse("<unknown-name>");
+            int killCount = entry.getValue().asInt().orElseThrow();
+
+            if (total > 0) {
+                playersComponent.append(", ");
+            }
+
+            playersComponent.append(Component.literal(name).withStyle(s ->
+                s.withBold(true).withHoverEvent(new HoverEvent.ShowText(
+                    Component.literal("Deaths: " + killCount + "\n" + uuid)
+                        .withStyle(s2 -> s2.withColor(BLOODLUST_RED))
+                ))
+            ));
+
+            total += killCount;
+        }
+
+        player.sendSystemMessage(
+            Component
+                .empty()
+                .append(Component.literal("Bloodlust Statistics")
+                    .withStyle(s -> s.withBold(true)))
+                .append(Component.literal("\n| Unique kills: "))
+                .append(Component.literal(String.valueOf(players))
+                    .withStyle(s -> s.withColor(BLOODLUST_RED).withBold(true)))
+                .append(Component.literal("\n| Total kills: "))
+                .append(Component.literal(String.valueOf(total))
+                    .withStyle(s -> s.withColor(BLOODLUST_RED).withBold(true)))
+                .append(Component.literal("\n| Players felled: "))
+                .append(playersComponent)
+                .withStyle(s -> s.withColor(BLOODLUST_RED_DARK))
+        );
+    }
+
+    private CompoundTag readKills(ItemStack item) {
         return readCustomData(item).getCompoundOrEmpty(KILLS_TAG);
     }
 
@@ -214,5 +228,9 @@ public class BloodlustItem extends GenesisItem {
         CompoundTag tag = readCustomData(item);
         tag.put(KILLS_TAG, kills);
         saveCustomData(item, tag);
+    }
+
+    private BloodlustConfig getConfig() {
+        return config.getData().getCustom().getItems().getBloodlust();
     }
 }

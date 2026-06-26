@@ -57,6 +57,6 @@ object Genesis : DedicatedServerModInitializer {
 
         chat.initialize()
 
-        GenesisItems.initialize()
+        GenesisItems.initialize(config)
     }
 }

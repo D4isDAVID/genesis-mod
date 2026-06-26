@@ -28,6 +28,15 @@ public class DrillItem extends GenesisItem {
 
     public DrillItem() {
         super("drill", Items.DIAMOND_PICKAXE, DISPLAY_NAME);
+
+        GenesisCustomItemEvents.INSTANCE.getALLOW_ITEM_SWAP().register((player, stack) -> {
+            if (this.is(stack)) {
+                this.toggle(player, stack);
+                return false;
+            }
+
+            return true;
+        });
     }
 
     @Override
@@ -47,18 +56,6 @@ public class DrillItem extends GenesisItem {
 
         enchant(registries, item, false);
         applyLore(item, false);
-    }
-
-    @Override
-    public void initialize() {
-        GenesisCustomItemEvents.INSTANCE.getALLOW_ITEM_SWAP().register((player, stack) -> {
-            if (this.is(stack)) {
-                this.toggle(player, stack);
-                return false;
-            }
-
-            return true;
-        });
     }
 
     private void toggle(ServerPlayer player, ItemStack item) {

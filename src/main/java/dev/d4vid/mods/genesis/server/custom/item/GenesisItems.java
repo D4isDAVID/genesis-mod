@@ -1,5 +1,6 @@
 package dev.d4vid.mods.genesis.server.custom.item;
 
+import dev.d4vid.mods.genesis.server.config.GenesisConfig;
 import dev.d4vid.mods.genesis.server.event.GenesisRecipeEvents;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
@@ -10,14 +11,7 @@ import java.util.Map;
 public class GenesisItems {
     public static final Map<Identifier, GenesisItem> REGISTRY = new LinkedHashMap<>();
 
-    static {
-        register(new BloodlustItem());
-        register(new DrillItem());
-        register(new MegaDrillItem());
-        register(new HermesBootsItem());
-    }
-
-    public static void initialize() {
+    public static void initialize(GenesisConfig config) {
         GenesisRecipeEvents.INSTANCE.getALLOW().register((ingredients, result) -> {
             for (ItemStack item : ingredients) {
                 if (is(item)) {
@@ -28,9 +22,10 @@ public class GenesisItems {
             return true;
         });
 
-        for (GenesisItem item : REGISTRY.values()) {
-            item.initialize();
-        }
+        register(new BloodlustItem(config));
+        register(new DrillItem());
+        register(new MegaDrillItem());
+        register(new HermesBootsItem(config));
     }
 
     public static boolean is(ItemStack stack) {

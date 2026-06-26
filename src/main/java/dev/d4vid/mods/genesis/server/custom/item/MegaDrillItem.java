@@ -30,6 +30,15 @@ public class MegaDrillItem extends GenesisItem {
 
     public MegaDrillItem() {
         super("mega_drill", Items.NETHERITE_PICKAXE, DISPLAY_NAME);
+
+        GenesisCustomItemEvents.INSTANCE.getALLOW_ITEM_SWAP().register((player, stack) -> {
+            if (this.is(stack)) {
+                this.toggle(player, stack);
+                return false;
+            }
+
+            return true;
+        });
     }
 
     public void toggle(ServerPlayer player, ItemStack item) {
@@ -60,18 +69,6 @@ public class MegaDrillItem extends GenesisItem {
 
         enchant(registries, item, false);
         applyLore(item, false);
-    }
-
-    @Override
-    public void initialize() {
-        GenesisCustomItemEvents.INSTANCE.getALLOW_ITEM_SWAP().register((player, stack) -> {
-            if (this.is(stack)) {
-                this.toggle(player, stack);
-                return false;
-            }
-
-            return true;
-        });
     }
 
     private void enchant(RegistryAccess registries, ItemStack item, boolean silkTouch) {

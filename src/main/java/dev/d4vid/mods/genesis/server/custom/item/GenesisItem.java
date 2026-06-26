@@ -30,9 +30,6 @@ public abstract class GenesisItem {
 
     protected abstract void build(RegistryAccess registries, ItemStack stack);
 
-    public void initialize() {
-    }
-
     protected CompoundTag readCustomData(ItemStack stack) {
         return stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
     }

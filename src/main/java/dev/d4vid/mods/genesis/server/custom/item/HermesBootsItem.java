@@ -1,6 +1,7 @@
 package dev.d4vid.mods.genesis.server.custom.item;
 
 import dev.d4vid.mods.genesis.server.Genesis;
+import dev.d4vid.mods.genesis.server.config.GenesisConfig;
 import dev.d4vid.mods.genesis.server.custom.item.util.ItemEnchantmentsBuilder;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.minecraft.core.RegistryAccess;
@@ -21,25 +22,18 @@ import java.util.List;
 
 public class HermesBootsItem extends GenesisItem {
     private static final Identifier SPEED_BOOST = Identifier.fromNamespaceAndPath(Genesis.MOD_ID, "hermes_speed_boost");
-    private static final double SPEED_MODIFIER = 0.1;
     private static final int HERMES_BOOTS_COLOR = 0x64C4FF;
     private static final int LORE_COLOR = 0x888888;
     private static final Component DISPLAY_NAME = Component
         .literal("Hermes Boots")
         .withStyle(s -> s.withItalic(false).withBold(true).withColor(HERMES_BOOTS_COLOR));
 
-    public HermesBootsItem() {
+    private final GenesisConfig config;
+
+    public HermesBootsItem(GenesisConfig config) {
         super("hermes_boots", Items.DIAMOND_BOOTS, DISPLAY_NAME);
-    }
+        this.config = config;
 
-    @Override
-    protected void build(RegistryAccess registries, ItemStack item) {
-        enchant(registries, item);
-        applyLore(item);
-    }
-
-    @Override
-    public void initialize() {
         ServerEntityEvents.EQUIPMENT_CHANGE.register((entity, slot, previousStack, currentStack) -> {
             if (slot != EquipmentSlot.FEET || !(entity instanceof ServerPlayer player)) {
                 return;
@@ -53,10 +47,16 @@ public class HermesBootsItem extends GenesisItem {
         });
     }
 
+    @Override
+    protected void build(RegistryAccess registries, ItemStack item) {
+        enchant(registries, item);
+        applyLore(item);
+    }
+
     private void grantSpeedBoost(ServerPlayer player) {
         getSpeedBoost(player).addOrUpdateTransientModifier(new AttributeModifier(
             SPEED_BOOST,
-            SPEED_MODIFIER,
+            config.getData().getCustom().getItems().getHermesBoots().getAddSpeedMultiplier(),
             AttributeModifier.Operation.ADD_MULTIPLIED_BASE
         ));
     }
