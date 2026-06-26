@@ -10,6 +10,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.util.Unit;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ItemLore;
@@ -27,6 +28,7 @@ public class DrillItem extends GenesisItem {
         .withStyle(s -> s.withItalic(false).withBold(true));
 
     public DrillItem() {
+<<<<<<< Updated upstream
         super("drill", Items.DIAMOND_PICKAXE, DISPLAY_NAME);
 
         GenesisCustomItemEvents.INSTANCE.getALLOW_ITEM_SWAP().register((player, stack) -> {
@@ -37,10 +39,14 @@ public class DrillItem extends GenesisItem {
 
             return true;
         });
+=======
+        super("drill", Items.NETHERITE_PICKAXE, DISPLAY_NAME);
+>>>>>>> Stashed changes
     }
 
     @Override
     protected void build(RegistryAccess registries, ItemStack item) {
+        item.set(DataComponents.UNBREAKABLE, Unit.INSTANCE);
         item.set(DataComponents.TOOL, new Tool(
             new ToolRulesBuilder(registries)
                 .add(BlockTags.MINEABLE_WITH_PICKAXE, Optional.of(9.0f), Optional.of(true))

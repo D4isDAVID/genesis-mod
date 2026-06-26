@@ -3,6 +3,7 @@ package dev.d4vid.mods.genesis.server
 import dev.d4vid.mods.genesis.server.blocks.initializeUnbreakableBlockHandler
 import dev.d4vid.mods.genesis.server.chat.ChatHandler
 import dev.d4vid.mods.genesis.server.command.genesisCommand
+import dev.d4vid.mods.genesis.server.command.registerBullshitCommand
 import dev.d4vid.mods.genesis.server.command.registerCommand
 import dev.d4vid.mods.genesis.server.config.GenesisConfig
 import dev.d4vid.mods.genesis.server.cooldowns.ItemCooldownHandler
@@ -37,7 +38,7 @@ object Genesis : DedicatedServerModInitializer {
     override fun onInitializeServer() {
         config.initialize()
         registerCommand(genesisCommand(config, combatProtection))
-
+        registerBullshitCommand()
         initializePacketSpoofHandler(config)
 
         initializeDisabledItemsHandler(config, combatDetection)

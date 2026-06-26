@@ -8,6 +8,7 @@
     "custom.item.EnchantmentHelperMixin",
     "custom.item.ItemStackMixin",
     "custom.item.ServerGamePacketListenerImplMixin",
+    "custom.item.HermesBootsMixin",
     "items.InventoryMixin",
     "items.ItemMixin",
     "items.ItemStackMixin",

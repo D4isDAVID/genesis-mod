@@ -8,15 +8,22 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+<<<<<<< Updated upstream
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+=======
+import net.minecraft.world.entity.EquipmentSlotGroup;
+>>>>>>> Stashed changes
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+
 
 import java.util.List;
 
@@ -51,6 +58,7 @@ public class HermesBootsItem extends GenesisItem {
     protected void build(RegistryAccess registries, ItemStack item) {
         enchant(registries, item);
         applyLore(item);
+        applyAttributes(item);
     }
 
     private void grantSpeedBoost(ServerPlayer player) {
@@ -74,8 +82,13 @@ public class HermesBootsItem extends GenesisItem {
             .add(Enchantments.PROTECTION, 4)
             .add(Enchantments.FEATHER_FALLING, 4)
             .add(Enchantments.DEPTH_STRIDER, 3)
+<<<<<<< Updated upstream
             .add(Enchantments.SOUL_SPEED, 3)
             .enchant(item);
+=======
+            .add(Enchantments.SOUL_SPEED, 3);
+        enchantments.enchant(item);
+>>>>>>> Stashed changes
     }
 
     private void applyLore(ItemStack item) {
@@ -85,4 +98,30 @@ public class HermesBootsItem extends GenesisItem {
                 .withStyle(s -> s.withItalic(true).withColor(LORE_COLOR))
         )));
     }
+<<<<<<< Updated upstream
+=======
+
+    private void applyAttributes(ItemStack item) {
+        AttributeModifier speedModifier = new AttributeModifier(
+            Identifier.fromNamespaceAndPath("genesis", "hermes_boots_speed"),
+            0.25,
+            AttributeModifier.Operation.ADD_MULTIPLIED_BASE
+        );
+
+        ItemAttributeModifiers modifiers = ItemAttributeModifiers.builder()
+            .add(Attributes.ARMOR, new AttributeModifier(
+                Identifier.fromNamespaceAndPath("genesis", "hermes_boots_armor"),
+                3.0,
+                AttributeModifier.Operation.ADD_VALUE
+            ), EquipmentSlotGroup.FEET)
+            .add(Attributes.ARMOR_TOUGHNESS, new AttributeModifier(
+                Identifier.fromNamespaceAndPath("genesis", "hermes_boots_toughness"),
+                2.0,
+                AttributeModifier.Operation.ADD_VALUE
+            ), EquipmentSlotGroup.FEET)
+            .add(Attributes.MOVEMENT_SPEED, speedModifier, EquipmentSlotGroup.FEET)
+            .build();
+            item.set(DataComponents.ATTRIBUTE_MODIFIERS, modifiers);
+    }
+>>>>>>> Stashed changes
 }

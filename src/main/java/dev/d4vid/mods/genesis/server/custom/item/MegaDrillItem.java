@@ -25,7 +25,7 @@ public class MegaDrillItem extends GenesisItem {
     private static final int MEGA_DRILL_COLOR = 0x64C4FF;
     private static final int LORE_COLOR = 0x888888;
     private static final Component DISPLAY_NAME = Component
-        .literal("Mega Drill")
+        .literal("Giga Drill™")
         .withStyle(s -> s.withItalic(false).withBold(true).withColor(MEGA_DRILL_COLOR));
 
     public MegaDrillItem() {
