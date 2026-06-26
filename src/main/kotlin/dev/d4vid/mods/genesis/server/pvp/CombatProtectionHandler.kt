@@ -10,6 +10,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents
 import net.minecraft.ChatFormatting
 import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerPlayer
+import net.minecraft.server.players.NameAndId
 import net.minecraft.world.entity.projectile.arrow.AbstractArrow
 import java.util.*
 import kotlin.time.Clock
@@ -62,9 +63,14 @@ class CombatProtectionHandler(private val config: GenesisConfig) {
         }
 
         ServerPlayerEvents.JOIN.register { player ->
+            val existingData = player.level().server.playerList.loadPlayerData(NameAndId(player.gameProfile))
+            if (existingData.isPresent) {
+                return@register
+            }
+
             data[player.uuid] = CombatProtectionData(
                 player,
-                config.data.pvp.joinProtectionMinutes,
+                config.data.pvp.newPlayerProtectionMinutes,
             )
         }
 
