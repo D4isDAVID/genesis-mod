@@ -2,9 +2,9 @@ package dev.d4vid.mods.genesis.server
 
 import dev.d4vid.mods.genesis.server.blocks.UnbreakableBlockHandler
 import dev.d4vid.mods.genesis.server.chat.ChatHandler
+import dev.d4vid.mods.genesis.server.command.bullshitCommand
 import dev.d4vid.mods.genesis.server.command.genesisCommand
-import dev.d4vid.mods.genesis.server.command.registerBullshitCommand
-import dev.d4vid.mods.genesis.server.command.registerCommand
+import dev.d4vid.mods.genesis.server.command.registerCommands
 import dev.d4vid.mods.genesis.server.config.GenesisConfig
 import dev.d4vid.mods.genesis.server.cooldowns.ItemCooldownHandler
 import dev.d4vid.mods.genesis.server.cooldowns.LungeCooldownHandler
@@ -50,8 +50,10 @@ object Genesis : DedicatedServerModInitializer {
         CombatDamageMultiplier()
         ArrowEffectHandler()
 
-        registerCommand(genesisCommand(config, combatProtection))
-        registerBullshitCommand()
+        registerCommands(
+            genesisCommand(config, combatProtection),
+            bullshitCommand(),
+        )
 
         GenesisItems()
     }
