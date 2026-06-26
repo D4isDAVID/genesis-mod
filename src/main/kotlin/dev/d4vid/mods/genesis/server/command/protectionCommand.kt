@@ -4,7 +4,6 @@ import com.mojang.brigadier.Command
 import com.mojang.brigadier.arguments.IntegerArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
-import dev.d4vid.mods.genesis.server.config.GenesisConfig
 import dev.d4vid.mods.genesis.server.pvp.CombatProtectionHandler
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.Commands
@@ -26,31 +25,19 @@ private fun protectionRemoved(target: String): Component {
     return Component.literal("Removed $target combat protection")
 }
 
-fun protectionCommand(
-    config: GenesisConfig,
-    combatProtection: CombatProtectionHandler
-): LiteralArgumentBuilder<CommandSourceStack> {
+fun protectionCommand(combatProtection: CombatProtectionHandler): LiteralArgumentBuilder<CommandSourceStack> {
     return Commands.literal("protection")
-        .then(setCommand(config, combatProtection))
+        .then(setCommand(combatProtection))
         .then(removeCommand(combatProtection))
 }
 
 private fun setCommand(
-    config: GenesisConfig,
     combatProtection: CombatProtectionHandler
 ): LiteralArgumentBuilder<CommandSourceStack> {
     return Commands.literal("set")
         .requires { source -> source.permissions().hasPermission(Permissions.COMMANDS_OWNER) }
         .then(
             Commands.argument("target", EntityArgument.player())
-                .executes { context ->
-                    val target = EntityArgument.getPlayer(context, "target")
-                    val duration = config.data.pvp.respawnProtectionMinutes
-
-                    setProtection(combatProtection, context, target, duration)
-
-                    Command.SINGLE_SUCCESS
-                }
                 .then(
                     Commands.argument("duration", IntegerArgumentType.integer())
                         .executes { context ->

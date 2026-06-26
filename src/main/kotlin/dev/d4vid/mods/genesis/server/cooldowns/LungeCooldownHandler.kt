@@ -1,6 +1,7 @@
 package dev.d4vid.mods.genesis.server.cooldowns
 
-import dev.d4vid.mods.genesis.server.config.GenesisConfig
+import dev.d4vid.mods.genesis.server.config.GenesisConfigLoadCallback
+import dev.d4vid.mods.genesis.server.config.data.cooldowns.CooldownsCustomConfig
 import dev.d4vid.mods.genesis.server.event.GenesisCooldownEvents
 import dev.d4vid.mods.genesis.server.pvp.CombatDetectionHandler
 import net.minecraft.tags.ItemTags
@@ -8,10 +9,13 @@ import java.util.*
 import kotlin.time.Clock
 import kotlin.time.Instant
 
-class LungeCooldownHandler(private val config: GenesisConfig, private val combatDetection: CombatDetectionHandler) {
+class LungeCooldownHandler(private val combatDetection: CombatDetectionHandler) {
+    private lateinit var config: CooldownsCustomConfig
     private val cooldowns = mutableMapOf<UUID, Instant>()
 
-    fun initialize() {
+    init {
+        GenesisConfigLoadCallback.EVENT.register { config = it.cooldowns.lunge }
+
         GenesisCooldownEvents.ALLOW_LUNGE.register { level, _, itemInUse, player, _ ->
             val stack = itemInUse.itemStack
 
@@ -24,9 +28,9 @@ class LungeCooldownHandler(private val config: GenesisConfig, private val combat
             }
 
             val cooldown = if (combatDetection.isPlayerInCombat(player)) {
-                config.data.cooldowns.lunge.inCombat
+                config.inCombat
             } else {
-                config.data.cooldowns.lunge.global
+                config.global
             }
 
             cooldowns[player.uuid] = Clock.System.now().plus(cooldown)

@@ -12,6 +12,6 @@ fun genesisCommand(
 ): LiteralArgumentBuilder<CommandSourceStack> {
     return Commands.literal("genesis")
         .then(reloadCommand(config))
-        .then(protectionCommand(config, combatProtection))
+        .then(protectionCommand(combatProtection))
         .then(giveCommand())
 }

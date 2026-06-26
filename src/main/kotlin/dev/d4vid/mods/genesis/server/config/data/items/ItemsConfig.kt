@@ -23,7 +23,7 @@ data class ItemsConfig(
             putJsonObject(Identifier.withDefaultNamespace("potion_contents").toString()) {
                 put("potion", Identifier.withDefaultNamespace("weakness").toString())
             }
-        })),
+        }), true),
         ItemsDisableUsageConfig(NbtMatcher(Identifier.withDefaultNamespace("splash_potion"), buildJsonObject {
             putJsonObject(Identifier.withDefaultNamespace("potion_contents").toString()) {
                 put("potion", Identifier.withDefaultNamespace("long_weakness").toString())

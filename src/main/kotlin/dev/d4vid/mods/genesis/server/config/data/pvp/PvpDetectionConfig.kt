@@ -14,4 +14,5 @@ data class PvpDetectionConfig(
     val damageTimeSecondsScaling: Duration = 10.seconds,
     @Serializable(with = NonNegativeDurationSecondsDoubleSerializer::class)
     val maxTimeSeconds: Duration = 30.seconds,
+    val killPlayerOnCombatLog: Boolean = true,
 )

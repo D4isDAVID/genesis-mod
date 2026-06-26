@@ -26,10 +26,9 @@ class GenesisConfig {
     private val logger: Logger = LoggerFactory.getLogger(GenesisConfig::class.java)
 
     var path: Path = Path.of("config", "genesis.json")
-    var data = ConfigData()
-        private set
+    private var data = ConfigData()
 
-    fun initialize() {
+    init {
         ServerLifecycleEvents.SERVER_STARTING.register { server ->
             path = server.serverDirectory / "config" / "genesis.json"
             load()
@@ -47,6 +46,7 @@ class GenesisConfig {
             Files.createDirectories(path.parent)
             path.writeText(json.encodeToString(data))
 
+            GenesisConfigLoadCallback.EVENT.invoker().load(data)
             logger.info("Successfully loaded config!")
 
             return true

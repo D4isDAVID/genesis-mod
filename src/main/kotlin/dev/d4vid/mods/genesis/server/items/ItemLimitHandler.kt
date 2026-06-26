@@ -1,6 +1,7 @@
 package dev.d4vid.mods.genesis.server.items
 
-import dev.d4vid.mods.genesis.server.config.GenesisConfig
+import dev.d4vid.mods.genesis.server.config.GenesisConfigLoadCallback
+import dev.d4vid.mods.genesis.server.config.data.items.ItemsConfig
 import dev.d4vid.mods.genesis.server.event.GenesisItemEvents
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
@@ -16,20 +17,24 @@ import net.minecraft.world.effect.MobEffectInstance
 import net.minecraft.world.item.ItemStack
 import java.util.*
 
-class ItemLimitHandler(private val config: GenesisConfig) {
+class ItemLimitHandler {
     companion object {
         private val OVER_LIMIT_TITLE = Component.literal("Item limit reached").withStyle(ChatFormatting.RED)
         private val OVER_LIMIT = Component.literal("You feel sluggish...").withStyle(ChatFormatting.RED)
     }
 
+    private lateinit var config: ItemsConfig
     private val playersOverLimit = mutableSetOf<UUID>()
 
-    private inline val itemsConfig
-        get() = config.data.items
+    init {
+        GenesisConfigLoadCallback.EVENT.register { config = it.items }
 
-    fun initialize() {
         GenesisItemEvents.MODIFY_DEFAULT_MAX_STACK_SIZE.register { stack ->
-            itemsConfig.getMaxStackForItem(stack)
+            if (::config.isInitialized) {
+                config.getMaxStackForItem(stack)
+            } else {
+                null
+            }
         }
 
         GenesisItemEvents.INVENTORY_ADD.register { player ->
@@ -52,7 +57,7 @@ class ItemLimitHandler(private val config: GenesisConfig) {
             playersOverLimit.removeIf { uuid ->
                 val player = server.playerList.getPlayer(uuid) ?: return@removeIf true
 
-                for (effect in itemsConfig.overLimitEffects) {
+                for (effect in config.overLimitEffects) {
                     BuiltInRegistries.MOB_EFFECT.get(effect.identifier).ifPresent {
                         player.addEffect(MobEffectInstance(it, 30, effect.strength, false, false, false))
                     }
@@ -64,8 +69,8 @@ class ItemLimitHandler(private val config: GenesisConfig) {
     }
 
     private fun enforceItemLimits(player: ServerPlayer, inform: Boolean) {
-        val limitCounts = itemsConfig.limits.associateWith { 0 }.toMutableMap()
-        val groupLimitCounts = itemsConfig.groupLimits.associateWith { 0 }.toMutableMap()
+        val limitCounts = config.limits.associateWith { 0 }.toMutableMap()
+        val groupLimitCounts = config.groupLimits.associateWith { 0 }.toMutableMap()
 
         var overLimit = false
 
@@ -74,7 +79,7 @@ class ItemLimitHandler(private val config: GenesisConfig) {
                 return@item
             }
 
-            if (itemsConfig.shouldDiscardItem(stack)) {
+            if (config.shouldDiscardItem(stack)) {
                 if (isInv) {
                     player.inventory.setItem(index, ItemStack.EMPTY)
                 } else {
@@ -84,7 +89,7 @@ class ItemLimitHandler(private val config: GenesisConfig) {
                 return@item
             }
 
-            itemsConfig.getLimitForItem(stack)?.let { limit ->
+            config.getLimitForItem(stack)?.let { limit ->
                 limitCounts.merge(limit, stack.count, Int::plus)?.let {
                     if (it > limit.limit) {
                         overLimit = true
@@ -92,7 +97,7 @@ class ItemLimitHandler(private val config: GenesisConfig) {
                 }
             }
 
-            itemsConfig.getGroupLimitForItem(stack)?.let { groupLimit ->
+            config.getGroupLimitForItem(stack)?.let { groupLimit ->
                 val scaling = groupLimit.getScalingForItem(stack)
                 if (scaling <= 0) {
                     return@let
@@ -128,13 +133,13 @@ class ItemLimitHandler(private val config: GenesisConfig) {
         for ((index, stack) in items) {
             itemHandler(index, stack, isInv)
 
-            if (itemsConfig.scanItemBundleContents) {
+            if (config.scanItemBundleContents) {
                 stack.get(DataComponents.BUNDLE_CONTENTS)?.let {
                     scanItems(it.items().withIndex(), false, itemHandler)
                 }
             }
 
-            if (itemsConfig.scanItemContainers) {
+            if (config.scanItemContainers) {
                 stack.get(DataComponents.CONTAINER)?.let {
                     scanItems(it.nonEmptyItems().withIndex(), false, itemHandler)
                 }

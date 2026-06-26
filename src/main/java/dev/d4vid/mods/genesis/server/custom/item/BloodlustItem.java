@@ -1,6 +1,6 @@
 package dev.d4vid.mods.genesis.server.custom.item;
 
-import dev.d4vid.mods.genesis.server.config.GenesisConfig;
+import dev.d4vid.mods.genesis.server.config.GenesisConfigLoadCallback;
 import dev.d4vid.mods.genesis.server.config.data.custom.item.bloodlust.BloodlustConfig;
 import dev.d4vid.mods.genesis.server.config.data.custom.item.bloodlust.BloodlustLevelConfig;
 import dev.d4vid.mods.genesis.server.custom.item.util.ItemEnchantmentsBuilder;
@@ -41,11 +41,12 @@ public class BloodlustItem extends GenesisItem {
         .literal("Bloodlust has leveled up.")
         .withStyle(s -> s.withBold(true).withColor(BLOODLUST_RED));
 
-    private final GenesisConfig config;
+    private BloodlustConfig config;
 
-    public BloodlustItem(GenesisConfig config) {
+    public BloodlustItem() {
         super("bloodlust", Items.DIAMOND_SWORD, DISPLAY_NAME);
-        this.config = config;
+
+        GenesisConfigLoadCallback.Companion.getEVENT().register(it -> config = it.getCustom().getItems().getBloodlust());
 
         ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
             if (!(entity instanceof ServerPlayer victim)) {
@@ -111,8 +112,6 @@ public class BloodlustItem extends GenesisItem {
     }
 
     private void enchant(RegistryAccess registries, ItemStack item, int level) {
-        BloodlustConfig config = getConfig();
-
         int index = level - 2;
         int sharpnessLevel = index < 0 ? config.getInitialSharpnessLevel() : config.getLevels().get(index).getSharpnessLevel();
 
@@ -143,7 +142,7 @@ public class BloodlustItem extends GenesisItem {
     }
 
     private String getLevelLore(int level, int killCount) {
-        List<BloodlustLevelConfig> levels = getConfig().getLevels();
+        List<BloodlustLevelConfig> levels = config.getLevels();
         if ((level - 1) == levels.size()) {
             return "Level MAX (" + killCount + " unique kills)";
         }
@@ -154,7 +153,7 @@ public class BloodlustItem extends GenesisItem {
     }
 
     private int getLevel(int killCount) {
-        List<BloodlustLevelConfig> levels = getConfig().getLevels();
+        List<BloodlustLevelConfig> levels = config.getLevels();
         int level = 1;
 
         for (int i = 0; i < levels.size(); i++) {
@@ -228,9 +227,5 @@ public class BloodlustItem extends GenesisItem {
         CompoundTag tag = readCustomData(item);
         tag.put(KILLS_TAG, kills);
         saveCustomData(item, tag);
-    }
-
-    private BloodlustConfig getConfig() {
-        return config.getData().getCustom().getItems().getBloodlust();
     }
 }

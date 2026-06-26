@@ -1,7 +1,7 @@
 package dev.d4vid.mods.genesis.server.custom.item;
 
 import dev.d4vid.mods.genesis.server.Genesis;
-import dev.d4vid.mods.genesis.server.config.GenesisConfig;
+import dev.d4vid.mods.genesis.server.config.GenesisConfigLoadCallback;
 import dev.d4vid.mods.genesis.server.config.data.custom.item.HermesBootsConfig;
 import dev.d4vid.mods.genesis.server.custom.item.util.ItemEnchantmentsBuilder;
 import dev.d4vid.mods.genesis.server.event.GenesisCustomItemEvents;
@@ -31,11 +31,12 @@ public class HermesBootsItem extends GenesisItem {
         .literal("Hermes Boots")
         .withStyle(s -> s.withItalic(false).withBold(true).withColor(HERMES_BOOTS_COLOR));
 
-    private final GenesisConfig config;
+    private HermesBootsConfig config;
 
-    public HermesBootsItem(GenesisConfig config) {
+    public HermesBootsItem() {
         super("hermes_boots", Items.DIAMOND_BOOTS, DISPLAY_NAME);
-        this.config = config;
+
+        GenesisConfigLoadCallback.Companion.getEVENT().register(it -> config = it.getCustom().getItems().getHermesBoots());
 
         GenesisCustomItemEvents.INSTANCE.getALLOW_PLAYER_FALL_DAMAGE().register(((player, fallDistance, multiplier, source) -> {
             ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
@@ -69,8 +70,6 @@ public class HermesBootsItem extends GenesisItem {
     }
 
     private void applyAttributes(ItemStack item) {
-        HermesBootsConfig config = this.config.getData().getCustom().getItems().getHermesBoots();
-
         ItemAttributeModifiers modifiers = ItemAttributeModifiers.builder()
             .add(Attributes.ARMOR, new AttributeModifier(
                 ARMOR_KEY,

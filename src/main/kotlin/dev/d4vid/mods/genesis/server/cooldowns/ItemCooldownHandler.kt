@@ -1,6 +1,7 @@
 package dev.d4vid.mods.genesis.server.cooldowns
 
-import dev.d4vid.mods.genesis.server.config.GenesisConfig
+import dev.d4vid.mods.genesis.server.config.GenesisConfigLoadCallback
+import dev.d4vid.mods.genesis.server.config.data.cooldowns.CooldownsConfig
 import dev.d4vid.mods.genesis.server.pvp.CombatDetectionHandler
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents
 import net.fabricmc.fabric.api.event.player.ItemEvents
@@ -13,10 +14,13 @@ import java.util.*
 import kotlin.time.Clock
 import kotlin.time.Instant
 
-class ItemCooldownHandler(private val config: GenesisConfig, private val combatDetection: CombatDetectionHandler) {
+class ItemCooldownHandler(private val combatDetection: CombatDetectionHandler) {
+    private lateinit var config: CooldownsConfig
     private val cooldowns = mutableMapOf<UUID, MutableMap<Identifier, Instant>>()
 
-    fun initialize() {
+    init {
+        GenesisConfigLoadCallback.EVENT.register { config = it.cooldowns }
+
         ServerPlayerEvents.JOIN.register { player ->
             cooldowns[player.uuid] = mutableMapOf()
         }
@@ -43,7 +47,7 @@ class ItemCooldownHandler(private val config: GenesisConfig, private val combatD
     }
 
     private fun handle(level: ServerLevel, player: ServerPlayer, stack: ItemStack): Boolean {
-        val cooldownConfig = config.data.cooldowns.getCooldownForItem(stack) ?: return true
+        val cooldownConfig = config.getCooldownForItem(stack) ?: return true
 
         val identifier = cooldownConfig.match.identifier
         val playerCooldowns = cooldowns[player.uuid]!!

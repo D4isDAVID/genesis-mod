@@ -1,6 +1,7 @@
 package dev.d4vid.mods.genesis.server.pvp
 
-import dev.d4vid.mods.genesis.server.config.GenesisConfig
+import dev.d4vid.mods.genesis.server.config.GenesisConfigLoadCallback
+import dev.d4vid.mods.genesis.server.config.data.pvp.PvpDetectionConfig
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
@@ -13,7 +14,7 @@ import java.util.*
 import kotlin.time.Clock
 import kotlin.time.Instant
 
-class CombatDetectionHandler(private val config: GenesisConfig) {
+class CombatDetectionHandler {
     companion object {
         private val OUT_OF_COMBAT = Component.literal("You are out of combat")
             .withStyle(ChatFormatting.GOLD)
@@ -24,10 +25,13 @@ class CombatDetectionHandler(private val config: GenesisConfig) {
         }
     }
 
+    private lateinit var config: PvpDetectionConfig
     private val instants = mutableMapOf<UUID, Instant>()
 
-    fun initialize() {
+    init {
         CombatProtectionData.initialize()
+
+        GenesisConfigLoadCallback.EVENT.register { config = it.pvp.detection }
 
         ServerLivingEntityEvents.AFTER_DAMAGE.register { victim, source, damage, _, _ ->
             if (victim !is ServerPlayer) {
@@ -42,7 +46,7 @@ class CombatDetectionHandler(private val config: GenesisConfig) {
                 return@register
             }
 
-            if (damage < config.data.pvp.detection.minDamage) {
+            if (damage < config.minDamage) {
                 return@register
             }
 
@@ -51,7 +55,7 @@ class CombatDetectionHandler(private val config: GenesisConfig) {
         }
 
         ServerPlayerEvents.LEAVE.register { player ->
-            if (!config.data.pvp.killPlayerOnCombatLog || !isPlayerInCombat(player)) {
+            if (!config.killPlayerOnCombatLog || !isPlayerInCombat(player)) {
                 return@register
             }
 
@@ -95,9 +99,9 @@ class CombatDetectionHandler(private val config: GenesisConfig) {
         val now = Clock.System.now()
         val instant = instants[player.uuid] ?: now
 
-        val scaled = config.data.pvp.detection.damageTimeSecondsScaling * damage.toDouble()
+        val scaled = config.damageTimeSecondsScaling * damage.toDouble()
         val diff = maxOf(instant, now) - now
-        val max = config.data.pvp.detection.maxTimeSeconds
+        val max = config.maxTimeSeconds
 
         instants[player.uuid] = instant.plus(minOf(scaled, (max - diff)))
     }

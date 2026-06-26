@@ -1,6 +1,7 @@
 package dev.d4vid.mods.genesis.server.pvp
 
-import dev.d4vid.mods.genesis.server.config.GenesisConfig
+import dev.d4vid.mods.genesis.server.config.GenesisConfigLoadCallback
+import dev.d4vid.mods.genesis.server.config.data.pvp.PvpProtectionConfig
 import dev.d4vid.mods.genesis.server.event.GenesisCombatEvents
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents
@@ -17,7 +18,7 @@ import kotlin.time.Clock
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
-class CombatProtectionHandler(private val config: GenesisConfig) {
+class CombatProtectionHandler {
     companion object {
         private val VICTIM_SPAWN_PROTECTED =
             Component.literal("This player is spawn protected").withStyle(ChatFormatting.RED)
@@ -43,11 +44,14 @@ class CombatProtectionHandler(private val config: GenesisConfig) {
         }
     }
 
+    private lateinit var config: PvpProtectionConfig
     private val data = mutableMapOf<UUID, CombatProtectionData>()
 
-    fun initialize() {
+    init {
+        GenesisConfigLoadCallback.EVENT.register { config = it.pvp.protection }
+
         GenesisCombatEvents.ALLOW_PET_DAMAGE.register { _, pet, source, _ ->
-            if (!config.data.pvp.protectHarmlessPets) {
+            if (!config.protectHarmlessPets) {
                 return@register true
             }
 
@@ -70,14 +74,14 @@ class CombatProtectionHandler(private val config: GenesisConfig) {
 
             data[player.uuid] = CombatProtectionData(
                 player,
-                config.data.pvp.newPlayerProtectionMinutes,
+                config.newPlayerProtectionMinutes,
             )
         }
 
         ServerPlayerEvents.AFTER_RESPAWN.register { _, player, _ ->
             data[player.uuid] = CombatProtectionData(
                 player,
-                config.data.pvp.respawnProtectionMinutes,
+                config.respawnProtectionMinutes,
             )
         }
 
@@ -95,7 +99,7 @@ class CombatProtectionHandler(private val config: GenesisConfig) {
             }
 
             val teams = arrayOf(victim.team, attacker.team)
-            if (teams.any { it != null && config.data.pvp.isTeamProtected(it) }) {
+            if (teams.any { it != null && config.isTeamProtected(it) }) {
                 return@register false
             }
 
@@ -109,13 +113,13 @@ class CombatProtectionHandler(private val config: GenesisConfig) {
                 return@register false
             }
 
-            if (config.data.pvp.isSpawnProtected(victim)) {
+            if (config.isSpawnProtected(victim)) {
                 attacker.sendSystemMessage(VICTIM_SPAWN_PROTECTED, true)
 
                 return@register false
             }
 
-            if (config.data.pvp.isSpawnProtected(attacker)) {
+            if (config.isSpawnProtected(attacker)) {
                 attacker.sendSystemMessage(ATTACKER_SPAWN_PROTECTED, true)
 
                 return@register false

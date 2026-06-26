@@ -1,6 +1,6 @@
 package dev.d4vid.mods.genesis.server
 
-import dev.d4vid.mods.genesis.server.blocks.initializeUnbreakableBlockHandler
+import dev.d4vid.mods.genesis.server.blocks.UnbreakableBlockHandler
 import dev.d4vid.mods.genesis.server.chat.ChatHandler
 import dev.d4vid.mods.genesis.server.command.genesisCommand
 import dev.d4vid.mods.genesis.server.command.registerBullshitCommand
@@ -9,15 +9,15 @@ import dev.d4vid.mods.genesis.server.config.GenesisConfig
 import dev.d4vid.mods.genesis.server.cooldowns.ItemCooldownHandler
 import dev.d4vid.mods.genesis.server.cooldowns.LungeCooldownHandler
 import dev.d4vid.mods.genesis.server.custom.item.GenesisItems
+import dev.d4vid.mods.genesis.server.items.DisabledItemsHandler
 import dev.d4vid.mods.genesis.server.items.ItemLimitHandler
-import dev.d4vid.mods.genesis.server.items.initializeDisabledItemsHandler
-import dev.d4vid.mods.genesis.server.portals.initializePortalsHandler
+import dev.d4vid.mods.genesis.server.portals.PortalsHandler
+import dev.d4vid.mods.genesis.server.pvp.ArrowEffectHandler
+import dev.d4vid.mods.genesis.server.pvp.CombatDamageMultiplier
 import dev.d4vid.mods.genesis.server.pvp.CombatDetectionHandler
 import dev.d4vid.mods.genesis.server.pvp.CombatProtectionHandler
-import dev.d4vid.mods.genesis.server.pvp.initializeArrowEffectHandler
-import dev.d4vid.mods.genesis.server.pvp.initializeCombatDamageMultiplier
-import dev.d4vid.mods.genesis.server.recipes.initializeDisabledRecipeHandler
-import dev.d4vid.mods.genesis.server.spoof.initializePacketSpoofHandler
+import dev.d4vid.mods.genesis.server.recipes.DisabledRecipeHandler
+import dev.d4vid.mods.genesis.server.spoof.PacketSpoofHandler
 import net.fabricmc.api.DedicatedServerModInitializer
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -27,37 +27,32 @@ object Genesis : DedicatedServerModInitializer {
     const val MOD_ID = "genesis"
     private val logger: Logger = LoggerFactory.getLogger(MOD_ID)
 
-    private val config = GenesisConfig()
-    private val chat = ChatHandler(config)
-    private val itemLimit = ItemLimitHandler(config)
-    private val combatDetection = CombatDetectionHandler(config)
-    private val combatProtection = CombatProtectionHandler(config)
-    private val lungeCooldown = LungeCooldownHandler(config, combatDetection)
-    private val itemCooldown = ItemCooldownHandler(config, combatDetection)
-
     override fun onInitializeServer() {
-        config.initialize()
+        val config = GenesisConfig()
+
+        PacketSpoofHandler()
+
+        val combatDetection = CombatDetectionHandler()
+        val combatProtection = CombatProtectionHandler()
+
+        ChatHandler()
+
+        DisabledItemsHandler(combatDetection)
+        ItemLimitHandler()
+
+        ItemCooldownHandler(combatDetection)
+        LungeCooldownHandler(combatDetection)
+
+        UnbreakableBlockHandler()
+        DisabledRecipeHandler()
+        PortalsHandler()
+
+        CombatDamageMultiplier()
+        ArrowEffectHandler()
+
         registerCommand(genesisCommand(config, combatProtection))
         registerBullshitCommand()
-        initializePacketSpoofHandler(config)
 
-        initializeDisabledItemsHandler(config, combatDetection)
-        itemLimit.initialize()
-
-        initializeUnbreakableBlockHandler(config)
-        initializeDisabledRecipeHandler(config)
-        initializePortalsHandler(config)
-
-        lungeCooldown.initialize()
-        itemCooldown.initialize()
-
-        combatDetection.initialize()
-        combatProtection.initialize()
-        initializeCombatDamageMultiplier(config)
-        initializeArrowEffectHandler(config)
-
-        chat.initialize()
-
-        GenesisItems.initialize(config)
+        GenesisItems()
     }
 }
