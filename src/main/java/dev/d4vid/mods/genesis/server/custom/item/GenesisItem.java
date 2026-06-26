@@ -33,11 +33,11 @@ public abstract class GenesisItem {
     public void initialize() {
     }
 
-    protected CompoundTag getCustomData(ItemStack stack) {
+    protected CompoundTag readCustomData(ItemStack stack) {
         return stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
     }
 
-    protected void setCustomData(ItemStack stack, CompoundTag tag) {
+    protected void saveCustomData(ItemStack stack, CompoundTag tag) {
         stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
     }
 
