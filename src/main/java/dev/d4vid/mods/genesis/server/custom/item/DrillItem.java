@@ -42,7 +42,6 @@ public class DrillItem extends GenesisItem {
 
     @Override
     protected void build(RegistryAccess registries, ItemStack item) {
-        item.set(DataComponents.UNBREAKABLE, Unit.INSTANCE);
         item.set(DataComponents.TOOL, new Tool(
             new ToolRulesBuilder(registries)
                 .add(BlockTags.MINEABLE_WITH_PICKAXE, Optional.of(9.0f), Optional.of(true))
@@ -72,7 +71,8 @@ public class DrillItem extends GenesisItem {
 
     private void enchant(RegistryAccess registries, ItemStack item, boolean silkTouch) {
         ItemEnchantmentsBuilder enchantments = new ItemEnchantmentsBuilder(registries)
-            .add(Enchantments.EFFICIENCY, 5);
+            .add(Enchantments.EFFICIENCY, 5)
+            .add(Enchantments.MENDING, 1);
 
         if (silkTouch) {
             enchantments.add(Enchantments.SILK_TOUCH, 1);
