@@ -17,12 +17,12 @@ data class ChatConfig(
             """\|\|""",
             """\|\|(?!\|)""",
             replaceContent = "[spoiler]",
-            requireOp = true,
         ),
         ChatFormatConfig(
             Style.EMPTY.withClickEvent(ClickEvent.OpenUrl(URI("https://placeholder.com"))),
             """<""",
             """>""",
+            requireOp = true,
         ),
         ChatFormatConfig(Style.EMPTY.applyFormat(ChatFormatting.BOLD), """\*\*""", """\*\*(?!\*)"""),
         ChatFormatConfig(Style.EMPTY.applyFormat(ChatFormatting.ITALIC), """\*""", """\*"""),
