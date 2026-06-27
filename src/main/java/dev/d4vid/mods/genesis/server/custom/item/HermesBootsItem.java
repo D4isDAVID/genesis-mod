@@ -7,8 +7,10 @@ import dev.d4vid.mods.genesis.server.custom.item.util.ItemEnchantmentsBuilder;
 import dev.d4vid.mods.genesis.server.event.GenesisCustomItemEvents;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -18,6 +20,8 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.item.equipment.EquipmentAssets;
+import net.minecraft.world.item.equipment.Equippable;
 
 import java.util.List;
 
@@ -50,6 +54,13 @@ public class HermesBootsItem extends GenesisItem {
         enchant(registries, item);
         applyLore(item);
         applyAttributes(item);
+        applyEquippable(item);
+    }
+
+    private void applyEquippable(ItemStack item) {
+        item.set(DataComponents.EQUIPPABLE, Equippable.builder(EquipmentSlot.FEET)
+            .setAsset(EquipmentAssets.DIAMOND)
+            .build());
     }
 
     private void enchant(RegistryAccess registries, ItemStack item) {

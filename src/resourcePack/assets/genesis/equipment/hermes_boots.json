@@ -1,6 +1,6 @@
 {
   "layers": {
-    "humanoid_leggings": [
+    "humanoid": [
       {
         "texture": "genesis:hermes_boots"
       }
