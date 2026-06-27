@@ -13,7 +13,7 @@ data class PvpProtectionConfig(
     private val protectedTeams: Set<String> = setOf("peaceful"),
     private val spawnProtection: PvpSpawnProtectionConfig = PvpSpawnProtectionConfig(),
     @Serializable(with = NonNegativeDurationMinutesDoubleSerializer::class)
-    val newPlayerProtectionMinutes: Duration = 5.minutes,
+    val newPlayerProtectionMinutes: Duration = 60.minutes,
     @Serializable(with = NonNegativeDurationMinutesDoubleSerializer::class)
     val respawnProtectionMinutes: Duration = 60.minutes,
 ) {
