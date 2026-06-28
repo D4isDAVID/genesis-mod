@@ -4,7 +4,7 @@ import net.fabricmc.fabric.api.event.EventFactory
 import net.minecraft.core.Holder
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.damagesource.DamageSource
-import net.minecraft.world.entity.TamableAnimal
+import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.item.alchemy.Potion
 
 object GenesisCombatEvents {
@@ -22,19 +22,20 @@ object GenesisCombatEvents {
         }
     }
 
-    val ALLOW_PET_DAMAGE = EventFactory.createArrayBacked(AllowPetDamage::class.java) { listeners ->
-        AllowPetDamage { level, pet, source, damage ->
-            for (listener in listeners) {
-                val result = listener.allowPetDamage(level, pet, source, damage)
+    val ALLOW_LIVING_ENTITY_VULNERABLE =
+        EventFactory.createArrayBacked(AllowLivingEntityVulnerable::class.java) { listeners ->
+            AllowLivingEntityVulnerable { level, entity, source ->
+                for (listener in listeners) {
+                    val result = listener.allowLivingEntityVulnerable(level, entity, source)
 
-                if (!result) {
-                    return@AllowPetDamage false
+                    if (!result) {
+                        return@AllowLivingEntityVulnerable false
+                    }
                 }
-            }
 
-            true
+                true
+            }
         }
-    }
 
     val MODIFY_MINECART_TNT_EXPLOSION_RADIUS =
         EventFactory.createArrayBacked(ModifyMinecartTntExplosionRadius::class.java) { listeners ->
@@ -85,8 +86,8 @@ object GenesisCombatEvents {
         fun allowArrowPotion(potion: Holder<Potion>): Boolean
     }
 
-    fun interface AllowPetDamage {
-        fun allowPetDamage(level: ServerLevel, pet: TamableAnimal, source: DamageSource, damage: Float): Boolean
+    fun interface AllowLivingEntityVulnerable {
+        fun allowLivingEntityVulnerable(level: ServerLevel, entity: LivingEntity, source: DamageSource): Boolean
     }
 
     fun interface ModifyMinecartTntExplosionRadius {

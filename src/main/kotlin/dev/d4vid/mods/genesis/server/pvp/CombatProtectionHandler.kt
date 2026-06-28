@@ -12,6 +12,7 @@ import net.minecraft.ChatFormatting
 import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.server.players.NameAndId
+import net.minecraft.world.entity.TamableAnimal
 import net.minecraft.world.entity.projectile.arrow.AbstractArrow
 import java.util.*
 import kotlin.time.Clock
@@ -50,8 +51,12 @@ class CombatProtectionHandler {
     init {
         GenesisConfigLoadCallback.EVENT.register { config = it.pvp.protection }
 
-        GenesisCombatEvents.ALLOW_PET_DAMAGE.register { _, pet, source, _ ->
+        GenesisCombatEvents.ALLOW_LIVING_ENTITY_VULNERABLE.register { _, entity, source ->
             if (!config.protectHarmlessPets) {
+                return@register true
+            }
+
+            if (entity !is TamableAnimal) {
                 return@register true
             }
 
@@ -63,7 +68,7 @@ class CombatProtectionHandler {
                 return@register true
             }
 
-            return@register attacker == pet.owner || pet.target is ServerPlayer
+            return@register attacker == entity.owner || entity.target is ServerPlayer
         }
 
         ServerPlayerEvents.JOIN.register { player ->
