@@ -17,13 +17,13 @@ public class ServerPlayerMixin {
     private void genesis$doCloseContainer(CallbackInfo callback) {
         ServerPlayer player = (ServerPlayer) (Object) this;
 
-        GenesisItemEvents.INSTANCE.getINVENTORY_CLOSE().invoker().inventoryClose(player);
+        GenesisItemEvents.INSTANCE.getPLAYER_CONTAINER_CLOSE().invoker().playerContainerClose(player);
     }
 
     @Inject(method = "drop", at = @At("RETURN"))
     private void genesis$drop(ItemStack stack, boolean throwRandomly, boolean retainOwnership, CallbackInfoReturnable<ItemEntity> callback) {
         ServerPlayer player = (ServerPlayer) (Object) this;
 
-        GenesisItemEvents.INSTANCE.getINVENTORY_CHANGE().invoker().inventoryChange(player);
+        GenesisItemEvents.INSTANCE.getPLAYER_ITEM_DROP().invoker().playerItemDrop(player, stack);
     }
 }

@@ -67,8 +67,10 @@ public class MegaDrillItem extends GenesisItem {
             true
         ));
 
-        enchant(registries, item, false);
-        applyLore(item, false);
+        boolean silkTouch = isSilkTouch(registries, item);
+
+        enchant(registries, item, silkTouch);
+        applyLore(item, silkTouch);
     }
 
     private void enchant(RegistryAccess registries, ItemStack item, boolean silkTouch) {

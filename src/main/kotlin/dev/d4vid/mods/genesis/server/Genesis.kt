@@ -55,6 +55,6 @@ object Genesis : DedicatedServerModInitializer {
             bullshitCommand(),
         )
 
-        GenesisItems()
+        GenesisItems.initialize()
     }
 }

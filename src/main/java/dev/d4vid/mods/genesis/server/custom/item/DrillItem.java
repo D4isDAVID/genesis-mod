@@ -10,7 +10,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.Unit;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ItemLore;
@@ -55,8 +54,10 @@ public class DrillItem extends GenesisItem {
             true
         ));
 
-        enchant(registries, item, false);
-        applyLore(item, false);
+        boolean silkTouch = isSilkTouch(registries, item);
+
+        enchant(registries, item, silkTouch);
+        applyLore(item, silkTouch);
     }
 
     private void toggle(ServerPlayer player, ItemStack item) {

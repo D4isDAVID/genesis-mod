@@ -20,26 +20,34 @@ object GenesisItemEvents {
         }
     }
 
-    val INVENTORY_ADD = EventFactory.createArrayBacked(InventoryAdd::class.java) { listeners ->
-        InventoryAdd { player ->
+    val INVENTORY_ITEM_ADD = EventFactory.createArrayBacked(InventoryItemAdd::class.java) { listeners ->
+        InventoryItemAdd { player, stack, slot ->
             for (listener in listeners) {
-                listener.inventoryAdd(player)
+                listener.inventoryItemAdd(player, stack, slot)
             }
         }
     }
 
-    val INVENTORY_CHANGE = EventFactory.createArrayBacked(InventoryChange::class.java) { listeners ->
-        InventoryChange { player ->
+    val INVENTORY_ITEM_SET = EventFactory.createArrayBacked(InventoryItemSet::class.java) { listeners ->
+        InventoryItemSet { player, stack, slot ->
             for (listener in listeners) {
-                listener.inventoryChange(player)
+                listener.inventoryItemSet(player, stack, slot)
             }
         }
     }
 
-    val INVENTORY_CLOSE = EventFactory.createArrayBacked(InventoryClose::class.java) { listeners ->
-        InventoryClose { player ->
+    val PLAYER_ITEM_DROP = EventFactory.createArrayBacked(PlayerItemDrop::class.java) { listeners ->
+        PlayerItemDrop { player, stack ->
             for (listener in listeners) {
-                listener.inventoryClose(player)
+                listener.playerItemDrop(player, stack)
+            }
+        }
+    }
+
+    val PLAYER_CONTAINER_CLOSE = EventFactory.createArrayBacked(PlayerContainerClose::class.java) { listeners ->
+        PlayerContainerClose { player ->
+            for (listener in listeners) {
+                listener.playerContainerClose(player)
             }
         }
     }
@@ -63,16 +71,20 @@ object GenesisItemEvents {
         fun allowTotem(source: DamageSource): Boolean
     }
 
-    fun interface InventoryAdd {
-        fun inventoryAdd(player: ServerPlayer)
+    fun interface InventoryItemAdd {
+        fun inventoryItemAdd(player: ServerPlayer, stack: ItemStack, slot: Int)
     }
 
-    fun interface InventoryChange {
-        fun inventoryChange(player: ServerPlayer)
+    fun interface InventoryItemSet {
+        fun inventoryItemSet(player: ServerPlayer, stack: ItemStack, slot: Int)
     }
 
-    fun interface InventoryClose {
-        fun inventoryClose(player: ServerPlayer)
+    fun interface PlayerItemDrop {
+        fun playerItemDrop(player: ServerPlayer, stack: ItemStack)
+    }
+
+    fun interface PlayerContainerClose {
+        fun playerContainerClose(player: ServerPlayer)
     }
 
     fun interface ModifyDefaultMaxStackSize {

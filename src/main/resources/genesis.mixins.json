@@ -10,7 +10,6 @@
     "custom.item.LivingEntityMixin",
     "custom.item.ServerGamePacketListenerImplMixin",
     "items.InventoryMixin",
-    "items.ItemMixin",
     "items.ItemStackMixin",
     "items.LivingEntityMixin",
     "items.ServerPlayerMixin",

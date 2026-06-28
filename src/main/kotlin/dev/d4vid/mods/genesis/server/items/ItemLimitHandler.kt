@@ -37,15 +37,19 @@ class ItemLimitHandler {
             }
         }
 
-        GenesisItemEvents.INVENTORY_ADD.register { player ->
+        GenesisItemEvents.INVENTORY_ITEM_ADD.register { player, _, _ ->
             enforceItemLimits(player, true)
         }
 
-        GenesisItemEvents.INVENTORY_CHANGE.register { player ->
+        GenesisItemEvents.INVENTORY_ITEM_SET.register { player, _, _ ->
             enforceItemLimits(player, false)
         }
 
-        GenesisItemEvents.INVENTORY_CLOSE.register { player ->
+        GenesisItemEvents.PLAYER_ITEM_DROP.register { player, _ ->
+            enforceItemLimits(player, false)
+        }
+
+        GenesisItemEvents.PLAYER_CONTAINER_CLOSE.register { player ->
             enforceItemLimits(player, true)
         }
 

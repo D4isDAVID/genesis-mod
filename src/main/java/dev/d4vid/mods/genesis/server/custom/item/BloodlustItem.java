@@ -30,8 +30,6 @@ import java.util.UUID;
 
 public class BloodlustItem extends GenesisItem {
     private static final String KILLS_TAG = "killedPlayers";
-    private static final int INITIAL_LEVEL = 1;
-    private static final int INITIAL_KILLS = 0;
     private static final int BLOODLUST_RED = 0xAA0000;
     private static final int BLOODLUST_RED_DARK = BLOODLUST_RED - 0x220000;
     private static final Component DISPLAY_NAME = Component
@@ -80,8 +78,13 @@ public class BloodlustItem extends GenesisItem {
     protected void build(RegistryAccess registries, ItemStack item) {
         item.set(DataComponents.UNBREAKABLE, Unit.INSTANCE);
 
-        enchant(registries, item, INITIAL_LEVEL);
-        applyLore(item, INITIAL_LEVEL, INITIAL_KILLS, INITIAL_KILLS);
+        CompoundTag kills = readKills(item);
+        int killCount = kills.size();
+        int total = getTotalKillCount(kills);
+        int level = getLevel(killCount);
+
+        enchant(registries, item, level);
+        applyLore(item, level, killCount, total);
     }
 
     private void addKill(ItemStack item, ServerPlayer attacker, ServerPlayer victim) {
@@ -97,10 +100,7 @@ public class BloodlustItem extends GenesisItem {
             newLevel = getLevel(killCount);
         }
 
-        int total = 0;
-        for (Map.Entry<String, Tag> entry : kills.entrySet()) {
-            total += entry.getValue().asInt().orElseThrow();
-        }
+        int total = getTotalKillCount(kills);
 
         if (newLevel != initialLevel) {
             attacker.sendSystemMessage(LEVELED_UP);
@@ -150,6 +150,16 @@ public class BloodlustItem extends GenesisItem {
         int requiredKills = levels.get(level - 1).getRequiredKills() - killCount;
 
         return "Level " + level + " (next in " + requiredKills + " unique kill" + (requiredKills == 1 ? "" : "s") + ")";
+    }
+
+    private int getTotalKillCount(CompoundTag kills) {
+        int total = 0;
+
+        for (Map.Entry<String, Tag> entry : kills.entrySet()) {
+            total += entry.getValue().asInt().orElseThrow();
+        }
+
+        return total;
     }
 
     private int getLevel(int killCount) {

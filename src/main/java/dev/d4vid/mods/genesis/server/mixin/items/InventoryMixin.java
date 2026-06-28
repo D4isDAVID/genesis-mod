@@ -18,7 +18,7 @@ public class InventoryMixin {
         Inventory inventory = (Inventory) (Object) this;
         ServerPlayer player = (ServerPlayer) inventory.player;
 
-        GenesisItemEvents.INSTANCE.getINVENTORY_ADD().invoker().inventoryAdd(player);
+        GenesisItemEvents.INSTANCE.getINVENTORY_ITEM_ADD().invoker().inventoryItemAdd(player, stack, slot);
     }
 
     @Inject(method = "setItem", at = @At("RETURN"))
@@ -30,6 +30,6 @@ public class InventoryMixin {
         Inventory inventory = (Inventory) (Object) this;
         ServerPlayer player = (ServerPlayer) inventory.player;
 
-        GenesisItemEvents.INSTANCE.getINVENTORY_CHANGE().invoker().inventoryChange(player);
+        GenesisItemEvents.INSTANCE.getINVENTORY_ITEM_SET().invoker().inventoryItemSet(player, stack, slot);
     }
 }
