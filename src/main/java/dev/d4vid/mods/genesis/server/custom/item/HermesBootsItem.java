@@ -20,8 +20,10 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.enchantment.Enchantments;
-import net.minecraft.world.item.equipment.EquipmentAssets;
 import net.minecraft.world.item.equipment.Equippable;
+import net.minecraft.world.item.equipment.EquipmentAsset;
+import net.minecraft.world.item.equipment.EquipmentAssets;
+import net.minecraft.resources.ResourceKey;
 
 import java.util.List;
 
@@ -58,8 +60,14 @@ public class HermesBootsItem extends GenesisItem {
     }
 
     private void applyEquippable(ItemStack item) {
+        ResourceKey<EquipmentAsset> assetKey = ResourceKey.create(
+            EquipmentAssets.ROOT_ID,
+            Identifier.fromNamespaceAndPath(Genesis.MOD_ID, "hermes_boots")
+        );
+
         item.set(DataComponents.EQUIPPABLE, Equippable.builder(EquipmentSlot.FEET)
-            .setAsset(EquipmentAssets.DIAMOND)
+            .setAsset(assetKey)
+            .setDamageOnHurt(false)
             .build());
     }
 
