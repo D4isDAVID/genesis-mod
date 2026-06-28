@@ -83,7 +83,7 @@ public class HermesBootsItem extends GenesisItem {
     private void applyLore(ItemStack item) {
         item.set(DataComponents.LORE, new ItemLore(List.of(
             Component.empty(),
-            Component.literal("Grants you speed and\nprotects you from falling")
+            Component.literal("Grants you speed and protects you from falling")
                 .withStyle(s -> s.withColor(LORE_COLOR))
         )));
     }

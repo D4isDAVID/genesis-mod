@@ -25,7 +25,7 @@ public class DrillItem extends GenesisItem {
     private static final int LORE_COLOR = 0x888888;
     private static final Component DISPLAY_NAME = Component
         .literal("Drill")
-        .withStyle(s -> s.withItalic(false).withBold(true));
+        .withStyle(s -> s.withItalic(false).withBold(true).withColor(0xD3D3D3));
 
     public DrillItem() {
         super("drill", Items.NETHERITE_PICKAXE, DISPLAY_NAME);
