@@ -5,12 +5,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
-public class BlahajItem extends BullshitItem {
-
+public class CollarItem extends BullshitItem{
     private static final int COLOR = 0x87CEEB;
 
-    public BlahajItem() {
-        super("blue_shark", Items.RECOVERY_COMPASS, Component.literal("Blahaj").withStyle(s -> s
+    public CollarItem() {
+        super("collar", Items.DIAMOND_HELMET, Component.literal("Collar").withStyle(s -> s
             .withItalic(false)
             .withBold(true)
             .withColor(COLOR)

@@ -9,6 +9,8 @@ public class BullshitItems {
 
     static {
         register(new BlahajItem());
+        register(new CollarItem());
+        register(new ClickerItem());
     }
 
     public static void register(BullshitItem item) {

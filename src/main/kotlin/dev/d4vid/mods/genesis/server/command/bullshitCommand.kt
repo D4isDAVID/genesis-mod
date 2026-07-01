@@ -5,9 +5,11 @@ import dev.d4vid.mods.genesis.server.custom.item.bullshit.BullshitItems
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.Commands
 import net.minecraft.commands.arguments.EntityArgument
+import net.minecraft.server.permissions.Permissions
 
 fun bullshitCommand(): LiteralArgumentBuilder<CommandSourceStack> {
     val command = Commands.literal("bullshit")
+        .requires { source -> source.permissions().hasPermission(Permissions.COMMANDS_OWNER) }
 
     BullshitItems.REGISTRY.forEach { (_, item) ->
         command.then(

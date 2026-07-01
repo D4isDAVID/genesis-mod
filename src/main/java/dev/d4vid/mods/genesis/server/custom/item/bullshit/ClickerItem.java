@@ -5,12 +5,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
-public class BlahajItem extends BullshitItem {
+public class ClickerItem extends BullshitItem{
 
     private static final int COLOR = 0x87CEEB;
 
-    public BlahajItem() {
-        super("blue_shark", Items.RECOVERY_COMPASS, Component.literal("Blahaj").withStyle(s -> s
+    public ClickerItem() {
+        super("clicker", Items.STICK, Component.literal("Clicker").withStyle(s -> s
             .withItalic(false)
             .withBold(true)
             .withColor(COLOR)
@@ -21,4 +21,5 @@ public class BlahajItem extends BullshitItem {
     protected void build(RegistryAccess registries, ItemStack stack) {
 
     }
+
 }
