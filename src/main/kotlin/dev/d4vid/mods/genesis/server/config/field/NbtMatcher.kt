@@ -50,9 +50,8 @@ data class NbtMatcher(
     }
 
     private fun matchNbt(json: com.google.gson.JsonElement, components: DataComponentMap): Boolean {
-        val nbtJson = DataComponentMap.CODEC.encodeStart(JsonOps.INSTANCE, components).getOrThrow()
-
-        return matchJson(json, nbtJson)
+        return DataComponentMap.CODEC.encodeStart(JsonOps.INSTANCE, components)
+            .mapOrElse({ matchJson(json, it) }, { false })
     }
 
     private fun matchJson(a: com.google.gson.JsonElement, b: com.google.gson.JsonElement): Boolean {
