@@ -11,6 +11,7 @@ public class BullshitItems {
         register(new BlahajItem());
         register(new CollarItem());
         register(new ClickerItem());
+        register(new LeashItem());
     }
 
     public static void register(BullshitItem item) {
