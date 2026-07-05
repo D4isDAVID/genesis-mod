@@ -29,13 +29,4 @@ public class EnchantmentHelperMixin {
         }
     }
 
-    @Inject(method = "setItemName", at = @At("HEAD"), cancellable = true)
-    private void genesis$setItemName(String name, CallbackInfo info) {
-        AnvilMenu menu = (AnvilMenu) (Object) this;
-        ItemStack input = menu.getSlot(0).getItem();
-        GenesisItem item = GenesisItems.get(input);
-        if (item != null && !item.canBeRenamed()) {
-            info.cancel();
-        }
-    }
 }
