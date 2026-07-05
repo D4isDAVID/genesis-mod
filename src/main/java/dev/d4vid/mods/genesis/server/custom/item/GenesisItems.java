@@ -32,6 +32,12 @@ public class GenesisItems {
         register(new DrillItem());
         register(new MegaDrillItem());
         register(new HermesBootsItem());
+        register(new AxeOfPrerunItem());
+        register(new CreeperPantsItem());
+        register(new ExploreresCharmItem());
+        register(new RagnarokAxeItem());
+        register(new RougeSwordItem());
+        register(new TheLeechItem());
     }
 
     public static boolean is(ItemStack stack) {
@@ -40,7 +46,7 @@ public class GenesisItems {
         return id != null && REGISTRY.containsKey(id);
     }
 
-    private static GenesisItem get(ItemStack stack) {
+    public static GenesisItem get(ItemStack stack) {
         return REGISTRY.get(GenesisItem.getId(stack));
     }
 

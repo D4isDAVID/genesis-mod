@@ -26,6 +26,7 @@ public abstract class GenesisItem {
         stack.set(DataComponents.CUSTOM_NAME, displayName);
 
         this.baseItem = stack;
+
     }
 
     protected abstract void build(RegistryAccess registries, ItemStack stack);
@@ -51,4 +52,13 @@ public abstract class GenesisItem {
     public boolean is(ItemStack stack) {
         return identifier.equals(getId(stack));
     }
+
+    public boolean canBeEnchanted() {
+        return false;
+    }
+
+    public boolean canBeRenamed() {
+        return false;
+    }
+
 }

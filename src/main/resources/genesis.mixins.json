@@ -9,6 +9,7 @@
     "custom.item.ItemStackMixin",
     "custom.item.LivingEntityMixin",
     "custom.item.ServerGamePacketListenerImplMixin",
+    "custom.item.AnvilMenuMixin",
     "items.InventoryMixin",
     "items.ItemStackMixin",
     "items.LivingEntityMixin",
