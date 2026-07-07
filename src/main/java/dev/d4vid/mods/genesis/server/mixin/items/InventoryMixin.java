@@ -23,10 +23,6 @@ public class InventoryMixin {
 
     @Inject(method = "setItem", at = @At("RETURN"))
     private void genesis$setItem(int slot, ItemStack stack, CallbackInfo callback) {
-        if (stack.isEmpty()) {
-            return;
-        }
-
         Inventory inventory = (Inventory) (Object) this;
         ServerPlayer player = (ServerPlayer) inventory.player;
 
