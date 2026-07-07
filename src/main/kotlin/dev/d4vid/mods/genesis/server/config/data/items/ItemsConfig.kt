@@ -62,10 +62,8 @@ data class ItemsConfig(
     ),
     private val discard: Set<ItemMatcher> = setOf(
         NbtMatcher(Identifier.withDefaultNamespace("elytra")),
-        NbtMatcher(Identifier.withDefaultNamespace("netherite_helmet")),
         NbtMatcher(Identifier.withDefaultNamespace("netherite_chestplate")),
         NbtMatcher(Identifier.withDefaultNamespace("netherite_leggings")),
-        NbtMatcher(Identifier.withDefaultNamespace("netherite_boots")),
         NbtMatcher(Identifier.withDefaultNamespace("netherite_axe")),
         NbtMatcher(Identifier.withDefaultNamespace("netherite_sword")),
     ),
