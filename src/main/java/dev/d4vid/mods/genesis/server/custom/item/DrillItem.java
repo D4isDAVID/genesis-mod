@@ -73,7 +73,8 @@ public class DrillItem extends GenesisItem {
     private void enchant(RegistryAccess registries, ItemStack item, boolean silkTouch) {
         ItemEnchantmentsBuilder enchantments = new ItemEnchantmentsBuilder(registries)
             .add(Enchantments.EFFICIENCY, 5)
-            .add(Enchantments.MENDING, 1);
+            .add(Enchantments.MENDING, 1)
+        .add(Enchantments.UNBREAKING, 3);
 
         if (silkTouch) {
             enchantments.add(Enchantments.SILK_TOUCH, 1);

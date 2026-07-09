@@ -1,12 +1,17 @@
 package dev.d4vid.mods.genesis.server.custom.item;
 
+import dev.d4vid.mods.genesis.server.Genesis;
 import dev.d4vid.mods.genesis.server.custom.item.util.ItemEnchantmentsBuilder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ItemLore;
+import net.minecraft.world.item.equipment.EquipmentAsset;
+import net.minecraft.world.item.equipment.EquipmentAssets;
 
 import java.util.List;
 
@@ -25,6 +30,7 @@ public class SpiderBootsItem extends GenesisItem {
     protected void build(RegistryAccess registries, ItemStack item) {
         enchant(registries, item);
         applyLore(item);
+        applyEquippable(item);
     }
     @Override
     public boolean canBeEnchanted() {
@@ -42,5 +48,11 @@ public class SpiderBootsItem extends GenesisItem {
             Component.literal("WIP")
                 .withStyle(s -> s.withItalic(false).withBold(true).withColor(SPIDER_BOOTS_COLOR))
         )));
+    }
+    private void applyEquippable(ItemStack item) {
+        ResourceKey<EquipmentAsset> assetKey = ResourceKey.create(
+            EquipmentAssets.ROOT_ID,
+            Identifier.fromNamespaceAndPath(Genesis.MOD_ID, "hermes_boots")
+        );
     }
 }

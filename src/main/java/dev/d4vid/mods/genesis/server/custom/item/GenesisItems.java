@@ -38,6 +38,8 @@ public class GenesisItems {
         register(new RagnarokAxeItem());
         register(new RougeSwordItem());
         register(new TheLeechItem());
+        register(new SpiderBootsItem());
+        register(new MobCrossbowItem());
     }
 
     public static boolean is(ItemStack stack) {

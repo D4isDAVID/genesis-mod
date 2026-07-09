@@ -1,0 +1,9 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "genesis:creeper_pants"
+      }
+    ]
+  }
+}
