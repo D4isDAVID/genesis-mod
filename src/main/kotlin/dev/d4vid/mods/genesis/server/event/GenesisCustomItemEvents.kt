@@ -32,6 +32,18 @@ object GenesisCustomItemEvents {
         }
     }
 
+    val ON_PLAYER_HIT_PLAYER = EventFactory.createArrayBacked(OnPlayerHitPlayer::class.java) { listeners ->
+        OnPlayerHitPlayer { attacker, victim, stack ->
+            for (listener in listeners) {
+                listener.onPlayerHitPlayer(attacker, victim, stack)
+            }
+        }
+    }
+
+    fun interface OnPlayerHitPlayer {
+        fun onPlayerHitPlayer(attacker: ServerPlayer, victim: ServerPlayer, stack: ItemStack)
+    }
+
     fun interface AllowPlayerFallDamage {
         fun allowPlayerFallDamage(
             player: ServerPlayer,

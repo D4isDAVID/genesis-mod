@@ -10,7 +10,7 @@ public class ClickerItem extends BullshitItem{
     private static final int COLOR = 0x87CEEB;
 
     public ClickerItem() {
-        super("clicker", Items.STICK, Component.literal("Clicker").withStyle(s -> s
+        super("clicker", Items.RECOVERY_COMPASS, Component.literal("Clicker").withStyle(s -> s
             .withItalic(false)
             .withBold(true)
             .withColor(COLOR)
