@@ -7,11 +7,13 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.equipment.EquipmentAsset;
 import net.minecraft.world.item.equipment.EquipmentAssets;
+import net.minecraft.world.item.equipment.Equippable;
 
 import java.util.List;
 
@@ -52,7 +54,10 @@ public class SpiderBootsItem extends GenesisItem {
     private void applyEquippable(ItemStack item) {
         ResourceKey<EquipmentAsset> assetKey = ResourceKey.create(
             EquipmentAssets.ROOT_ID,
-            Identifier.fromNamespaceAndPath(Genesis.MOD_ID, "hermes_boots")
+            Identifier.fromNamespaceAndPath(Genesis.MOD_ID, "spider_boots")
         );
+        item.set(DataComponents.EQUIPPABLE, Equippable.builder(EquipmentSlot.FEET)
+            .setAsset(assetKey)
+            .build());
     }
 }
