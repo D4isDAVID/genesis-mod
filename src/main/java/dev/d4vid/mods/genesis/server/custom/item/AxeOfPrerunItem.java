@@ -22,31 +22,31 @@ import net.minecraft.world.item.enchantment.Enchantments;
 
 import java.util.List;
 
-import static net.minecraft.world.level.block.SculkSensorBlock.COOLDOWN_TICKS;
-
 public class AxeOfPrerunItem extends GenesisItem {
     private static final int AXE_OF_PRERUN_COLOR = 0x64C4FF;
     private static final int LORE_COLOR = 0x888888;
     private static final Component DISPLAY_NAME = Component
         .literal("Axe Of Prerun")
         .withStyle(s -> s.withItalic(false).withBold(true).withColor(AXE_OF_PRERUN_COLOR));
+    private static final int COOLDOWN_TICKS = 600;
 
     public AxeOfPrerunItem() {
         super("pre_run_axe", Items.DIAMOND_AXE, DISPLAY_NAME);
 
-        ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, baseDamage, appliedDamage, blocked) -> {
-            if (!(entity instanceof ServerPlayer victim)) return;
+        ServerLivingEntityEvents.AFTER_DAMAGE.register((victim, source, baseDamage, appliedDamage, blocked) -> {
             if (!(source.getEntity() instanceof ServerPlayer attacker)) return;
             ItemStack stack = attacker.getMainHandItem();
             if (!this.is(stack)) return;
             if (attacker.getCooldowns().isOnCooldown(stack)) return;
             ServerLevel level = (ServerLevel) attacker.level();
+
             LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(level, EntitySpawnReason.TRIGGERED);
             if (bolt != null) {
                 bolt.teleportTo(victim.getX(), victim.getY(), victim.getZ());
                 bolt.setVisualOnly(true);
                 level.addFreshEntity(bolt);
             }
+
             victim.igniteForTicks(100);
             DamageSource trueSource = level.damageSources().generic();
             victim.hurtServer(level, trueSource, 3f);
