@@ -32,7 +32,7 @@ public class GenesisItems {
         register(new DrillItem());
         register(new MegaDrillItem());
         register(new HermesBootsItem());
-        register(new AxeOfPrerunItem());
+        register(new AxeOfPerunItem());
         register(new CreeperPantsItem());
         register(new ExploreresCharmItem());
         register(new RagnarokAxeItem());

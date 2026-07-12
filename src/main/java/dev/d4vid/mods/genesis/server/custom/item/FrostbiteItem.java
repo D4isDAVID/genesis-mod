@@ -7,11 +7,9 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.Unit;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
@@ -22,16 +20,15 @@ import net.minecraft.world.item.enchantment.Enchantments;
 
 import java.util.List;
 
-public class AxeOfPrerunItem extends GenesisItem {
-    private static final int AXE_OF_PRERUN_COLOR = 0x64C4FF;
+public class FrostbiteItem extends GenesisItem {
+    private static final int FROSTBITE_COLOR = 0x64C4FF;
     private static final int LORE_COLOR = 0x888888;
     private static final Component DISPLAY_NAME = Component
-        .literal("Axe Of Prerun")
-        .withStyle(s -> s.withItalic(false).withBold(true).withColor(AXE_OF_PRERUN_COLOR));
-    private static final int COOLDOWN_TICKS = 600;
+        .literal("Frostbite")
+        .withStyle(s -> s.withItalic(false).withBold(true).withColor(FROSTBITE_COLOR));
 
-    public AxeOfPrerunItem() {
-        super("pre_run_axe", Items.DIAMOND_AXE, DISPLAY_NAME);
+    public FrostbiteItem() {
+        super("frostbite", Items.IRON_SWORD, DISPLAY_NAME);
 
         ServerLivingEntityEvents.AFTER_DAMAGE.register((victim, source, baseDamage, appliedDamage, blocked) -> {
             if (!(source.getEntity() instanceof ServerPlayer attacker)) return;
@@ -40,19 +37,7 @@ public class AxeOfPrerunItem extends GenesisItem {
             if (attacker.getCooldowns().isOnCooldown(stack)) return;
             ServerLevel level = (ServerLevel) attacker.level();
 
-            LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(level, EntitySpawnReason.TRIGGERED);
-            if (bolt != null) {
-                bolt.teleportTo(victim.getX(), victim.getY(), victim.getZ());
-                bolt.setVisualOnly(true);
-                level.addFreshEntity(bolt);
-            }
-
-            victim.igniteForTicks(100);
-            DamageSource trueSource = level.damageSources().generic();
-            victim.hurtServer(level, trueSource, 8f);
-
-            attacker.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 300, 0, false, true));
-            attacker.getCooldowns().addCooldown(stack, COOLDOWN_TICKS);
+            victim.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 300, 0, false, true));
         });
     }
     @Override
@@ -78,7 +63,7 @@ public class AxeOfPrerunItem extends GenesisItem {
         item.set(DataComponents.LORE, new ItemLore(List.of(
             Component.empty(),
             Component.literal("WIP")
-                .withStyle(s -> s.withItalic(false).withBold(true).withColor(AXE_OF_PRERUN_COLOR))
+                .withStyle(s -> s.withItalic(false).withBold(true).withColor(FROSTBITE_COLOR))
         )));
     }
 }
