@@ -49,9 +49,9 @@ public class AxeOfPrerunItem extends GenesisItem {
 
             victim.igniteForTicks(100);
             DamageSource trueSource = level.damageSources().generic();
-            victim.hurtServer(level, trueSource, 3f);
+            victim.hurtServer(level, trueSource, 8f);
 
-            attacker.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 140, 0, false, true));
+            attacker.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 300, 0, false, true));
             attacker.getCooldowns().addCooldown(stack, COOLDOWN_TICKS);
         });
     }
