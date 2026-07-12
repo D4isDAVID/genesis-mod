@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/handheld",
   "textures": {
-    "layer0": "genesis:item/pre_run_axe"
+    "layer0": "genesis:item/frostbite"
   }
 }

@@ -37,12 +37,14 @@ public class FrostbiteItem extends GenesisItem {
             if (attacker.getCooldowns().isOnCooldown(stack)) return;
             ServerLevel level = (ServerLevel) attacker.level();
 
-            victim.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 300, 0, false, true));
+            victim.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 80, 0, false, true));
+            victim.setTicksFrozen(140);
         });
     }
     @Override
     protected void build(RegistryAccess registries, ItemStack item) {
         //item.set(DataComponents.UNBREAKABLE, Unit.INSTANCE);
+        item.set(DataComponents.MAX_DAMAGE, 1561);
         enchant(registries, item);
         applyLore(item);
     }
@@ -53,7 +55,7 @@ public class FrostbiteItem extends GenesisItem {
 
     private void enchant(RegistryAccess registries, ItemStack item) {
         new ItemEnchantmentsBuilder(registries)
-            .add(Enchantments.SHARPNESS, 5)
+            .add(Enchantments.SHARPNESS, 4)
             .add(Enchantments.UNBREAKING, 3)
             .add(Enchantments.MENDING, 1)
             .enchant(item);

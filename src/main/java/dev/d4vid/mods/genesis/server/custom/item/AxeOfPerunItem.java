@@ -49,7 +49,7 @@ public class AxeOfPerunItem extends GenesisItem {
             DamageSource trueSource = level.damageSources().generic();
             victim.hurtServer(level, trueSource, 8f);
 
-            attacker.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 300, 0, false, true));
+            attacker.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 200, 0, false, true));
             attacker.getCooldowns().addCooldown(stack, COOLDOWN_TICKS);
         });
     }

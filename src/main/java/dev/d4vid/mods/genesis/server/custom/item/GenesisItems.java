@@ -40,6 +40,7 @@ public class GenesisItems {
         register(new TheLeechItem());
         register(new SpiderBootsItem());
         register(new MobCrossbowItem());
+        register(new FrostbiteItem());
     }
 
     public static boolean is(ItemStack stack) {
