@@ -46,8 +46,7 @@ public class AxeOfPerunItem extends GenesisItem {
             }
 
             victim.igniteForTicks(100);
-            DamageSource trueSource = level.damageSources().generic();
-            victim.hurtServer(level, trueSource, 8f);
+            victim.setHealth(Math.max(0f, victim.getHealth() - 8f));
 
             attacker.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 200, 0, false, true));
             attacker.getCooldowns().addCooldown(stack, COOLDOWN_TICKS);

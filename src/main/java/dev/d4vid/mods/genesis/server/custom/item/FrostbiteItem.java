@@ -55,7 +55,7 @@ public class FrostbiteItem extends GenesisItem {
 
     private void enchant(RegistryAccess registries, ItemStack item) {
         new ItemEnchantmentsBuilder(registries)
-            .add(Enchantments.SHARPNESS, 4)
+            .add(Enchantments.SHARPNESS, 5)
             .add(Enchantments.UNBREAKING, 3)
             .add(Enchantments.MENDING, 1)
             .enchant(item);
