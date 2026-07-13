@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class PvpSpawnProtectionConfig(
-    val radius: Double = 32.0,
+    val radius: Double = 500.0,
     val x: Double = 155.0,
     val z: Double = 71.0,
 )
