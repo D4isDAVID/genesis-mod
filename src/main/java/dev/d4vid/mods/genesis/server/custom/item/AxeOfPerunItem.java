@@ -63,7 +63,7 @@ public class AxeOfPerunItem extends GenesisItem {
                 .getOrThrow(DamageTypes.FELL_OUT_OF_WORLD);
             DamageSource voidSource = new DamageSource(voidType, attacker);
 
-            victim.hurtServer(level, voidSource, LIGHTNING_DAMAGE);
+            victim.hurtServer(level, voidSource, appliedDamage + LIGHTNING_DAMAGE);
 
             attacker.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 200, 0, false, true));
         });

@@ -49,7 +49,7 @@ public class TheLeechItem extends GenesisItem {
                 .getOrThrow(DamageTypes.FELL_OUT_OF_WORLD);
             DamageSource voidSource = new DamageSource(voidType, attacker);
 
-            victim.hurtServer(level, voidSource, BONUS_DAMAGE);
+            victim.hurtServer(level, voidSource, appliedDamage + BONUS_DAMAGE);
 
             FoodData foodData = attacker.getFoodData();
             foodData.setSaturation(Math.max(0f, foodData.getSaturationLevel() - SATURATION_COST));
