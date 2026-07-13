@@ -19,6 +19,7 @@
     "portals.EndPortalBlockMixin",
     "portals.NetherPortalBlockMixin",
     "pvp.ArrowItemMixin",
+    "pvp.BedBlockMixin",
     "pvp.EndCrystalMixin",
     "pvp.LivingEntityMixin",
     "pvp.MinecartTNTMixin",

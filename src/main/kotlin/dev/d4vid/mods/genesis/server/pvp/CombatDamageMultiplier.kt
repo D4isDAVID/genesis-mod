@@ -14,6 +14,10 @@ class CombatDamageMultiplier {
             it * config.minecartTntExplosion
         }
 
+        GenesisCombatEvents.MODIFY_BED_EXPLOSION_RADIUS.register {
+            it * config.bedExplosion
+        }
+
         GenesisCombatEvents.MODIFY_RESPAWN_ANCHOR_EXPLOSION_RADIUS.register {
             it * config.respawnAnchorExplosion
         }

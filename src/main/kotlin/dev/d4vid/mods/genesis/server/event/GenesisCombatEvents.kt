@@ -52,6 +52,21 @@ object GenesisCombatEvents {
             }
         }
 
+    val MODIFY_BED_EXPLOSION_RADIUS =
+        EventFactory.createArrayBacked(ModifyBedExplosionRadius::class.java) { listeners ->
+            ModifyBedExplosionRadius { radius ->
+                for (listener in listeners) {
+                    val result = listener.modifyBedExplosionRadius(radius)
+
+                    if (result != null) {
+                        return@ModifyBedExplosionRadius result
+                    }
+                }
+
+                null
+            }
+        }
+
     val MODIFY_RESPAWN_ANCHOR_EXPLOSION_RADIUS =
         EventFactory.createArrayBacked(ModifyRespawnAnchorExplosionRadius::class.java) { listeners ->
             ModifyRespawnAnchorExplosionRadius { radius ->
@@ -92,6 +107,10 @@ object GenesisCombatEvents {
 
     fun interface ModifyMinecartTntExplosionRadius {
         fun modifyMinecartTntExplosionRadius(radius: Float): Float?
+    }
+
+    fun interface ModifyBedExplosionRadius {
+        fun modifyBedExplosionRadius(radius: Float): Float?
     }
 
     fun interface ModifyRespawnAnchorExplosionRadius {
