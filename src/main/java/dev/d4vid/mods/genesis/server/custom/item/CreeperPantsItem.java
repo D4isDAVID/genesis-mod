@@ -28,8 +28,9 @@ import java.util.List;
 public class CreeperPantsItem extends GenesisItem {
     private static final int CREEPER_PANTS_COLOR = 0x64C4FF;
     private static final int LORE_COLOR = 0x888888;
-    private static final int COOLDOWN_TICKS = 10 * 60 * 20; // 12000
-    private static final float BLAST_DAMAGE = 6f;
+    private static final int COOLDOWN_TICKS = 40; // TESTING ONLY — 2 seconds
+    // private static final int COOLDOWN_TICKS = 3000; // real value: 2:30
+    private static final float BLAST_DAMAGE = 7f;
     private static final double KB_STRENGTH = 1.6;
     private static final Component DISPLAY_NAME = Component
         .literal("Creeper Pants")
@@ -45,7 +46,7 @@ public class CreeperPantsItem extends GenesisItem {
             if (player.getCooldowns().isOnCooldown(legs)) return;
             player.getCooldowns().addCooldown(legs, COOLDOWN_TICKS);
             ServerLevel level = (ServerLevel) player.level();
-            level.explode(player, player.getX(), player.getY(), player.getZ(), 0f, false, Level.ExplosionInteraction.NONE);
+            level.explode(player, player.getX(), player.getY(), player.getZ(), 1.5f, false, Level.ExplosionInteraction.NONE);
             List<LivingEntity> nearby = level.getEntitiesOfClass(
                 LivingEntity.class,
                 player.getBoundingBox().inflate(6.0),

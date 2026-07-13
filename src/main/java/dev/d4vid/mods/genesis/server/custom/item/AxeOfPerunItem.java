@@ -2,6 +2,7 @@ package dev.d4vid.mods.genesis.server.custom.item;
 
 import dev.d4vid.mods.genesis.server.custom.item.util.ItemEnchantmentsBuilder;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
+import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
@@ -9,6 +10,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -25,6 +27,7 @@ import java.util.List;
 public class AxeOfPerunItem extends GenesisItem {
     private static final int AXE_OF_PERUN_COLOR = 0x64C4FF;
     private static final int LORE_COLOR = 0x888888;
+    private static final float LIGHTNING_DAMAGE = 8f;
     private static final Component DISPLAY_NAME = Component
         .literal("Axe Of Perun")
         .withStyle(s -> s.withItalic(false).withBold(true).withColor(AXE_OF_PERUN_COLOR));
@@ -38,6 +41,12 @@ public class AxeOfPerunItem extends GenesisItem {
             ItemStack stack = attacker.getMainHandItem();
             if (!this.is(stack)) return;
             if (attacker.getCooldowns().isOnCooldown(stack)) return;
+
+            // Set this FIRST — before anything that could trigger a nested AFTER_DAMAGE event,
+            // otherwise a re-entrant call from our own hurtServer() below sails through this
+            // check again and recurses.
+            attacker.getCooldowns().addCooldown(stack, COOLDOWN_TICKS);
+
             ServerLevel level = (ServerLevel) attacker.level();
 
             LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(level, EntitySpawnReason.TRIGGERED);
@@ -49,25 +58,14 @@ public class AxeOfPerunItem extends GenesisItem {
 
             victim.igniteForTicks(100);
 
-            float healthBefore = victim.getHealth();
-            boolean wasAlreadyDead = healthBefore <= 0f;
-            DamageSource trueSource = level.damageSources().generic();
-            
-            boolean hurt = victim.hurtServer(level, trueSource, 8f);
+            Holder<DamageType> voidType = level.registryAccess()
+                .lookupOrThrow(Registries.DAMAGE_TYPE)
+                .getOrThrow(DamageTypes.FELL_OUT_OF_WORLD);
+            DamageSource voidSource = new DamageSource(voidType, attacker);
 
-            if (hurt && !wasAlreadyDead) {
-                float correctedHealth = Math.max(0f, healthBefore - 8f);
-                victim.setHealth(correctedHealth);
-
-                // if our corrected health says they should be dead but vanilla's
-                // mitigated damage didn't kill them, force the death now
-                if (correctedHealth <= 0f && victim.isAlive()) {
-                    victim.die(trueSource);
-                }
-            }
+            victim.hurtServer(level, voidSource, LIGHTNING_DAMAGE);
 
             attacker.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 200, 0, false, true));
-            attacker.getCooldowns().addCooldown(stack, COOLDOWN_TICKS);
         });
     }
     @Override
