@@ -3,17 +3,21 @@ package dev.d4vid.mods.genesis.server.custom.item;
 import dev.d4vid.mods.genesis.server.Genesis;
 import dev.d4vid.mods.genesis.server.config.GenesisConfigLoadCallback;
 import dev.d4vid.mods.genesis.server.config.data.custom.item.HermesBootsConfig;
+import dev.d4vid.mods.genesis.server.custom.item.util.BootMovementAbilities;
 import dev.d4vid.mods.genesis.server.custom.item.util.ItemEnchantmentsBuilder;
 import dev.d4vid.mods.genesis.server.event.GenesisCustomItemEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.food.FoodData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
@@ -23,12 +27,16 @@ import net.minecraft.world.item.equipment.EquipmentAsset;
 import net.minecraft.world.item.equipment.EquipmentAssets;
 import net.minecraft.world.item.equipment.Equippable;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class HermesBootsItem extends GenesisItem {
     private static final Identifier SPEED_KEY = Identifier.fromNamespaceAndPath(Genesis.MOD_ID, "hermes_boots_speed");
     private static final Identifier ARMOR_KEY = Identifier.fromNamespaceAndPath(Genesis.MOD_ID, "hermes_boots_armor");
     private static final Identifier TOUGHNESS_KEY = Identifier.fromNamespaceAndPath(Genesis.MOD_ID, "hermes_boots_toughness");
+    private final Map<UUID, Boolean> hasDoubleJumped = new HashMap<>();
     private static final int HERMES_BOOTS_COLOR = 0x64C4FF;
     private static final int LORE_COLOR = 0x888888;
     private static final Component DISPLAY_NAME = Component
@@ -44,9 +52,10 @@ public class HermesBootsItem extends GenesisItem {
 
         GenesisCustomItemEvents.INSTANCE.getALLOW_PLAYER_FALL_DAMAGE().register(((player, fallDistance, multiplier, source) -> {
             ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
-
             return !this.is(boots);
         }));
+
+        BootMovementAbilities.registerDoubleJump(this);
     }
 
     @Override
