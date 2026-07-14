@@ -74,16 +74,10 @@ data class ItemsConfig(
     val scanItemBundleContents: Boolean = true,
     val scanItemContainers: Boolean = false,
     val limits: List<ItemsLimitConfig> = listOf(
-        ItemsLimitConfig(64, NbtMatcher(Identifier.withDefaultNamespace("experience_bottle"))),
+        ItemsLimitConfig(128, NbtMatcher(Identifier.withDefaultNamespace("experience_bottle"))),
         ItemsLimitConfig(64, NbtMatcher(Identifier.withDefaultNamespace("cobweb"))),
     ),
     val groupLimits: List<ItemsGroupLimitConfig> = listOf(
-        ItemsGroupLimitConfig(
-            128, listOf(
-                ItemsGroupLimitItemConfig(1, NbtMatcher(Identifier.withDefaultNamespace("wind_charge"))),
-                ItemsGroupLimitItemConfig(8, NbtMatcher(Identifier.withDefaultNamespace("breeze_rod"))),
-            )
-        ),
         ItemsGroupLimitConfig(
             1, listOf(
                 ItemsGroupLimitItemConfig(1, NbtMatcher(Identifier.withDefaultNamespace("potion"), buildJsonObject {
