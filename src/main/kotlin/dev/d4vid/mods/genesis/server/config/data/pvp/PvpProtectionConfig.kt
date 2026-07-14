@@ -22,10 +22,6 @@ data class PvpProtectionConfig(
     }
 
     fun isSpawnProtected(player: ServerPlayer): Boolean {
-        val dx = player.x - spawnProtection.x
-        val dz = player.z - spawnProtection.z
-        val radius = spawnProtection.radius
-
-        return (dx * dx + dz * dz) <= (radius * radius)
+        return player.x in spawnProtection.rangeX && player.z in spawnProtection.rangeZ
     }
 }
