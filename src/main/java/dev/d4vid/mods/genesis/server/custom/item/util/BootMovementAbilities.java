@@ -75,29 +75,27 @@ public class BootMovementAbilities {
                 ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
                 if (!item.is(boots)) continue;
 
-                boolean colliding = player.horizontalCollision;
                 boolean pressingForward = player.getLastClientInput().forward();
+                if (!pressingForward) continue;
 
-                // TEMP DEBUG — remove once confirmed working
-                if (player.tickCount % 10 == 0) {
-                    player.sendSystemMessage(Component.literal(
-                        "[Climb] collision=" + colliding + " forward=" + pressingForward + " onGround=" + player.onGround()
-                    ));
-                }
+                ServerLevel level = (ServerLevel) player.level();
 
-                if (colliding && pressingForward) {
+                double yawRad = Math.toRadians(player.getYRot());
+                double dx = -Math.sin(yawRad) * 0.4;
+                double dz = Math.cos(yawRad) * 0.4;
+
+                BlockPos frontFeet = BlockPos.containing(player.getX() + dx, player.getY() + 0.2, player.getZ() + dz);
+                BlockPos frontChest = BlockPos.containing(player.getX() + dx, player.getY() + 1.2, player.getZ() + dz);
+
+                boolean wallAhead = !level.getBlockState(frontFeet).getCollisionShape(level, frontFeet).isEmpty()
+                    || !level.getBlockState(frontChest).getCollisionShape(level, frontChest).isEmpty();
+
+                if (wallAhead) {
                     player.setDeltaMovement(player.getDeltaMovement().x, 0.15, player.getDeltaMovement().z);
                     player.fallDistance = 0f;
 
                     if (player.tickCount % 4 == 0) {
-                        ServerLevel level = (ServerLevel) player.level();
-
-                        double yawRad = Math.toRadians(player.getYRot());
-                        double dx = -Math.sin(yawRad);
-                        double dz = Math.cos(yawRad);
-                        BlockPos frontPos = BlockPos.containing(player.getX() + dx, player.getY() + 0.5, player.getZ() + dz);
-                        BlockState frontState = level.getBlockState(frontPos);
-
+                        BlockState frontState = level.getBlockState(frontFeet);
                         if (!frontState.isAir()) {
                             level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, frontState),
                                 player.getX(), player.getY() + 0.5, player.getZ(),
