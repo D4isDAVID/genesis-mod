@@ -7,6 +7,7 @@ import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
+import net.minecraft.network.protocol.game.ClientboundSetHealthPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -15,6 +16,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.food.FoodData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,30 +34,40 @@ public class BootMovementAbilities {
                 ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
                 if (!item.is(boots)) continue;
 
+                UUID uuid = player.getUUID();
+
                 boolean isJumpingNow = player.getLastClientInput().jump();
-                boolean wasJumpingBefore = wasJumpingLastTick.getOrDefault(player.getUUID(), false);
+                boolean wasJumpingBefore = wasJumpingLastTick.getOrDefault(uuid, false);
                 boolean justPressed = isJumpingNow && !wasJumpingBefore;
 
                 if (player.onGround()) {
-                    airborneTicks.put(player.getUUID(), 0);
-                    hasDoubleJumped.put(player.getUUID(), false);
+                    airborneTicks.put(uuid, 0);
+                    hasDoubleJumped.put(uuid, false);
                 } else {
-                    airborneTicks.merge(player.getUUID(), 1, Integer::sum);
+                    airborneTicks.merge(uuid, 1, Integer::sum);
                 }
 
-                // Requires a couple full ticks of real airtime before the double jump
-                // becomes usable — avoids catching the tail end of the FIRST jump's
-                // liftoff, which can share a tick with "just started falling."
-                boolean eligible = airborneTicks.getOrDefault(player.getUUID(), 0) > 2;
-                boolean alreadyUsed = hasDoubleJumped.getOrDefault(player.getUUID(), false);
+                boolean eligible = airborneTicks.getOrDefault(uuid, 0) > 2;
+                boolean alreadyUsed = hasDoubleJumped.getOrDefault(uuid, false);
 
-                if (justPressed && eligible && !alreadyUsed) {
-                    hasDoubleJumped.put(player.getUUID(), true);
-                    player.setDeltaMovement(player.getDeltaMovement().x, 0.6, player.getDeltaMovement().z);
-                    player.hurtMarked = true;
+                if (justPressed && eligible && !alreadyUsed && HungerCost.canAfford(player)) {
+                    hasDoubleJumped.put(uuid, true);
 
-                    FoodData foodData = player.getFoodData();
-                    foodData.setSaturation(Math.max(0f, foodData.getSaturationLevel() - 0.5f));
+                    Vec3 moveIntent = player.getLastClientMoveIntent();
+                    Vec3 currentVelocity = player.getDeltaMovement();
+
+                    double horizontalKick = 0.5;
+                    double verticalKick = 0.9;
+
+                    Vec3 boosted = new Vec3(
+                        currentVelocity.x + moveIntent.x * horizontalKick,
+                        currentVelocity.y + verticalKick,
+                        currentVelocity.z + moveIntent.z * horizontalKick
+                    );
+                    player.setDeltaMovement(boosted);
+                    player.connection.send(new ClientboundSetEntityMotionPacket(player));
+
+                    HungerCost.consume(player, 0.5f);
 
                     ServerLevel level = (ServerLevel) player.level();
                     level.playSound(null, player.getX(), player.getY(), player.getZ(),
@@ -65,7 +77,7 @@ public class BootMovementAbilities {
                         20, 0.3, 0.05, 0.3, 0.03);
                 }
 
-                wasJumpingLastTick.put(player.getUUID(), isJumpingNow);
+                wasJumpingLastTick.put(uuid, isJumpingNow);
             }
         });
     }
@@ -95,14 +107,17 @@ public class BootMovementAbilities {
                     player.setDeltaMovement(player.getDeltaMovement().x, 0.15, player.getDeltaMovement().z);
                     player.fallDistance = 0f;
                     player.connection.send(new ClientboundSetEntityMotionPacket(player));
-                    
+
 
                     if (player.tickCount % 4 == 0) {
                         BlockState frontState = level.getBlockState(frontFeet);
                         if (!frontState.isAir()) {
-                            level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, frontState),
-                                player.getX(), player.getY() + 0.5, player.getZ(),
-                                6, 0.2, 0.2, 0.2, 0.05);
+                            double offsetX = (level.random.nextDouble() - 0.5) * 0.3;
+                            double offsetZ = (level.random.nextDouble() - 0.5) * 0.3;
+
+                            level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, frontState), true, true,
+                                player.getX() + offsetX, player.getY() + 0.1, player.getZ() + offsetZ,
+                                2, 0.1, 0.05, 0.1, 0.0);
                         }
                     }
                 }

@@ -1,5 +1,6 @@
 package dev.d4vid.mods.genesis.server.custom.item;
 
+import dev.d4vid.mods.genesis.server.custom.item.util.HungerCost;
 import dev.d4vid.mods.genesis.server.custom.item.util.ItemEnchantmentsBuilder;
 import dev.d4vid.mods.genesis.server.event.GenesisCustomItemEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
@@ -9,6 +10,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundSetHealthPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
@@ -39,7 +41,7 @@ public class TheLeechItem extends GenesisItem {
             ItemStack stack = attacker.getMainHandItem();
             if (!this.is(stack)) return;
             if (attacker.getCooldowns().isOnCooldown(stack)) return;
-
+            if (!HungerCost.canAfford(attacker)) return;
             attacker.getCooldowns().addCooldown(stack, REENTRY_GUARD_TICKS);
 
             ServerLevel level = (ServerLevel) attacker.level();
@@ -51,8 +53,8 @@ public class TheLeechItem extends GenesisItem {
 
             victim.hurtServer(level, voidSource, appliedDamage + BONUS_DAMAGE);
 
-            FoodData foodData = attacker.getFoodData();
-            foodData.setSaturation(Math.max(0f, foodData.getSaturationLevel() - SATURATION_COST));
+            HungerCost.consume(attacker, SATURATION_COST);
+
         });
     }
     @Override

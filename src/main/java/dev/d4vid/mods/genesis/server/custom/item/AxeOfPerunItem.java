@@ -1,5 +1,6 @@
 package dev.d4vid.mods.genesis.server.custom.item;
 
+import dev.d4vid.mods.genesis.server.Genesis;
 import dev.d4vid.mods.genesis.server.custom.item.util.ItemEnchantmentsBuilder;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.minecraft.core.Holder;
@@ -7,6 +8,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
@@ -20,9 +22,11 @@ import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ItemLore;
+import net.minecraft.world.item.component.UseCooldown;
 import net.minecraft.world.item.enchantment.Enchantments;
 
 import java.util.List;
+import java.util.Optional;
 
 public class AxeOfPerunItem extends GenesisItem {
     private static final int AXE_OF_PERUN_COLOR = 0x64C4FF;
@@ -42,9 +46,6 @@ public class AxeOfPerunItem extends GenesisItem {
             if (!this.is(stack)) return;
             if (attacker.getCooldowns().isOnCooldown(stack)) return;
 
-            // Set this FIRST — before anything that could trigger a nested AFTER_DAMAGE event,
-            // otherwise a re-entrant call from our own hurtServer() below sails through this
-            // check again and recurses.
             attacker.getCooldowns().addCooldown(stack, COOLDOWN_TICKS);
 
             ServerLevel level = (ServerLevel) attacker.level();
@@ -73,6 +74,7 @@ public class AxeOfPerunItem extends GenesisItem {
         //item.set(DataComponents.UNBREAKABLE, Unit.INSTANCE);
         enchant(registries, item);
         applyLore(item);
+        applyCooldownGroup(item);
     }
     @Override
     public boolean canBeEnchanted() {
@@ -92,6 +94,11 @@ public class AxeOfPerunItem extends GenesisItem {
             Component.empty(),
             Component.literal("WIP")
                 .withStyle(s -> s.withItalic(false).withBold(true).withColor(AXE_OF_PERUN_COLOR))
+        )));
+    }
+    private void applyCooldownGroup(ItemStack item) {
+        item.set(DataComponents.USE_COOLDOWN, new UseCooldown(0.01f, Optional.of(
+            Identifier.fromNamespaceAndPath(Genesis.MOD_ID, "axe_perun")
         )));
     }
 }

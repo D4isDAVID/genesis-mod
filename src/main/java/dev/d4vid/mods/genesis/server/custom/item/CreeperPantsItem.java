@@ -16,6 +16,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ItemLore;
+import net.minecraft.world.item.component.UseCooldown;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.equipment.EquipmentAsset;
 import net.minecraft.world.item.equipment.EquipmentAssets;
@@ -24,6 +25,7 @@ import net.minecraft.world.level.Level;
 import org.apache.logging.log4j.core.jmx.Server;
 
 import java.util.List;
+import java.util.Optional;
 
 public class CreeperPantsItem extends GenesisItem {
     private static final int CREEPER_PANTS_COLOR = 0x64C4FF;
@@ -66,6 +68,7 @@ public class CreeperPantsItem extends GenesisItem {
         enchant(registries, item);
         applyLore(item);
         applyEquippable(item);
+        applyCooldownGroup(item);
     }
 
     private void enchant(RegistryAccess registries, ItemStack item) {
@@ -96,5 +99,10 @@ public class CreeperPantsItem extends GenesisItem {
         item.set(DataComponents.EQUIPPABLE, Equippable.builder(EquipmentSlot.LEGS)
             .setAsset(assetKey)
             .build());
+    }
+    private void applyCooldownGroup(ItemStack item) {
+        item.set(DataComponents.USE_COOLDOWN, new UseCooldown(0.01f, Optional.of(
+            Identifier.fromNamespaceAndPath(Genesis.MOD_ID, "creeper_pants")
+        )));
     }
 }
