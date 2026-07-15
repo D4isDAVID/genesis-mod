@@ -3,6 +3,7 @@ package dev.d4vid.mods.genesis.server.config.data.pvp
 import dev.d4vid.mods.genesis.server.config.serialization.NonNegativeDurationMinutesDoubleSerializer
 import kotlinx.serialization.Serializable
 import net.minecraft.server.level.ServerPlayer
+import net.minecraft.world.level.Level
 import net.minecraft.world.scores.Team
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
@@ -22,6 +23,6 @@ data class PvpProtectionConfig(
     }
 
     fun isSpawnProtected(player: ServerPlayer): Boolean {
-        return player.x in spawnProtection.rangeX && player.z in spawnProtection.rangeZ
+        return player.level() == Level.OVERWORLD && player.x in spawnProtection.rangeX && player.z in spawnProtection.rangeZ
     }
 }
