@@ -20,6 +20,7 @@ import net.minecraft.world.food.FoodData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ItemLore;
+import net.minecraft.world.item.enchantment.Enchantments;
 
 import java.util.List;
 
@@ -64,11 +65,17 @@ public class TheLeechItem extends GenesisItem {
     }
     @Override
     public boolean canBeEnchanted() {
-        return true;
+        return false;
     }
 
     private void enchant(RegistryAccess registries, ItemStack item) {
         new ItemEnchantmentsBuilder(registries)
+            .add(Enchantments.SHARPNESS, 5)
+            .add(Enchantments.UNBREAKING, 3)
+            .add(Enchantments.MENDING, 1)
+            .add(Enchantments.FIRE_ASPECT, 2)
+            .add(Enchantments.LOOTING, 3)
+            .add(Enchantments.SWEEPING_EDGE, 3)
             .enchant(item);
     }
 

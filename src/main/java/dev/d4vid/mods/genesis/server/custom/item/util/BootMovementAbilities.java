@@ -57,14 +57,15 @@ public class BootMovementAbilities {
                     Vec3 currentVelocity = player.getDeltaMovement();
 
                     double horizontalKick = 0.5;
-                    double verticalKick = 0.9;
+                    double verticalKick = 0.7;
 
                     Vec3 boosted = new Vec3(
                         currentVelocity.x + moveIntent.x * horizontalKick,
-                        currentVelocity.y + verticalKick,
+                        verticalKick,
                         currentVelocity.z + moveIntent.z * horizontalKick
                     );
                     player.setDeltaMovement(boosted);
+                    player.fallDistance = 0f;
                     player.connection.send(new ClientboundSetEntityMotionPacket(player));
 
                     HungerCost.consume(player, 0.5f);

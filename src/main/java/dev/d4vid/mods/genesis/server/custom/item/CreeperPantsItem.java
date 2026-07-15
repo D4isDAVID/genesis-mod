@@ -73,7 +73,7 @@ public class CreeperPantsItem extends GenesisItem {
 
     private void enchant(RegistryAccess registries, ItemStack item) {
         new ItemEnchantmentsBuilder(registries)
-            .add(Enchantments.PROTECTION, 3)
+            .add(Enchantments.PROTECTION, 2)
             .add(Enchantments.UNBREAKING, 3)
             .add(Enchantments.MENDING, 1)
             .add(Enchantments.SWIFT_SNEAK, 3)

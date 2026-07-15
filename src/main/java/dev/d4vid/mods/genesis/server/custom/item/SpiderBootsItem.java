@@ -15,6 +15,7 @@ import net.minecraft.world.food.FoodData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ItemLore;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.equipment.EquipmentAsset;
 import net.minecraft.world.item.equipment.EquipmentAssets;
 import net.minecraft.world.item.equipment.Equippable;
@@ -50,6 +51,12 @@ public class SpiderBootsItem extends GenesisItem {
 
     private void enchant(RegistryAccess registries, ItemStack item) {
         new ItemEnchantmentsBuilder(registries)
+            .add(Enchantments.UNBREAKING, 3)
+            .add(Enchantments.MENDING, 1)
+            .add(Enchantments.PROTECTION,3)
+            .add(Enchantments.FEATHER_FALLING,4)
+            .add(Enchantments.DEPTH_STRIDER,3)
+            .add(Enchantments.SOUL_SPEED, 2)
             .enchant(item);
     }
 

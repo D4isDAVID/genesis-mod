@@ -48,6 +48,7 @@ public class FrostbiteItem extends GenesisItem {
         enchant(registries, item);
         applyLore(item);
     }
+
     @Override
     public boolean canBeEnchanted() {
         return false;
@@ -58,6 +59,8 @@ public class FrostbiteItem extends GenesisItem {
             .add(Enchantments.SHARPNESS, 5)
             .add(Enchantments.UNBREAKING, 3)
             .add(Enchantments.MENDING, 1)
+            .add(Enchantments.LOOTING, 3)
+            .add(Enchantments.SWEEPING_EDGE, 3)
             .enchant(item);
     }
 
