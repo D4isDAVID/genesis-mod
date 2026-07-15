@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -58,10 +59,10 @@ public class BootMovementAbilities {
 
                     ServerLevel level = (ServerLevel) player.level();
                     level.playSound(null, player.getX(), player.getY(), player.getZ(),
-                        SoundEvents.WIND_CHARGE_THROW, SoundSource.PLAYERS, 1.0f, 1.4f);
-                    level.sendParticles(ParticleTypes.CLOUD,
+                        SoundEvents.SAND_BREAK, SoundSource.PLAYERS, 1.0f, 1.6f);
+                    level.sendParticles(ParticleTypes.CLOUD, true, true,
                         player.getX(), player.getY() + 0.1, player.getZ(),
-                        12, 0.3, 0.05, 0.3, 0.02);
+                        20, 0.3, 0.05, 0.3, 0.03);
                 }
 
                 wasJumpingLastTick.put(player.getUUID(), isJumpingNow);
@@ -93,6 +94,8 @@ public class BootMovementAbilities {
                 if (wallAhead) {
                     player.setDeltaMovement(player.getDeltaMovement().x, 0.15, player.getDeltaMovement().z);
                     player.fallDistance = 0f;
+                    player.connection.send(new ClientboundSetEntityMotionPacket(player));
+                    
 
                     if (player.tickCount % 4 == 0) {
                         BlockState frontState = level.getBlockState(frontFeet);
