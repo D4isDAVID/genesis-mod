@@ -10,8 +10,8 @@ data class PvpSpawnProtectionConfig(
     private val z: Double = 71.0,
 ) {
     @Transient
-    val rangeX = (x - radius / 2)..(x + radius / 2)
+    val rangeX = (x - radius)..(x + radius)
 
     @Transient
-    val rangeZ = (z - radius / 2)..(z + radius / 2)
+    val rangeZ = (z - radius)..(z + radius)
 }
