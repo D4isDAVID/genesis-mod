@@ -11,6 +11,7 @@
     "custom.item.ServerGamePacketListenerImplMixin",
     "custom.item.AnvilMenuMixin",
     "custom.item.CrossbowItemMixin",
+    "custom.item.LargeFireballMixin",
     "items.InventoryMixin",
     "items.ItemStackMixin",
     "items.LivingEntityMixin",

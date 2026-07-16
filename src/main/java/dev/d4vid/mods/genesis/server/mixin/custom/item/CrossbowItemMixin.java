@@ -14,10 +14,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @SuppressWarnings("unused")
 @Mixin(CrossbowItem.class)
 public class CrossbowItemMixin {
-    @Inject(method = "getUseDuration", at = @At("HEAD"), cancellable = true)
-    private void genesis$getUseDuration(ItemStack stack, LivingEntity entity, CallbackInfoReturnable<Integer> callback) {
+    @Inject(method = "getChargeDuration", at = @At("HEAD"), cancellable = true)
+    private static void genesis$getChargeDuration(ItemStack stack, LivingEntity entity, CallbackInfoReturnable<Integer> callback) {
         GenesisItem item = GenesisItems.get(stack);
-
         if (item instanceof MobCrossbowItem crossbow && crossbow.isGhastMode(stack)) {
             callback.setReturnValue(100);
         }

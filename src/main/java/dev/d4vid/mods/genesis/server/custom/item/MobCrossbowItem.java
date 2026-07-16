@@ -16,6 +16,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
+import net.minecraft.world.entity.projectile.hurtingprojectile.LargeFireball;
 import net.minecraft.world.entity.projectile.hurtingprojectile.SmallFireball;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -47,7 +48,7 @@ public class MobCrossbowItem extends GenesisItem {
     private static final int GHAST_BURN_TICKS = 60;
     private static final double GOAT_KNOCKBACK = 1.8;
     private static final double SKELETON_LOCK_RANGE = 64.0;
-    private static final double SKELETON_CURVE_STRENGTH = 1;
+    private static final double SKELETON_CURVE_STRENGTH = 0.08;
 
     private final Map<AbstractArrow, LivingEntity> homingArrows = new ConcurrentHashMap<>();
     private final Map<UUID, ItemStack> projectileWeapons = new ConcurrentHashMap<>();
@@ -103,47 +104,66 @@ public class MobCrossbowItem extends GenesisItem {
             if (getMode(held) == MODE_GHAST) {
                 Vec3 vel = arrow.getDeltaMovement();
                 arrow.discard();
-                SmallFireball fireball = new SmallFireball(
-                    (ServerLevel) level,
-                    shooter,
-                    vel
-                );
+                LargeFireball fireball = new LargeFireball((ServerLevel) level, shooter, vel, 0);
                 fireball.setPos(arrow.position());
                 fireball.addTag("genesis_ghast_fireball");
                 ((ServerLevel) level).addFreshEntity(fireball);
                 return;
             }
-            if (getMode(held) != MODE_SKELETON) return;
-
-            Vec3 look = shooter.getLookAngle();
-            arrow.shoot(look.x, look.y, look.z, 4.5f, 0.2f);
-
-            LivingEntity target = findLockOnTarget(shooter, level);
-            if (target != null) {
-                homingArrows.put(arrow, target);
+            if (getMode(held) == MODE_SKELETON) {
+                Vec3 look = shooter.getLookAngle();
+                arrow.shoot(look.x, look.y, look.z, 4.5f, 0.1f);
+                arrow.addTag("genesis_skeleton_arrow");
+                return;
             }
         });
 
         ServerTickEvents.END_SERVER_TICK.register(server -> {
-            homingArrows.entrySet().removeIf(entry -> {
-                AbstractArrow arrow = entry.getKey();
-                LivingEntity target = entry.getValue();
+            for (ServerLevel level : server.getAllLevels()) {
+                for (AbstractArrow arrow : level.getEntitiesOfClass(AbstractArrow.class,
+                    new net.minecraft.world.phys.AABB(-30000000, -30000000, -30000000, 30000000, 30000000, 30000000))) {
 
-                if (!arrow.isAlive() || !target.isAlive()) return true;
+                    if (!arrow.getTags().contains("genesis_skeleton_arrow")) continue;
 
-                Vec3 toTarget = target.getBoundingBox().getCenter().subtract(arrow.position()).normalize();
-                Vec3 currentVelocity = arrow.getDeltaMovement();
-                double speed = currentVelocity.length();
+                    Vec3 vel = arrow.getDeltaMovement();
+                    Vec3 pos = arrow.position();
+                    double speed = vel.length();
+                    Vec3 dir = vel.normalize();
 
-                Vec3 curved = currentVelocity.normalize()
-                    .scale(1 - SKELETON_CURVE_STRENGTH)
-                    .add(toTarget.scale(SKELETON_CURVE_STRENGTH))
-                    .normalize()
-                    .scale(speed);
+                    // find closest entity within 4 blocks of the arrow's flight path
+                    LivingEntity closest = null;
+                    double closestDist = Double.MAX_VALUE;
 
-                arrow.setDeltaMovement(curved);
-                return false;
-            });
+                    for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class,
+                        arrow.getBoundingBox().expandTowards(vel.scale(8)).inflate(4))) {
+
+                        if (entity == arrow.getOwner()) continue;
+                        if (!entity.isAlive()) continue;
+
+                        // project entity position onto arrow's flight vector
+                        Vec3 toEntity = entity.getBoundingBox().getCenter().subtract(pos);
+                        double along = toEntity.dot(dir);
+                        if (along < 0) continue; // behind the arrow
+
+                        Vec3 projected = pos.add(dir.scale(along));
+                        double perpDist = entity.getBoundingBox().getCenter().distanceTo(projected);
+
+                        if (perpDist < 3.0 && along < closestDist) {
+                            closest = entity;
+                            closestDist = along;
+                        }
+                    }
+
+                    if (closest != null) {
+                        Vec3 toTarget = closest.getBoundingBox().getCenter().subtract(pos).normalize();
+                        Vec3 curved = dir.scale(1 - 0.08)
+                            .add(toTarget.scale(0.08))
+                            .normalize()
+                            .scale(speed);
+                        arrow.setDeltaMovement(curved);
+                    }
+                }
+            }
         });
     }
 
