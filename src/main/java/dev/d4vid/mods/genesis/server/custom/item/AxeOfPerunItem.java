@@ -2,6 +2,7 @@ package dev.d4vid.mods.genesis.server.custom.item;
 
 import dev.d4vid.mods.genesis.server.Genesis;
 import dev.d4vid.mods.genesis.server.custom.item.util.ItemEnchantmentsBuilder;
+import dev.d4vid.mods.genesis.server.custom.item.util.TrueDamage;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
@@ -59,12 +60,7 @@ public class AxeOfPerunItem extends GenesisItem {
 
             victim.igniteForTicks(100);
 
-            Holder<DamageType> voidType = level.registryAccess()
-                .lookupOrThrow(Registries.DAMAGE_TYPE)
-                .getOrThrow(DamageTypes.FELL_OUT_OF_WORLD);
-            DamageSource voidSource = new DamageSource(voidType, attacker);
-
-            victim.hurtServer(level, voidSource, appliedDamage + LIGHTNING_DAMAGE);
+            TrueDamage.applyExact(victim, LIGHTNING_DAMAGE);
 
             attacker.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 200, 0, false, true));
         });

@@ -40,6 +40,18 @@ object GenesisCustomItemEvents {
         }
     }
 
+    val JUMP_INPUT = EventFactory.createArrayBacked(JumpInput::class.java) { listeners ->
+        JumpInput { player ->
+            for (listener in listeners) {
+                listener.onJumpInput(player)
+            }
+        }
+    }
+
+    fun interface JumpInput {
+        fun onJumpInput(player: ServerPlayer)
+    }
+
     fun interface OnPlayerHitPlayer {
         fun onPlayerHitPlayer(attacker: ServerPlayer, victim: ServerPlayer, stack: ItemStack)
     }

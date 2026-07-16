@@ -1,6 +1,7 @@
 package dev.d4vid.mods.genesis.server.custom.item.util;
 
 import dev.d4vid.mods.genesis.server.custom.item.GenesisItem;
+import dev.d4vid.mods.genesis.server.event.GenesisCustomItemEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
@@ -26,7 +27,6 @@ public class BootMovementAbilities {
 
     public static void registerDoubleJump(GenesisItem item) {
         Map<UUID, Boolean> hasDoubleJumped = new HashMap<>();
-        Map<UUID, Boolean> wasJumpingLastTick = new HashMap<>();
         Map<UUID, Integer> airborneTicks = new HashMap<>();
 
         ServerTickEvents.END_SERVER_TICK.register(server -> {
@@ -36,50 +36,50 @@ public class BootMovementAbilities {
 
                 UUID uuid = player.getUUID();
 
-                boolean isJumpingNow = player.getLastClientInput().jump();
-                boolean wasJumpingBefore = wasJumpingLastTick.getOrDefault(uuid, false);
-                boolean justPressed = isJumpingNow && !wasJumpingBefore;
-
                 if (player.onGround()) {
                     airborneTicks.put(uuid, 0);
                     hasDoubleJumped.put(uuid, false);
                 } else {
                     airborneTicks.merge(uuid, 1, Integer::sum);
                 }
-
-                boolean eligible = airborneTicks.getOrDefault(uuid, 0) > 2;
-                boolean alreadyUsed = hasDoubleJumped.getOrDefault(uuid, false);
-
-                if (justPressed && eligible && !alreadyUsed && HungerCost.canAfford(player)) {
-                    hasDoubleJumped.put(uuid, true);
-
-                    Vec3 moveIntent = player.getLastClientMoveIntent();
-                    Vec3 currentVelocity = player.getDeltaMovement();
-
-                    double horizontalKick = 0.5;
-                    double verticalKick = 0.7;
-
-                    Vec3 boosted = new Vec3(
-                        currentVelocity.x + moveIntent.x * horizontalKick,
-                        verticalKick,
-                        currentVelocity.z + moveIntent.z * horizontalKick
-                    );
-                    player.setDeltaMovement(boosted);
-                    player.fallDistance = 0f;
-                    player.connection.send(new ClientboundSetEntityMotionPacket(player));
-
-                    HungerCost.consume(player, 0.5f);
-
-                    ServerLevel level = (ServerLevel) player.level();
-                    level.playSound(null, player.getX(), player.getY(), player.getZ(),
-                        SoundEvents.SAND_BREAK, SoundSource.PLAYERS, 1.0f, 1.6f);
-                    level.sendParticles(ParticleTypes.CLOUD, true, true,
-                        player.getX(), player.getY() + 0.1, player.getZ(),
-                        20, 0.3, 0.05, 0.3, 0.03);
-                }
-
-                wasJumpingLastTick.put(uuid, isJumpingNow);
             }
+        });
+
+        GenesisCustomItemEvents.INSTANCE.getJUMP_INPUT().register(player -> {
+            ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
+            if (!item.is(boots)) return;
+
+            UUID uuid = player.getUUID();
+            boolean eligible = airborneTicks.getOrDefault(uuid, 0) > 2;
+            boolean alreadyUsed = hasDoubleJumped.getOrDefault(uuid, false);
+
+            if (!eligible || alreadyUsed || !HungerCost.canAfford(player)) return;
+
+            hasDoubleJumped.put(uuid, true);
+
+            Vec3 moveIntent = player.getLastClientMoveIntent();
+            Vec3 currentVelocity = player.getDeltaMovement();
+
+            double horizontalKick = 0.5;
+            double verticalKick = 0.7;
+
+            Vec3 boosted = new Vec3(
+                currentVelocity.x + moveIntent.x * horizontalKick,
+                verticalKick,
+                currentVelocity.z + moveIntent.z * horizontalKick
+            );
+            player.setDeltaMovement(boosted);
+            player.fallDistance = 0f;
+            player.connection.send(new ClientboundSetEntityMotionPacket(player));
+
+            HungerCost.consume(player, 3);
+
+            ServerLevel level = (ServerLevel) player.level();
+            level.playSound(null, player.getX(), player.getY(), player.getZ(),
+                SoundEvents.SAND_BREAK, SoundSource.PLAYERS, 1.0f, 1.6f);
+            level.sendParticles(ParticleTypes.CLOUD, true, true,
+                player.getX(), player.getY() + 0.1, player.getZ(),
+                20, 0.3, 0.05, 0.3, 0.03);
         });
     }
 

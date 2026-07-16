@@ -19,7 +19,7 @@ public class CrossbowItemMixin {
         GenesisItem item = GenesisItems.get(stack);
 
         if (item instanceof MobCrossbowItem crossbow && crossbow.isGhastMode(stack)) {
-            callback.setReturnValue(100); // 5 seconds
+            callback.setReturnValue(100);
         }
     }
 }

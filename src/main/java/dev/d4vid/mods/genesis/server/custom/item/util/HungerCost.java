@@ -18,14 +18,12 @@ public class HungerCost {
         if (saturation >= saturationCost) {
             foodData.setSaturation(saturation - saturationCost);
         } else {
-
-            float shortfall = saturationCost - saturation;
             foodData.setSaturation(0f);
-            int hungerToRemove = Math.max(1, Math.round(shortfall * 2));
-            foodData.setFoodLevel(Math.max(0, foodData.getFoodLevel() - hungerToRemove));
+            foodData.setFoodLevel(Math.max(0, foodData.getFoodLevel() - 2));
         }
 
-
-        player.connection.send(new ClientboundSetHealthPacket(player.getHealth(), foodData.getFoodLevel(), foodData.getSaturationLevel()));
+        player.connection.send(new ClientboundSetHealthPacket(
+            player.getHealth(), foodData.getFoodLevel(), foodData.getSaturationLevel()));
     }
+
 }

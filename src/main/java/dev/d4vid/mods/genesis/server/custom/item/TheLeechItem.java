@@ -2,6 +2,7 @@ package dev.d4vid.mods.genesis.server.custom.item;
 
 import dev.d4vid.mods.genesis.server.custom.item.util.HungerCost;
 import dev.d4vid.mods.genesis.server.custom.item.util.ItemEnchantmentsBuilder;
+import dev.d4vid.mods.genesis.server.custom.item.util.TrueDamage;
 import dev.d4vid.mods.genesis.server.event.GenesisCustomItemEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 
@@ -28,8 +29,8 @@ public class TheLeechItem extends GenesisItem {
     private static final int THE_LEECH_COLOR = 0x64C4FF;
     private static final int REENTRY_GUARD_TICKS = 1;
     private static final int LORE_COLOR = 0x888888;
-    private static final float BONUS_DAMAGE = 4f;      // +2 hearts, guaranteed, bypasses armor/enchants/effects
-    private static final float SATURATION_COST = 0.5f;
+    private static final float LEECH_DAMAGE = 2f;
+    private static final int LEECH_HUNGER_COST = 2;
     private static final Component DISPLAY_NAME = Component
         .literal("The Leech")
         .withStyle(s -> s.withItalic(false).withBold(true).withColor(THE_LEECH_COLOR));
@@ -45,17 +46,8 @@ public class TheLeechItem extends GenesisItem {
             if (!HungerCost.canAfford(attacker)) return;
             attacker.getCooldowns().addCooldown(stack, REENTRY_GUARD_TICKS);
 
-            ServerLevel level = (ServerLevel) attacker.level();
-
-            Holder<DamageType> voidType = level.registryAccess()
-                .lookupOrThrow(Registries.DAMAGE_TYPE)
-                .getOrThrow(DamageTypes.FELL_OUT_OF_WORLD);
-            DamageSource voidSource = new DamageSource(voidType, attacker);
-
-            victim.hurtServer(level, voidSource, appliedDamage + BONUS_DAMAGE);
-
-            HungerCost.consume(attacker, SATURATION_COST);
-
+            TrueDamage.applyExact(victim, LEECH_DAMAGE);
+            HungerCost.consume(attacker, LEECH_HUNGER_COST);
         });
     }
     @Override
