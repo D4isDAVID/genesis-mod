@@ -9,9 +9,9 @@ import kotlin.time.Duration.Companion.seconds
 @Serializable
 data class PvpDetectionConfig(
     @Serializable(with = NonNegativeDoubleSerializer::class)
-    val minDamage: Double = 1.0,
+    val minDamage: Double = 1.5,
     @Serializable(with = NonNegativeDurationSecondsDoubleSerializer::class)
-    val damageTimeSecondsScaling: Duration = 10.seconds,
+    val damageTimeSecondsScaling: Duration = 5.seconds,
     @Serializable(with = NonNegativeDurationSecondsDoubleSerializer::class)
     val maxTimeSeconds: Duration = 30.seconds,
     val killPlayerOnCombatLog: Boolean = true,
