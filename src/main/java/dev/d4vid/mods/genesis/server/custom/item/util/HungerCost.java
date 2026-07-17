@@ -8,10 +8,12 @@ public class HungerCost {
     private static final int MIN_HUNGER_TO_USE = 6;
 
     public static boolean canAfford(ServerPlayer player) {
+        if (player.isCreative() || player.isSpectator()) return true;
         return player.getFoodData().getFoodLevel() >= MIN_HUNGER_TO_USE;
     }
 
     public static void consume(ServerPlayer player, float saturationCost) {
+        if (player.isCreative() || player.isSpectator()) return;
         FoodData foodData = player.getFoodData();
         float saturation = foodData.getSaturationLevel();
 

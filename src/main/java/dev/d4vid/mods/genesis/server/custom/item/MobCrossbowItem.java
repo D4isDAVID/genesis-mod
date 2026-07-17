@@ -50,6 +50,7 @@ public class MobCrossbowItem extends GenesisItem {
     private static final double SKELETON_LOCK_RANGE = 64.0;
     private static final double SKELETON_CURVE_STRENGTH = 0.08;
 
+    private final Map<UUID, AbstractArrow> skeletonArrows = new ConcurrentHashMap<>();
     private final Map<AbstractArrow, LivingEntity> homingArrows = new ConcurrentHashMap<>();
     private final Map<UUID, ItemStack> projectileWeapons = new ConcurrentHashMap<>();
 
@@ -118,53 +119,52 @@ public class MobCrossbowItem extends GenesisItem {
             }
         });
 
-//        ServerTickEvents.END_SERVER_TICK.register(server -> {
-//            for (ServerLevel level : server.getAllLevels()) {
-//                for (AbstractArrow arrow : level.getEntitiesOfClass(AbstractArrow.class,
-//                    new net.minecraft.world.phys.AABB(-30000000, -30000000, -30000000, 30000000, 30000000, 30000000))) {
-//
-//                    if (!arrow.getTags().contains("genesis_skeleton_arrow")) continue;
-//
-//                    Vec3 vel = arrow.getDeltaMovement();
-//                    Vec3 pos = arrow.position();
-//                    double speed = vel.length();
-//                    Vec3 dir = vel.normalize();
-//
-//                    // find closest entity within 4 blocks of the arrow's flight path
-//                    LivingEntity closest = null;
-//                    double closestDist = Double.MAX_VALUE;
-//
-//                    for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class,
-//                        arrow.getBoundingBox().expandTowards(vel.scale(8)).inflate(4))) {
-//
-//                        if (entity == arrow.getOwner()) continue;
-//                        if (!entity.isAlive()) continue;
-//
-//                        // project entity position onto arrow's flight vector
-//                        Vec3 toEntity = entity.getBoundingBox().getCenter().subtract(pos);
-//                        double along = toEntity.dot(dir);
-//                        if (along < 0) continue; // behind the arrow
-//
-//                        Vec3 projected = pos.add(dir.scale(along));
-//                        double perpDist = entity.getBoundingBox().getCenter().distanceTo(projected);
-//
-//                        if (perpDist < 3.0 && along < closestDist) {
-//                            closest = entity;
-//                            closestDist = along;
-//                        }
-//                    }
-//
-//                    if (closest != null) {
-//                        Vec3 toTarget = closest.getBoundingBox().getCenter().subtract(pos).normalize();
-//                        Vec3 curved = dir.scale(1 - 0.08)
-//                            .add(toTarget.scale(0.08))
-//                            .normalize()
-//                            .scale(speed);
-//                        arrow.setDeltaMovement(curved);
-//                    }
-//                }
-//            }
-//        });
+
+        ServerTickEvents.END_SERVER_TICK.register(server -> {
+            skeletonArrows.entrySet().removeIf(entry -> {
+                AbstractArrow arrow = entry.getValue();
+                if (!arrow.isAlive()) return true;
+
+                Vec3 vel = arrow.getDeltaMovement();
+                Vec3 pos = arrow.position();
+                double speed = vel.length();
+                Vec3 dir = vel.normalize();
+
+                LivingEntity closest = null;
+                double closestDist = Double.MAX_VALUE;
+
+                for (LivingEntity entity : arrow.level().getEntitiesOfClass(
+                    LivingEntity.class,
+                    arrow.getBoundingBox().expandTowards(vel.scale(8)).inflate(4)
+                )) {
+                    if (entity == arrow.getOwner()) continue;
+                    if (!entity.isAlive()) continue;
+
+                    Vec3 toEntity = entity.getBoundingBox().getCenter().subtract(pos);
+                    double along = toEntity.dot(dir);
+                    if (along < 0) continue;
+
+                    Vec3 projected = pos.add(dir.scale(along));
+                    double perpDist = entity.getBoundingBox().getCenter().distanceTo(projected);
+
+                    if (perpDist < 3.0 && along < closestDist) {
+                        closest = entity;
+                        closestDist = along;
+                    }
+                }
+
+                if (closest != null) {
+                    Vec3 toTarget = closest.getBoundingBox().getCenter().subtract(pos).normalize();
+                    Vec3 curved = dir.scale(1 - SKELETON_CURVE_STRENGTH)
+                        .add(toTarget.scale(SKELETON_CURVE_STRENGTH))
+                        .normalize()
+                        .scale(speed);
+                    arrow.setDeltaMovement(curved);
+                }
+
+                return false;
+            });
+        });
     }
 
     private LivingEntity findLockOnTarget(ServerPlayer shooter, ServerLevel level) {

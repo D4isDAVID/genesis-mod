@@ -52,7 +52,6 @@ public class BootMovementAbilities {
             UUID uuid = player.getUUID();
             boolean eligible = airborneTicks.getOrDefault(uuid, 0) > 2;
             boolean alreadyUsed = hasDoubleJumped.getOrDefault(uuid, false);
-
             if (!eligible || alreadyUsed || !HungerCost.canAfford(player)) return;
 
             hasDoubleJumped.put(uuid, true);
