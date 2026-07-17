@@ -24,7 +24,9 @@ import net.minecraft.world.item.equipment.Equippable;
 import net.minecraft.world.level.Level;
 import org.apache.logging.log4j.core.jmx.Server;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class CreeperPantsItem extends GenesisItem {
@@ -104,5 +106,22 @@ public class CreeperPantsItem extends GenesisItem {
         item.set(DataComponents.USE_COOLDOWN, new UseCooldown(0.01f, Optional.of(
             Identifier.fromNamespaceAndPath(Genesis.MOD_ID, "creeper_pants")
         )));
+    }
+    @Override
+    public String[] getRecipePattern() {
+        return new String[] {
+            "TTT",
+            "D D",
+            "N N"
+        };
+    }
+
+    @Override
+    public Map<Character, String> getRecipeIngredients() {
+        Map<Character, String> ingredients = new HashMap<>();
+        ingredients.put('N', "minecraft:netherite_ingot");
+        ingredients.put('T', "minecraft:tnt");
+        ingredients.put('D', "minecraft:diamond");
+        return ingredients;
     }
 }

@@ -26,7 +26,9 @@ import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.component.UseCooldown;
 import net.minecraft.world.item.enchantment.Enchantments;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class AxeOfPerunItem extends GenesisItem {
@@ -96,5 +98,23 @@ public class AxeOfPerunItem extends GenesisItem {
         item.set(DataComponents.USE_COOLDOWN, new UseCooldown(0.01f, Optional.of(
             Identifier.fromNamespaceAndPath(Genesis.MOD_ID, "axe_perun")
         )));
+    }
+    @Override
+    public String[] getRecipePattern() {
+        return new String[] {
+            "NDL",
+            "DB ",
+            " B "
+        };
+    }
+
+    @Override
+    public Map<Character, String> getRecipeIngredients() {
+        Map<Character, String> ingredients = new HashMap<>();
+        ingredients.put('L', "minecraft:lightning_rod");
+        ingredients.put('N', "minecraft:netherite_ingot");
+        ingredients.put('B', "minecraft:breeze_rod");
+        ingredients.put('D', "minecraft:diamond");
+        return ingredients;
     }
 }

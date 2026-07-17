@@ -25,6 +25,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -246,5 +247,24 @@ public class MobCrossbowItem extends GenesisItem {
         return Component.empty()
             .append(Component.literal("Mob Crossbow: ").withStyle(s -> s.withBold(true)))
             .append(modeLabel(mode));
+    }
+
+    @Override
+    public String[] getRecipePattern() {
+        return new String[] {
+            "BHB",
+            "TST",
+            " B "
+        };
+    }
+
+    @Override
+    public Map<Character, String> getRecipeIngredients() {
+        Map<Character, String> ingredients = new HashMap<>();
+        ingredients.put('B', "minecraft:blaze_rod");
+        ingredients.put('T', "minecraft:ghast_tear");
+        ingredients.put('S', "minecraft:wither_skeleton_skull");
+        ingredients.put('H', "minecraft:goat_horn");
+        return ingredients;
     }
 }

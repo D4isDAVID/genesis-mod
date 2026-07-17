@@ -18,7 +18,9 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.enchantment.Enchantments;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FrostbiteItem extends GenesisItem {
     private static final int FROSTBITE_COLOR = 0x64C4FF;
@@ -70,5 +72,23 @@ public class FrostbiteItem extends GenesisItem {
             Component.literal("WIP")
                 .withStyle(s -> s.withItalic(false).withBold(true).withColor(FROSTBITE_COLOR))
         )));
+    }
+    @Override
+    public String[] getRecipePattern() {
+        return new String[] {
+            "IAI",
+            "IAI",
+            "NSN"
+        };
+    }
+
+    @Override
+    public Map<Character, String> getRecipeIngredients() {
+        Map<Character, String> ingredients = new HashMap<>();
+        ingredients.put('I', "minecraft:blue_ice");
+        ingredients.put('A', "minecraft:iron_ingot");
+        ingredients.put('N', "minecraft:netherite_ingot");
+        ingredients.put('S', "minecraft:stick");
+        return ingredients;
     }
 }

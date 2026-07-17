@@ -76,4 +76,23 @@ public class SpiderBootsItem extends GenesisItem {
             .setAsset(assetKey)
             .build());
     }
+
+    @Override
+    public String[] getRecipePattern() {
+        return new String[] {
+            "SNS",
+            "DED",
+            "DED"
+        };
+    }
+
+    @Override
+    public Map<Character, String> getRecipeIngredients() {
+        Map<Character, String> ingredients = new HashMap<>();
+        ingredients.put('S', "minecraft:string");
+        ingredients.put('N', "minecraft:netherite_ingot");
+        ingredients.put('E', "minecraft:fermented_spider_eye");
+        ingredients.put('D', "minecraft:diamond");
+        return ingredients;
+    }
 }

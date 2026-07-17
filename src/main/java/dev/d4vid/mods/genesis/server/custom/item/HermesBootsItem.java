@@ -117,4 +117,21 @@ public class HermesBootsItem extends GenesisItem {
             .build();
         item.set(DataComponents.ATTRIBUTE_MODIFIERS, modifiers);
     }
+    @Override
+    public String[] getRecipePattern() {
+        return new String[] {
+            "F F",
+            "DND",
+            "N N"
+        };
+    }
+
+    @Override
+    public Map<Character, String> getRecipeIngredients() {
+        Map<Character, String> ingredients = new HashMap<>();
+        ingredients.put('F', "minecraft:feather");
+        ingredients.put('D', "minecraft:diamond");
+        ingredients.put('N', "minecraft:netherite_ingot");
+        return ingredients;
+    }
 }
