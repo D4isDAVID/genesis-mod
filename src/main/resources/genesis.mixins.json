@@ -28,6 +28,7 @@
     "pvp.RespawnAnchorBlockMixin",
     "recipes.MerchantOffersMixin",
     "recipes.RecipeManagerMixin",
+    "recipes.RecipeManagerApplyMixin",
     "spoof.SynchedEntityDataDataItemMixin"
   ],
   "injectors": {

@@ -10,7 +10,7 @@ class DisabledRecipeHandler {
     init {
         GenesisConfigLoadCallback.EVENT.register { config = it.recipes }
 
-        GenesisRecipeEvents.ALLOW.register { input, result ->
+        GenesisRecipeEvents.ALLOW.register { player, input, result ->
             !config.isResultDisabled(result) && input.none {
                 config.isIngredientDisabled(it)
             }

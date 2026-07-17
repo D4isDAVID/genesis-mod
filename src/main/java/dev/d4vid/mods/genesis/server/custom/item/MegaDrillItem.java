@@ -116,4 +116,13 @@ public class MegaDrillItem extends GenesisItem {
             .append(Component.literal(silkTouch ? "Silk Touch" : "Fortune"))
             .withStyle(s -> s.withColor(MEGA_DRILL_COLOR));
     }
+
+    @Override
+    public boolean isSoulbound() {
+        return true;
+    }
+    @Override
+    public boolean returnsOnDeath() {
+        return true;
+    }
 }

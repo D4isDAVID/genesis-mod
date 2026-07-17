@@ -10,6 +10,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 
+import java.util.Map;
+
 public abstract class GenesisItem {
     protected final Identifier identifier;
     protected final ItemStack baseItem;
@@ -27,6 +29,14 @@ public abstract class GenesisItem {
 
         this.baseItem = stack;
 
+    }
+
+    public String[] getRecipePattern() {
+        return null;
+    }
+
+    public Map<Character, String> getRecipeIngredients() {
+        return null;
     }
 
     protected abstract void build(RegistryAccess registries, ItemStack stack);
@@ -61,4 +71,7 @@ public abstract class GenesisItem {
         return false;
     }
 
+    public boolean isSoulbound() {return false; }
+
+    public boolean returnsOnDeath() {return false; }
 }

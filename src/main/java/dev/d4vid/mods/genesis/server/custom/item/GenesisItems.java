@@ -6,6 +6,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
+import dev.d4vid.mods.genesis.server.custom.item.util.SoulboundUtil;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -14,7 +15,7 @@ public class GenesisItems {
     public static final Map<Identifier, GenesisItem> REGISTRY = new LinkedHashMap<>();
 
     public static void initialize() {
-        GenesisRecipeEvents.INSTANCE.getALLOW().register((ingredients, result) -> {
+        GenesisRecipeEvents.INSTANCE.getALLOW().register((player, ingredients, result) -> {
             for (ItemStack item : ingredients) {
                 if (is(item)) {
                     return false;
@@ -63,6 +64,11 @@ public class GenesisItems {
 
         if (item == null) {
             return;
+        }
+
+        if (item.isSoulbound()) {
+            SoulboundUtil.register(item.getId());
+            SoulboundUtil.applyLore(stack);
         }
 
         item.build(registries, stack);
