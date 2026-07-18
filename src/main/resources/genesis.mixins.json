@@ -16,6 +16,7 @@
     "items.ItemStackMixin",
     "items.LivingEntityMixin",
     "items.ServerPlayerMixin",
+    "items.ContainerMenuMixin",
     "portals.BaseFireBlockMixin",
     "portals.EnderEyeItemMixin",
     "portals.EndPortalBlockMixin",
