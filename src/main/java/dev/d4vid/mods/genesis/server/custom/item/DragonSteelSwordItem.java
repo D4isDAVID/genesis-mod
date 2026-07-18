@@ -47,4 +47,9 @@ public class DragonSteelSwordItem extends GenesisItem {
     public boolean canBeEnchanted() {
         return false;
     }
+
+    @Override
+    public boolean isDragonItem() {
+        return true;
+    }
 }

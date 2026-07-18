@@ -42,6 +42,10 @@ public class GenesisItems {
         register(new SpiderBootsItem());
         register(new MobCrossbowItem());
         register(new FrostbiteItem());
+
+        register(new DragonSteelSwordItem());
+        register(new DragonWingsItem());
+        register(new DragonSteelChestplateItem());
     }
 
     public static boolean is(ItemStack stack) {

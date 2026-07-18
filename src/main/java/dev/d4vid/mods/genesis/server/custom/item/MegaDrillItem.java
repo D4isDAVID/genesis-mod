@@ -125,4 +125,8 @@ public class MegaDrillItem extends GenesisItem {
     public boolean returnsOnDeath() {
         return true;
     }
+    @Override
+    public boolean canContain() {
+        return true;
+    }
 }

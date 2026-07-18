@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.event.player.ItemEvents
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.InteractionResult
 import net.minecraft.world.item.ItemStack
+import dev.d4vid.mods.genesis.server.custom.item.GenesisItems;
 
 class DisabledItemsHandler(private val combatDetection: CombatDetectionHandler) {
     private lateinit var config: ItemsConfig
@@ -42,6 +43,7 @@ class DisabledItemsHandler(private val combatDetection: CombatDetectionHandler) 
         player: ServerPlayer,
         stack: ItemStack
     ): Boolean {
+        if (GenesisItems.`is`(stack)) return true
         return !config.isItemUsageDisabled(stack, combatDetection.isPlayerInCombat(player))
     }
 }

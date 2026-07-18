@@ -39,9 +39,8 @@ public class UltimateManager {
     }
 
     public static void resetCraftedUltimate(ServerPlayer player) {
-        CRAFTED_BY.remove(player.getUUID());
+        UltimatePlayerData.get(player.level().getServer()).reset(player.getUUID());
     }
-
     public static Optional<ItemStack> getUltimate(ServerPlayer player) {
         for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
             ItemStack stack = player.getInventory().getItem(i);
@@ -60,28 +59,29 @@ public class UltimateManager {
     }
 
     public static boolean hasCraftedUltimate(ServerPlayer player) {
-        return CRAFTED_BY.containsKey(player.getUUID());
+        return UltimatePlayerData.get(player.level().getServer()).hasCrafted(player.getUUID());
     }
 
     public static void setCraftedUltimate(ServerPlayer player, Identifier itemId) {
-        CRAFTED_BY.put(player.getUUID(), itemId);
+        UltimatePlayerData.get(player.level().getServer()).setCrafted(player.getUUID(), itemId);
     }
 
     public static boolean canCraft(ServerPlayer player, ItemStack result) {
         if (!isUltimate(result)) return true;
-        if (isDragonItem(result)) return !CraftingManager.isDragonItem(result);
+        if (CraftingManager.isDragonItem(result)) return !hasCraftedDragonItem(player, result);
         return !hasCraftedUltimate(player);
     }
 
     public static void recordCraft(ServerPlayer player, ItemStack result) {
         if (!isUltimate(result)) return;
-        CRAFTED_BY.put(player.getUUID(), GenesisItem.getId(result));
+        setCraftedUltimate(player, GenesisItem.getId(result));
     }
 
     public static void initialize() {
         for (GenesisItem item : GenesisItems.REGISTRY.values()) {
             ULTIMATE_IDS.add(item.getId());
             if (item.returnsOnDeath()) RETURNS_ON_DEATH.add(item.getId());
+            if (item.isDragonItem()) CraftingManager.registerDragonItem(item.getId());
         }
 
         ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
@@ -126,5 +126,18 @@ public class UltimateManager {
             }
         }
         return ItemStack.EMPTY;
+    }
+    public static void wipe(ServerPlayer target) {
+        removeUltimate(target);
+        resetCraftedUltimate(target);
+    }
+    public static boolean isProtectedFromStorage(ItemStack stack) {
+        GenesisItem item = GenesisItems.get(stack);
+        return item != null && !item.canContain();
+    }
+
+    public static boolean hasCraftedDragonItem(ServerPlayer player, ItemStack stack) {
+        Identifier id = GenesisItem.getId(stack);
+        return id != null && UltimatePlayerData.get(player.level().getServer()).hasAnyoneCrafted(id);
     }
 }

@@ -73,5 +73,9 @@ public abstract class GenesisItem {
 
     public boolean isSoulbound() {return false; }
 
-    public boolean returnsOnDeath() {return false; }
+    public boolean returnsOnDeath() {return false;}
+
+    public boolean canContain() {return false; }
+
+    public boolean isDragonItem() { return false; }
 }

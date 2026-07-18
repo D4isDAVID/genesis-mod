@@ -114,4 +114,8 @@ public class DrillItem extends GenesisItem {
             .append(Component.literal("Drill: ").withStyle(s -> s.withBold(true)))
             .append(Component.literal(silkTouch ? "Silk Touch" : "Fortune"));
     }
+    @Override
+    public boolean canContain() {
+        return true;
+    }
 }

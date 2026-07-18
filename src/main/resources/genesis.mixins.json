@@ -30,6 +30,8 @@
     "recipes.MerchantOffersMixin",
     "recipes.RecipeManagerMixin",
     "recipes.RecipeManagerApplyMixin",
+    "recipes.ResultSlotMixin",
+    "recipes.ResultSlotPickupMixin",
     "spoof.SynchedEntityDataDataItemMixin"
   ],
   "injectors": {
