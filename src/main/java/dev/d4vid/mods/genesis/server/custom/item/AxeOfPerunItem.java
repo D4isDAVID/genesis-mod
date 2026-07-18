@@ -99,6 +99,7 @@ public class AxeOfPerunItem extends GenesisItem {
             Identifier.fromNamespaceAndPath(Genesis.MOD_ID, "axe_perun")
         )));
     }
+
     @Override
     public String[] getRecipePattern() {
         return new String[] {

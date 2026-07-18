@@ -53,9 +53,12 @@ object Genesis : DedicatedServerModInitializer {
         CombatDamageMultiplier()
         ArrowEffectHandler()
 
-        ServerLifecycleEvents.SERVER_STARTED.register { server ->
+        ServerLifecycleEvents.SERVER_STARTING.register { server ->
             UltimateManager.initialize()
             CraftingManager.initialize(server)
+        }
+
+        ServerLifecycleEvents.SERVER_STARTED.register {
         }
 
         registerCommands(

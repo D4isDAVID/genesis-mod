@@ -23,7 +23,9 @@ abstract class RecipeManagerApplyMixin {
 
     @Inject(method = "apply", at = @At("TAIL"))
     private void genesis$apply(RecipeMap recipeMap, ResourceManager resourceManager, ProfilerFiller profilerFiller, CallbackInfo callback) {
+
         List<RecipeHolder<?>> merged = new ArrayList<>(this.recipes.values());
+
         merged.addAll(CraftingManager.buildRecipes());
         this.recipes = RecipeMap.create(merged);
     }
