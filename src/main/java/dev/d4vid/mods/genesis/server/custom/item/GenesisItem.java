@@ -1,81 +1,79 @@
 package dev.d4vid.mods.genesis.server.custom.item;
 
 import dev.d4vid.mods.genesis.server.Genesis;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
 
-public abstract class GenesisItem {
-    protected final Identifier identifier;
-    protected final ItemStack baseItem;
+public class GenesisItem {
+    private static final String CUSTOM_ID_TAG = Identifier.fromNamespaceAndPath(Genesis.MOD_ID, "id").toString();
+    private final Identifier identifier;
+    private final ItemStack baseStack;
+    private final List<DataComponentSetter<?>> dataComponentSetters = new ArrayList<>();
 
-    public static Identifier getId(ItemStack stack) {
-        return stack.get(DataComponents.ITEM_MODEL);
-    }
-
-    protected GenesisItem(String name, Item baseItem, Component displayName) {
-        identifier = Identifier.fromNamespaceAndPath(Genesis.MOD_ID, name);
-
-        ItemStack stack = new ItemStack(baseItem);
-        stack.set(DataComponents.ITEM_MODEL, identifier);
-        stack.set(DataComponents.CUSTOM_NAME, displayName);
-
-        this.baseItem = stack;
-
-    }
-
-    public String[] getRecipePattern() {
-        return null;
-    }
-
-    public Map<Character, String> getRecipeIngredients() {
-        return null;
-    }
-
-    protected abstract void build(RegistryAccess registries, ItemStack stack);
-
-    protected CompoundTag readCustomData(ItemStack stack) {
+    protected static CompoundTag readCustomData(ItemStack stack) {
         return stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
     }
 
-    protected void saveCustomData(ItemStack stack, CompoundTag tag) {
+    protected static void saveCustomData(ItemStack stack, CompoundTag tag) {
         stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
+    }
+
+    public static @Nullable Identifier getId(ItemStack stack) {
+        return readCustomData(stack)
+            .getString(CUSTOM_ID_TAG)
+            .map(Identifier::parse)
+            .orElseGet(() -> stack.get(DataComponents.ITEM_MODEL));
+    }
+
+    protected GenesisItem(String name, Item baseItem) {
+        identifier = Identifier.fromNamespaceAndPath(Genesis.MOD_ID, name);
+        baseStack = new ItemStack(baseItem);
+
+        CompoundTag tag = readCustomData(baseStack);
+        tag.putString(CUSTOM_ID_TAG, identifier.toString());
+        saveCustomData(baseStack, tag);
     }
 
     public Identifier getId() {
         return identifier;
     }
 
-    public ItemStack assemble(RegistryAccess registries) {
-        ItemStack item = baseItem.copy();
-        build(registries, item);
-        return item;
-    }
-
+    @SuppressWarnings("ConstantConditions")
     public boolean is(ItemStack stack) {
         return identifier.equals(getId(stack));
     }
 
-    public boolean canBeEnchanted() {
-        return false;
+    public ItemStack build(HolderLookup.Provider registries) {
+        ItemStack stack = baseStack.copy();
+        update(registries, stack);
+        return stack;
     }
 
-    public boolean canBeRenamed() {
-        return false;
+    public void update(HolderLookup.Provider registries, ItemStack stack) {
+        DataComponentSetter.Data setterData = new DataComponentSetter.Data(registries, stack);
+
+        stack.applyComponents(baseStack.getComponents());
+        for (DataComponentSetter<?> setter : dataComponentSetters) {
+            setter.set(setterData);
+        }
     }
 
-    public boolean isSoulbound() {return false; }
+    protected <T> void set(DataComponentType<T> type, T data) {
+        baseStack.set(type, data);
+    }
 
-    public boolean returnsOnDeath() {return false;}
-
-    public boolean canContain() {return false; }
-
-    public boolean isDragonItem() { return false; }
+    protected <T> void addSetter(DataComponentType<T> type, Function<DataComponentSetter.Data, T> setter) {
+        dataComponentSetters.add(new DataComponentSetter<>(type, setter));
+    }
 }

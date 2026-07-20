@@ -1,12 +1,13 @@
 package dev.d4vid.mods.genesis.server.custom.item;
 
+import dev.d4vid.mods.genesis.server.custom.item.legendary.BloodlustItem;
 import dev.d4vid.mods.genesis.server.event.GenesisItemEvents;
 import dev.d4vid.mods.genesis.server.event.GenesisRecipeEvents;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
-import dev.d4vid.mods.genesis.server.custom.item.util.SoulboundUtil;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -15,7 +16,7 @@ public class GenesisItems {
     public static final Map<Identifier, GenesisItem> REGISTRY = new LinkedHashMap<>();
 
     public static void initialize() {
-        GenesisRecipeEvents.INSTANCE.getALLOW().register((player, ingredients, result) -> {
+        GenesisRecipeEvents.INSTANCE.getALLOW().register((ingredients, result) -> {
             for (ItemStack item : ingredients) {
                 if (is(item)) {
                     return false;
@@ -30,22 +31,6 @@ public class GenesisItems {
         GenesisItemEvents.INSTANCE.getPLAYER_ITEM_DROP().register(GenesisItems::update);
 
         register(new BloodlustItem());
-        register(new DrillItem());
-        register(new MegaDrillItem());
-        register(new HermesBootsItem());
-        register(new AxeOfPerunItem());
-        register(new CreeperPantsItem());
-        register(new ExploreresCharmItem());
-        register(new RagnarokAxeItem());
-        register(new RougeSwordItem());
-        register(new TheLeechItem());
-        register(new SpiderBootsItem());
-        register(new MobCrossbowItem());
-        register(new FrostbiteItem());
-
-        register(new DragonSteelSwordItem());
-        register(new DragonWingsItem());
-        register(new DragonSteelChestplateItem());
     }
 
     public static boolean is(ItemStack stack) {
@@ -54,7 +39,7 @@ public class GenesisItems {
         return id != null && REGISTRY.containsKey(id);
     }
 
-    public static GenesisItem get(ItemStack stack) {
+    public static @Nullable GenesisItem get(ItemStack stack) {
         return REGISTRY.get(GenesisItem.getId(stack));
     }
 
@@ -70,11 +55,6 @@ public class GenesisItems {
             return;
         }
 
-        if (item.isSoulbound()) {
-            SoulboundUtil.register(item.getId());
-            SoulboundUtil.applyLore(stack);
-        }
-
-        item.build(registries, stack);
+        item.update(registries, stack);
     }
 }

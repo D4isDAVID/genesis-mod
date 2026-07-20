@@ -1,42 +1,37 @@
 package dev.d4vid.mods.genesis.server.event
 
 import net.fabricmc.fabric.api.event.EventFactory
+import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.damagesource.DamageSource
-import net.minecraft.world.item.ItemStack
+import net.minecraft.world.entity.LivingEntity
 
 object GenesisCustomItemEvents {
-    val ALLOW_PLAYER_FALL_DAMAGE = EventFactory.createArrayBacked(AllowPlayerFallDamage::class.java) { listeners ->
-        AllowPlayerFallDamage { player, fallDistance, multiplier, source ->
+    val ALLOW_ENTITY_FALL_DAMAGE = EventFactory.createArrayBacked(AllowEntityFallDamage::class.java) { listeners ->
+        AllowEntityFallDamage { entity, fallDistance, multiplier, source ->
             for (listener in listeners) {
-                val result = listener.allowPlayerFallDamage(player, fallDistance, multiplier, source)
+                val result = listener.allowEntityFallDamage(entity, fallDistance, multiplier, source)
 
                 if (!result) {
-                    return@AllowPlayerFallDamage false
+                    return@AllowEntityFallDamage false
                 }
             }
+
             true
         }
     }
 
-    val ALLOW_ITEM_SWAP = EventFactory.createArrayBacked(AllowItemSwap::class.java) { listeners ->
-        AllowItemSwap { player, stack ->
+    val ALLOW_PLAYER_ACTION = EventFactory.createArrayBacked(AllowPlayerAction::class.java) { listeners ->
+        AllowPlayerAction { player, packet ->
             for (listener in listeners) {
-                val result = listener.allowItemSwap(player, stack)
+                val result = listener.allowPlayerAction(player, packet)
 
                 if (!result) {
-                    return@AllowItemSwap false
+                    return@AllowPlayerAction false
                 }
             }
-            true
-        }
-    }
 
-    val ON_PLAYER_HIT_PLAYER = EventFactory.createArrayBacked(OnPlayerHitPlayer::class.java) { listeners ->
-        OnPlayerHitPlayer { attacker, victim, stack ->
-            for (listener in listeners) {
-                listener.onPlayerHitPlayer(attacker, victim, stack)
-            }
+            true
         }
     }
 
@@ -48,24 +43,20 @@ object GenesisCustomItemEvents {
         }
     }
 
-    fun interface JumpInput {
-        fun onJumpInput(player: ServerPlayer)
-    }
-
-    fun interface OnPlayerHitPlayer {
-        fun onPlayerHitPlayer(attacker: ServerPlayer, victim: ServerPlayer, stack: ItemStack)
-    }
-
-    fun interface AllowPlayerFallDamage {
-        fun allowPlayerFallDamage(
-            player: ServerPlayer,
+    fun interface AllowEntityFallDamage {
+        fun allowEntityFallDamage(
+            entity: LivingEntity,
             fallDistance: Double,
             multiplier: Float,
             source: DamageSource
         ): Boolean
     }
 
-    fun interface AllowItemSwap {
-        fun allowItemSwap(player: ServerPlayer, stack: ItemStack): Boolean
+    fun interface AllowPlayerAction {
+        fun allowPlayerAction(player: ServerPlayer, packet: ServerboundPlayerActionPacket): Boolean
+    }
+
+    fun interface JumpInput {
+        fun onJumpInput(player: ServerPlayer)
     }
 }

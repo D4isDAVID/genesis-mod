@@ -5,18 +5,16 @@
   "server": [
     "cooldowns.EnchantmentMixin",
     "cooldowns.ItemCooldownsMixin",
-    "custom.item.EnchantmentHelperMixin",
-    "custom.item.ItemStackMixin",
-    "custom.item.LivingEntityMixin",
-    "custom.item.ServerGamePacketListenerImplMixin",
-    "custom.item.AnvilMenuMixin",
-    "custom.item.CrossbowItemMixin",
-    "custom.item.LargeFireballMixin",
     "items.InventoryMixin",
     "items.ItemStackMixin",
     "items.LivingEntityMixin",
     "items.ServerPlayerMixin",
+<<<<<<< Updated upstream
     "items.ContainerMenuMixin",
+=======
+    "portals.BaseFireBlockMixin",
+    "portals.EnderEyeItemMixin",
+>>>>>>> Stashed changes
     "portals.EndPortalBlockMixin",
     "portals.NetherPortalBlockMixin",
     "pvp.ArrowItemMixin",
@@ -27,10 +25,14 @@
     "pvp.RespawnAnchorBlockMixin",
     "recipes.MerchantOffersMixin",
     "recipes.RecipeManagerMixin",
+<<<<<<< Updated upstream
     "recipes.RecipeManagerApplyMixin",
     "recipes.ResultSlotMixin",
     "recipes.ResultSlotPickupMixin",
     "spoof.SynchedEntityDataMixin"
+=======
+    "spoof.SynchedEntityDataDataItemMixin"
+>>>>>>> Stashed changes
   ],
   "injectors": {
     "defaultRequire": 1

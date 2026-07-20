@@ -14,5 +14,4 @@ fun genesisCommand(
         .then(reloadCommand(config))
         .then(protectionCommand(combatProtection))
         .then(giveCommand())
-        .then(ultimatesCommand())
 }

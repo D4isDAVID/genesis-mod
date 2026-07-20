@@ -2,15 +2,12 @@ package dev.d4vid.mods.genesis.server
 
 import dev.d4vid.mods.genesis.server.blocks.UnbreakableBlockHandler
 import dev.d4vid.mods.genesis.server.chat.ChatHandler
-import dev.d4vid.mods.genesis.server.command.bullshitCommand
 import dev.d4vid.mods.genesis.server.command.genesisCommand
 import dev.d4vid.mods.genesis.server.command.registerCommands
 import dev.d4vid.mods.genesis.server.config.GenesisConfig
 import dev.d4vid.mods.genesis.server.cooldowns.ItemCooldownHandler
 import dev.d4vid.mods.genesis.server.cooldowns.LungeCooldownHandler
 import dev.d4vid.mods.genesis.server.custom.item.GenesisItems
-import dev.d4vid.mods.genesis.server.custom.item.util.CraftingManager
-import dev.d4vid.mods.genesis.server.custom.item.util.UltimateManager
 import dev.d4vid.mods.genesis.server.items.DisabledItemsHandler
 import dev.d4vid.mods.genesis.server.items.ItemLimitHandler
 import dev.d4vid.mods.genesis.server.portals.PortalsHandler
@@ -21,7 +18,6 @@ import dev.d4vid.mods.genesis.server.pvp.CombatProtectionHandler
 import dev.d4vid.mods.genesis.server.recipes.DisabledRecipeHandler
 import dev.d4vid.mods.genesis.server.spoof.PacketSpoofHandler
 import net.fabricmc.api.DedicatedServerModInitializer
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -53,19 +49,10 @@ object Genesis : DedicatedServerModInitializer {
         CombatDamageMultiplier()
         ArrowEffectHandler()
 
-        ServerLifecycleEvents.SERVER_STARTING.register { server ->
-            UltimateManager.initialize()
-            CraftingManager.initialize(server)
-        }
-
-        ServerLifecycleEvents.SERVER_STARTED.register {
-        }
-
         registerCommands(
             genesisCommand(config, combatProtection),
-            bullshitCommand(),
         )
 
-        GenesisItems.initialize()
+        GenesisItems.initialize();
     }
 }
