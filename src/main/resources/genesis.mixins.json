@@ -17,8 +17,6 @@
     "items.LivingEntityMixin",
     "items.ServerPlayerMixin",
     "items.ContainerMenuMixin",
-    "portals.BaseFireBlockMixin",
-    "portals.EnderEyeItemMixin",
     "portals.EndPortalBlockMixin",
     "portals.NetherPortalBlockMixin",
     "pvp.ArrowItemMixin",
@@ -32,7 +30,7 @@
     "recipes.RecipeManagerApplyMixin",
     "recipes.ResultSlotMixin",
     "recipes.ResultSlotPickupMixin",
-    "spoof.SynchedEntityDataDataItemMixin"
+    "spoof.SynchedEntityDataMixin"
   ],
   "injectors": {
     "defaultRequire": 1
