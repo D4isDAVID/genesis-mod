@@ -14,6 +14,7 @@ data class RecipesConfig(
     private val disableResults: Set<ItemMatcher> = setOf(
         NbtMatcher(Identifier.withDefaultNamespace("mace")),
     ),
+    val ultimateCraftingEnabled: Boolean = false,
 ) {
     fun isIngredientDisabled(stack: ItemStack): Boolean {
         return disableIngredients.any {

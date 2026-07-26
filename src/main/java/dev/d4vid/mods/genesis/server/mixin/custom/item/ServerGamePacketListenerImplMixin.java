@@ -33,6 +33,7 @@ public class ServerGamePacketListenerImplMixin {
         ItemStack selected = player.getInventory().getSelectedItem();
         if (UltimateManager.isUltimate(selected)) {
             callback.cancel();
+            player.containerMenu.broadcastFullState();
         }
     }
 

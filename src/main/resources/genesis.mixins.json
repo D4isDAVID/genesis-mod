@@ -33,6 +33,7 @@
     "recipes.RecipeManagerApplyMixin",
     "recipes.ResultSlotMixin",
     "recipes.ResultSlotPickupMixin",
+    "recipes.CrafterBlockMixin",
     "spoof.SynchedEntityDataMixin"
 
   ],

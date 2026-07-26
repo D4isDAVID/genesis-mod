@@ -19,6 +19,8 @@ import dev.d4vid.mods.genesis.server.pvp.CombatDamageMultiplier
 import dev.d4vid.mods.genesis.server.pvp.CombatDetectionHandler
 import dev.d4vid.mods.genesis.server.pvp.CombatProtectionHandler
 import dev.d4vid.mods.genesis.server.recipes.DisabledRecipeHandler
+import dev.d4vid.mods.genesis.server.recipes.RecipeUnlockHandler
+import dev.d4vid.mods.genesis.server.recipes.UltimateCraftingHandler
 import dev.d4vid.mods.genesis.server.spoof.PacketSpoofHandler
 import net.fabricmc.api.DedicatedServerModInitializer
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
@@ -48,6 +50,8 @@ object Genesis : DedicatedServerModInitializer {
 
         UnbreakableBlockHandler()
         DisabledRecipeHandler()
+        UltimateCraftingHandler()
+        RecipeUnlockHandler()
         PortalsHandler()
 
         CombatDamageMultiplier()
