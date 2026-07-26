@@ -32,7 +32,12 @@ public class DragonSteelSwordItem extends GenesisItem {
 
     private void enchant(RegistryAccess registries, ItemStack item) {
         new ItemEnchantmentsBuilder(registries)
-            .add(Enchantments.FIRE_ASPECT, 3)
+            .add(Enchantments.FIRE_ASPECT, 2)
+            .add(Enchantments.UNBREAKING, 3)
+            .add(Enchantments.MENDING, 1)
+            .add(Enchantments.SHARPNESS, 5)
+            .add(Enchantments.SWEEPING_EDGE, 3)
+            .add(Enchantments.LOOTING, 3)
             .enchant(item);
     }
 

@@ -21,14 +21,17 @@ public abstract class GenesisItem {
     }
 
     protected GenesisItem(String name, Item baseItem, Component displayName) {
+        this(name, baseItem, displayName, Identifier.fromNamespaceAndPath(Genesis.MOD_ID, name));
+    }
+
+    protected GenesisItem(String name, Item baseItem, Component displayName, Identifier modelOverride) {
         identifier = Identifier.fromNamespaceAndPath(Genesis.MOD_ID, name);
 
         ItemStack stack = new ItemStack(baseItem);
-        stack.set(DataComponents.ITEM_MODEL, identifier);
+        stack.set(DataComponents.ITEM_MODEL, modelOverride);
         stack.set(DataComponents.CUSTOM_NAME, displayName);
 
         this.baseItem = stack;
-
     }
 
     public String[] getRecipePattern() {

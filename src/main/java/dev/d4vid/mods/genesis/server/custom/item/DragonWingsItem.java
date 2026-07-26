@@ -13,11 +13,11 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import java.util.List;
 
 public class DragonWingsItem extends GenesisItem {
-    private static final int RAGNAROK_AXE_COLOR = 0x64C4FF;
+    private static final int DRAGON_WINGS_COLOR = 0x64C4FF;
     private static final int LORE_COLOR = 0x888888;
     private static final Component DISPLAY_NAME = Component
         .literal("Dragon's Wings")
-        .withStyle(s -> s.withItalic(false).withBold(true).withColor(RAGNAROK_AXE_COLOR));
+        .withStyle(s -> s.withItalic(false).withBold(true).withColor(DRAGON_WINGS_COLOR));
 
     public DragonWingsItem() {
         super("dragon_wings", Items.ELYTRA, DISPLAY_NAME);
@@ -32,7 +32,7 @@ public class DragonWingsItem extends GenesisItem {
 
     private void enchant(RegistryAccess registries, ItemStack item) {
         new ItemEnchantmentsBuilder(registries)
-            .add(Enchantments.FIRE_ASPECT, 3)
+            //.add(Enchantments.UNBREAKING, 3)
             .enchant(item);
     }
 

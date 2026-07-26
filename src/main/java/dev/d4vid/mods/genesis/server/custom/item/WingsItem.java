@@ -4,6 +4,7 @@ import dev.d4vid.mods.genesis.server.custom.item.util.ItemEnchantmentsBuilder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Unit;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -13,26 +14,27 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import java.util.List;
 
 public class WingsItem extends GenesisItem {
-    private static final int RAGNAROK_AXE_COLOR = 0x64C4FF;
+    private static final int WINGS_COLOR = 0x64C4FF;
     private static final int LORE_COLOR = 0x888888;
     private static final Component DISPLAY_NAME = Component
-        .literal("Dragon's Wings")
-        .withStyle(s -> s.withItalic(false).withBold(true).withColor(RAGNAROK_AXE_COLOR));
+        .literal("Wings")
+        .withStyle(s -> s.withItalic(false).withBold(true).withColor(WINGS_COLOR));
 
     public WingsItem() {
-        super("dragon_wings", Items.ELYTRA, DISPLAY_NAME);
+        super("wings", Items.ELYTRA, DISPLAY_NAME, Identifier.fromNamespaceAndPath("minecraft","elytra"));
 
     }
     @Override
     protected void build(RegistryAccess registries, ItemStack item) {
-        item.set(DataComponents.UNBREAKABLE, Unit.INSTANCE);
+        //item.set(DataComponents.UNBREAKABLE, Unit.INSTANCE);
         enchant(registries, item);
         applyLore(item);
     }
 
     private void enchant(RegistryAccess registries, ItemStack item) {
         new ItemEnchantmentsBuilder(registries)
-            .add(Enchantments.FIRE_ASPECT, 3)
+            .add(Enchantments.UNBREAKING, 3)
+            .add(Enchantments.MENDING, 3)
             .enchant(item);
     }
 
