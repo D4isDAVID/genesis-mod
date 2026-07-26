@@ -1,4 +1,4 @@
-package dev.d4vid.mods.genesis.server.mobgriefing;
+package dev.d4vid.mods.genesis.server.mixin.mobgriefing;
 
 import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.level.block.state.BlockState;

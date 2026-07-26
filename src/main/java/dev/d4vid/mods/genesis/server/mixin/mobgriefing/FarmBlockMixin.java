@@ -1,4 +1,4 @@
-package dev.d4vid.mods.genesis.server.mobgriefing;
+package dev.d4vid.mods.genesis.server.mixin.mobgriefing;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
@@ -19,7 +19,7 @@ public class FarmBlockMixin {
         Level level, BlockState blockState, BlockPos blockPos, Entity entity, double d, CallbackInfo ci
     ) {
         if (!(entity instanceof Player)) {
-            callback.cancel();
+            ci.cancel();
         }
     }
 }

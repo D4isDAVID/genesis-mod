@@ -1,4 +1,4 @@
-package dev.d4vid.mods.genesis.server.mobgriefing;
+package dev.d4vid.mods.genesis.server.mixin.mobgriefing;
 
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
