@@ -13,6 +13,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import dev.d4vid.mods.genesis.server.custom.item.util.UltimateManager;
 
 @SuppressWarnings("unused")
 @Mixin(ServerGamePacketListenerImpl.class)
@@ -20,20 +21,17 @@ public class ServerGamePacketListenerImplMixin {
     @Shadow
     public ServerPlayer player;
 
-    @Inject(method = "handlePlayerAction", at = @At(
-        value = "INVOKE",
-        target = "Lnet/minecraft/server/level/ServerPlayer;resetLastActionTime()V",
-        shift = At.Shift.AFTER
-    ), cancellable = true)
-    private void genesis$handlePlayerAction(ServerboundPlayerActionPacket packet, CallbackInfo callback) {
-        if (packet.getAction() != ServerboundPlayerActionPacket.Action.SWAP_ITEM_WITH_OFFHAND) {
+    @Inject(method = "handlePlayerAction", at = @At("HEAD"), cancellable = true)
+    private void genesis$blockUltimateDrop(ServerboundPlayerActionPacket packet, CallbackInfo callback) {
+        ServerboundPlayerActionPacket.Action action = packet.getAction();
+
+        if (action != ServerboundPlayerActionPacket.Action.DROP_ITEM
+            && action != ServerboundPlayerActionPacket.Action.DROP_ALL_ITEMS) {
             return;
         }
 
-        ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND);
-        boolean result = GenesisCustomItemEvents.INSTANCE.getALLOW_ITEM_SWAP().invoker().allowItemSwap(player, stack);
-
-        if (!result) {
+        ItemStack selected = player.getInventory().getSelectedItem();
+        if (UltimateManager.isUltimate(selected)) {
             callback.cancel();
         }
     }

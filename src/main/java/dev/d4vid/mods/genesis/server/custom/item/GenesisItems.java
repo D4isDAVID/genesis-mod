@@ -46,6 +46,7 @@ public class GenesisItems {
         register(new DragonSteelSwordItem());
         register(new DragonWingsItem());
         register(new DragonSteelChestplateItem());
+        register(new WingsItem());
     }
 
     public static boolean is(ItemStack stack) {

@@ -5,9 +5,12 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.BundleItem;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -23,25 +26,68 @@ public abstract class ContainerMenuMixin {
     private void genesis$doClick(int slotId, int button, ClickType clickType, Player player, CallbackInfo info) {
         if (!(player instanceof ServerPlayer serverPlayer)) return;
 
-        AbstractContainerMenu menu = (AbstractContainerMenu)(Object) this;
-
-        boolean isPlayerInventory = slotId >= 0
-            && slotId < menu.slots.size()
-            && menu.slots.get(slotId).container == serverPlayer.getInventory();
-
-        if (isPlayerInventory) return;
-
+        AbstractContainerMenu menu = (AbstractContainerMenu) (Object) this;
         ItemStack carried = getCarried();
-        if (UltimateManager.isUltimate(carried)) {
+
+        boolean validSlot = slotId >= 0 && slotId < menu.slots.size();
+        ItemStack slotItem = validSlot ? menu.slots.get(slotId).getItem() : ItemStack.EMPTY;
+
+        boolean isDropAction = clickType == ClickType.THROW
+            || (clickType == ClickType.PICKUP && slotId == -999);
+
+        if (isDropAction) {
+            ItemStack dropStack = slotId == -999 ? carried : slotItem;
+            if (UltimateManager.isUltimate(dropStack)) {
+                info.cancel();
+                return;
+            }
+        }
+
+        if (genesis$isUltimateBundleInteraction(carried, slotItem)) {
             info.cancel();
             return;
         }
 
-        if (slotId >= 0 && slotId < menu.slots.size()) {
-            ItemStack slotItem = menu.slots.get(slotId).getItem();
-            if (UltimateManager.isUltimate(slotItem)) {
-                info.cancel();
+        boolean isPlayerInventorySlot = validSlot && menu.slots.get(slotId).container == serverPlayer.getInventory();
+
+        boolean hasForeignContainer = false;
+        for (Slot slot : menu.slots) {
+            if (slot.container != serverPlayer.getInventory()) {
+                hasForeignContainer = true;
+                break;
             }
         }
+
+        if (!hasForeignContainer) return;
+
+        if (!isPlayerInventorySlot) {
+            if (UltimateManager.isUltimate(carried) || UltimateManager.isUltimate(slotItem)) {
+                info.cancel();
+                return;
+            }
+
+            if (clickType == ClickType.SWAP && button >= 0 && button < 9) {
+                ItemStack hotbarStack = serverPlayer.getInventory().getItem(button);
+                if (UltimateManager.isUltimate(hotbarStack)) {
+                    info.cancel();
+                }
+            }
+
+            return;
+        }
+
+        if (clickType == ClickType.QUICK_MOVE && UltimateManager.isUltimate(slotItem)) {
+            info.cancel();
+        }
+    }
+
+    @Unique
+    private boolean genesis$isUltimateBundleInteraction(ItemStack carried, ItemStack slotItem) {
+        boolean carriedIsUltimate = UltimateManager.isUltimate(carried);
+        boolean slotIsUltimate = UltimateManager.isUltimate(slotItem);
+        boolean carriedIsBundle = carried.getItem() instanceof BundleItem;
+        boolean slotIsBundle = slotItem.getItem() instanceof BundleItem;
+
+        return (carriedIsUltimate && slotIsBundle) || (slotIsUltimate && carriedIsBundle);
     }
 }

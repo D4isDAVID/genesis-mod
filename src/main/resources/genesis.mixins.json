@@ -12,6 +12,9 @@
     "custom.item.AnvilMenuMixin",
     "custom.item.CrossbowItemMixin",
     "custom.item.LargeFireballMixin",
+    "mobgriefing.ExplosionMixin",
+    "mobgriefing.EnderManMixin",
+    "mobgriefing.FarmBlockMixin",
     "items.InventoryMixin",
     "items.ItemStackMixin",
     "items.LivingEntityMixin",
@@ -31,6 +34,7 @@
     "recipes.ResultSlotMixin",
     "recipes.ResultSlotPickupMixin",
     "spoof.SynchedEntityDataMixin"
+
   ],
   "injectors": {
     "defaultRequire": 1
