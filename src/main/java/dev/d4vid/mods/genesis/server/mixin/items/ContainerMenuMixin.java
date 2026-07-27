@@ -57,6 +57,17 @@ public abstract class ContainerMenuMixin {
             }
         }
 
+        if (validSlot) {
+            ItemStack slotStack = menu.slots.get(slotId).getItem();
+            if (slotStack.getItem() == Items.ELYTRA) {
+                ItemStack chest = serverPlayer.getItemBySlot(EquipmentSlot.CHEST);
+                if (!(GenesisItems.get(chest) instanceof DragonWingsItem || GenesisItems.get(chest) instanceof WingsItem)) {
+                    info.cancel();
+                    return;
+                }
+            }
+        }
+
         if (genesis$isUltimateBundleInteraction(carried, slotItem)) {
             info.cancel();
             return;

@@ -21,7 +21,7 @@ public class WingsItem extends GenesisItem {
         .withStyle(s -> s.withItalic(false).withBold(true).withColor(WINGS_COLOR));
 
     public WingsItem() {
-        super("wings", Items.ELYTRA, DISPLAY_NAME, Identifier.fromNamespaceAndPath("minecraft","elytra"));
+        super("wings", Items.ELYTRA, DISPLAY_NAME/*, Identifier.fromNamespaceAndPath("minecraft","elytra")*/);
 
     }
     @Override
