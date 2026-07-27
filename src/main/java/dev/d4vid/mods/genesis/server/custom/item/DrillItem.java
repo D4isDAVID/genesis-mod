@@ -118,4 +118,6 @@ public class DrillItem extends GenesisItem {
     public boolean canContain() {
         return true;
     }
+    @Override
+    public boolean isUltimate() {return false; }
 }

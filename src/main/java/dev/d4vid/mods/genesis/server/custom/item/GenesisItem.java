@@ -81,4 +81,6 @@ public abstract class GenesisItem {
     public boolean canContain() {return false; }
 
     public boolean isDragonItem() { return false; }
+
+    public boolean isUltimate() { return true; }
 }

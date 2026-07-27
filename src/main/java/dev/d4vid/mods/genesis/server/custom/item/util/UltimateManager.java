@@ -79,6 +79,7 @@ public class UltimateManager {
 
     public static void initialize() {
         for (GenesisItem item : GenesisItems.REGISTRY.values()) {
+            if (!item.isUltimate()) continue;
             ULTIMATE_IDS.add(item.getId());
             if (item.returnsOnDeath()) RETURNS_ON_DEATH.add(item.getId());
             if (item.isDragonItem()) CraftingManager.registerDragonItem(item.getId());

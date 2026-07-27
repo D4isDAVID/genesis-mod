@@ -50,4 +50,22 @@ public class ServerGamePacketListenerImplMixin {
 
         genesis$wasJumping = isJumping;
     }
+
+    @Inject(method = "handlePlayerAction", at = @At(
+        value = "INVOKE",
+        target = "Lnet/minecraft/server/level/ServerPlayer;resetLastActionTime()V",
+        shift = At.Shift.AFTER
+    ), cancellable = true)
+    private void genesis$handlePlayerAction(ServerboundPlayerActionPacket packet, CallbackInfo callback) {
+        if (packet.getAction() != ServerboundPlayerActionPacket.Action.SWAP_ITEM_WITH_OFFHAND) {
+            return;
+        }
+
+        ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND);
+        boolean result = GenesisCustomItemEvents.INSTANCE.getALLOW_ITEM_SWAP().invoker().allowItemSwap(player, stack);
+
+        if (!result) {
+            callback.cancel();
+        }
+    }
 }
