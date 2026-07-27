@@ -4,7 +4,7 @@
 	"texture_size": [32, 32],
 	"textures": {
 		"0": "bullshit:item/shork",
-		"particle": "blahaj:item/shork"
+		"particle": "bullshit:item/shork"
 	},
 	"elements": [
 		{

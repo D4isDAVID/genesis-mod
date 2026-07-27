@@ -12,6 +12,7 @@ public class BullshitItems {
         register(new CollarItem());
         register(new ClickerItem());
         register(new LeashItem());
+        register(new plane());
     }
 
     public static void register(BullshitItem item) {
