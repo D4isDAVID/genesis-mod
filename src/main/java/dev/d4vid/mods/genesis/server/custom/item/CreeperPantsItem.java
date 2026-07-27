@@ -30,7 +30,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public class CreeperPantsItem extends GenesisItem {
-    private static final int CREEPER_PANTS_COLOR = 0x64C4FF;
+    private static final int CREEPER_PANTS_COLOR = 0x32CD32;
     private static final int LORE_COLOR = 0x888888;
     private static final int COOLDOWN_TICKS = 40; // TESTING ONLY — 2 seconds
     // private static final int COOLDOWN_TICKS = 3000; // real value: 2:30

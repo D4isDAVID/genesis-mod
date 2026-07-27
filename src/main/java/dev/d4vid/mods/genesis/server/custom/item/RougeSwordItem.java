@@ -14,7 +14,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import java.util.List;
 
 public class RougeSwordItem extends GenesisItem {
-    private static final int ROUGE_SWORD_COLOR = 0x64C4FF;
+    private static final int ROUGE_SWORD_COLOR = 0xFFD700;
     private static final int LORE_COLOR = 0x888888;
     private static final Component DISPLAY_NAME = Component
         .literal("Rouge Sword")

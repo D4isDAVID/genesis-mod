@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public class AxeOfPerunItem extends GenesisItem {
-    private static final int AXE_OF_PERUN_COLOR = 0x64C4FF;
+    private static final int AXE_OF_PERUN_COLOR = 0xB87333;
     private static final int LORE_COLOR = 0x888888;
     private static final float LIGHTNING_DAMAGE = 8f;
     private static final Component DISPLAY_NAME = Component

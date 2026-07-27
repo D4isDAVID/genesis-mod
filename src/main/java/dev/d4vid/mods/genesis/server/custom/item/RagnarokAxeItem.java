@@ -14,7 +14,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import java.util.List;
 
 public class RagnarokAxeItem extends GenesisItem {
-    private static final int RAGNAROK_AXE_COLOR = 0x64C4FF;
+    private static final int RAGNAROK_AXE_COLOR = 0xFFFF00;
     private static final int LORE_COLOR = 0x888888;
     private static final Component DISPLAY_NAME = Component
         .literal("Ragnarok Axe")

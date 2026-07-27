@@ -37,7 +37,7 @@ public class HermesBootsItem extends GenesisItem {
     private static final Identifier ARMOR_KEY = Identifier.fromNamespaceAndPath(Genesis.MOD_ID, "hermes_boots_armor");
     private static final Identifier TOUGHNESS_KEY = Identifier.fromNamespaceAndPath(Genesis.MOD_ID, "hermes_boots_toughness");
     private final Map<UUID, Boolean> hasDoubleJumped = new HashMap<>();
-    private static final int HERMES_BOOTS_COLOR = 0x64C4FF;
+    private static final int HERMES_BOOTS_COLOR = 0xD3D3D3;
     private static final int LORE_COLOR = 0x888888;
     private static final Component DISPLAY_NAME = Component
         .literal("Hermes Boots")

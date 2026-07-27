@@ -14,7 +14,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import java.util.List;
 
 public class WingsItem extends GenesisItem {
-    private static final int WINGS_COLOR = 0x64C4FF;
+    private static final int WINGS_COLOR = 0xE5E5E5;
     private static final int LORE_COLOR = 0x888888;
     private static final Component DISPLAY_NAME = Component
         .literal("Wings")

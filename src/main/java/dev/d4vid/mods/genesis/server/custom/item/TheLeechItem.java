@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 public class TheLeechItem extends GenesisItem {
-    private static final int THE_LEECH_COLOR = 0x64C4FF;
+    private static final int THE_LEECH_COLOR = 0x880808;
     private static final int REENTRY_GUARD_TICKS = 1;
     private static final int LORE_COLOR = 0x888888;
     private static final float LEECH_DAMAGE = 2f;

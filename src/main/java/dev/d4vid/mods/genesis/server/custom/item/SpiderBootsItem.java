@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public class SpiderBootsItem extends GenesisItem {
-    private static final int SPIDER_BOOTS_COLOR = 0x64C4FF;
+    private static final int SPIDER_BOOTS_COLOR = 0xFF0000;
     private static final int LORE_COLOR = 0x888888;
     private final Map<UUID, Boolean> hasDoubleJumped = new HashMap<>();
     private static final Component DISPLAY_NAME = Component

@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 public class FrostbiteItem extends GenesisItem {
-    private static final int FROSTBITE_COLOR = 0x64C4FF;
+    private static final int FROSTBITE_COLOR = 0x739BD0;
     private static final int LORE_COLOR = 0x888888;
     private static final Component DISPLAY_NAME = Component
         .literal("Frostbite")

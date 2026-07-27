@@ -32,7 +32,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class MobCrossbowItem extends GenesisItem {
-    private static final int MOB_CROSSBOW_COLOR = 0x64C4FF;
+    private static final int MOB_CROSSBOW_COLOR = 0xA52A2A;
     private static final int LORE_COLOR = 0x888888;
     private static final Component DISPLAY_NAME = Component
         .literal("Mob Crossbow")
