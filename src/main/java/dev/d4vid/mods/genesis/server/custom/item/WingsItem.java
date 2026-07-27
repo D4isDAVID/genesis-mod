@@ -54,4 +54,7 @@ public class WingsItem extends GenesisItem {
     public boolean isDragonItem() {
         return true;
     }
+
+    @Override
+    public boolean isUltimate() {return false; }
 }

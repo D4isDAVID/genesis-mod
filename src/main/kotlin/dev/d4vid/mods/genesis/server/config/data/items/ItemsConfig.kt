@@ -61,11 +61,11 @@ data class ItemsConfig(
         })),
     ),
     private val discard: Set<ItemMatcher> = setOf(
-        NbtMatcher(Identifier.withDefaultNamespace("elytra")),
-        NbtMatcher(Identifier.withDefaultNamespace("netherite_chestplate")),
-        NbtMatcher(Identifier.withDefaultNamespace("netherite_leggings")),
-        NbtMatcher(Identifier.withDefaultNamespace("netherite_axe")),
-        NbtMatcher(Identifier.withDefaultNamespace("netherite_sword")),
+        //NbtMatcher(Identifier.withDefaultNamespace("elytra")),
+        //NbtMatcher(Identifier.withDefaultNamespace("netherite_chestplate")),
+        //NbtMatcher(Identifier.withDefaultNamespace("netherite_leggings")),
+        //NbtMatcher(Identifier.withDefaultNamespace("netherite_axe")),
+        //NbtMatcher(Identifier.withDefaultNamespace("netherite_sword")),
     ),
     val overLimitEffects: List<ItemsOverLimitEffectConfig> = listOf(
         ItemsOverLimitEffectConfig(Identifier.withDefaultNamespace("slowness"), 4),
