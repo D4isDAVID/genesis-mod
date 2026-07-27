@@ -20,7 +20,7 @@ public class DragonSteelSwordItem extends GenesisItem {
         .withStyle(s -> s.withItalic(false).withBold(true).withColor(DRAGON_SWORD_COLOR));
 
     public DragonSteelSwordItem() {
-        super("dragon_sword", Items.STONE_AXE, DISPLAY_NAME);
+        super("dragon_sword", Items.NETHERITE_SWORD, DISPLAY_NAME);
 
     }
     @Override

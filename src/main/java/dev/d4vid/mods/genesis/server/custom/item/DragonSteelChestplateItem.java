@@ -53,7 +53,7 @@ public class DragonSteelChestplateItem extends GenesisItem{
     }
     private void applyAttributes(ItemStack item) {
         item.set(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers.builder()
-            .add(Attributes.ARMOR, new AttributeModifier(
+            .add(Attributes.MAX_HEALTH, new AttributeModifier(
                     Identifier.fromNamespaceAndPath("minecraft", "max_health"),
                     10.0,
                     AttributeModifier.Operation.ADD_VALUE),
