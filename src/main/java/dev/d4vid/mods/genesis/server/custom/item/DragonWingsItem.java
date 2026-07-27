@@ -13,7 +13,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import java.util.List;
 
 public class DragonWingsItem extends GenesisItem {
-    private static final int DRAGON_WINGS_COLOR = 0x64C4FF;
+    private static final int DRAGON_WINGS_COLOR = 0x341539;
     private static final int LORE_COLOR = 0x888888;
     private static final Component DISPLAY_NAME = Component
         .literal("Dragon's Wings")

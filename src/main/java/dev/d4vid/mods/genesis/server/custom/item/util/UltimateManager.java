@@ -68,13 +68,17 @@ public class UltimateManager {
 
     public static boolean canCraft(ServerPlayer player, ItemStack result) {
         if (!isUltimate(result)) return true;
+        UltimatePlayerData data = UltimatePlayerData.get(player.level().getServer());
+        if (data.isCraftingAllowed(player.getUUID())) return true;
         if (CraftingManager.isDragonItem(result)) return !hasCraftedDragonItem(player, result);
         return !hasCraftedUltimate(player);
     }
 
     public static void recordCraft(ServerPlayer player, ItemStack result) {
         if (!isUltimate(result)) return;
-        setCraftedUltimate(player, GenesisItem.getId(result));
+        UltimatePlayerData data = UltimatePlayerData.get(player.level().getServer());
+        data.setCraftingAllowed(player.getUUID(), false);
+        data.setCrafted(player.getUUID(), GenesisItem.getId(result));
     }
 
     public static void initialize() {

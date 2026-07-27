@@ -8,6 +8,7 @@ import dev.d4vid.mods.genesis.server.custom.item.DrillItem
 import dev.d4vid.mods.genesis.server.custom.item.GenesisItems
 import dev.d4vid.mods.genesis.server.custom.item.MegaDrillItem
 import dev.d4vid.mods.genesis.server.custom.item.util.UltimateManager
+import dev.d4vid.mods.genesis.server.custom.item.util.UltimatePlayerData
 import dev.d4vid.mods.genesis.server.recipes.UltimateCraftingHandler
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.Commands
@@ -70,6 +71,29 @@ fun ultimatesCommand(): LiteralArgumentBuilder<CommandSourceStack> {
 
                             Command.SINGLE_SUCCESS
                         }
+                )
+        )
+        .then(
+            Commands.literal("allowcraft")
+                .requires { source -> source.permissions().hasPermission(Permissions.COMMANDS_OWNER) }
+                .then(
+                    Commands.argument("target", EntityArgument.players())
+                        .then(
+                            Commands.argument("allowed", BoolArgumentType.bool())
+                                .executes { context ->
+                                    val targets = EntityArgument.getPlayers(context, "target")
+                                    val allowed = BoolArgumentType.getBool(context, "allowed")
+                                    for (target in targets) {
+                                        UltimatePlayerData.get(context.source.server)
+                                            .setCraftingAllowed(target.uuid, allowed)
+                                        context.source.sendSuccess(
+                                            { Component.literal("${target.name.string} crafting override set to $allowed") },
+                                            true
+                                        )
+                                    }
+                                    Command.SINGLE_SUCCESS
+                                }
+                        )
                 )
         )
 }

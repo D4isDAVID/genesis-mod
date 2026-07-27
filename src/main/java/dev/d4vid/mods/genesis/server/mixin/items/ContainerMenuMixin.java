@@ -34,15 +34,6 @@ public abstract class ContainerMenuMixin {
         AbstractContainerMenu menu = (AbstractContainerMenu) (Object) this;
         ItemStack carried = getCarried();
 
-        ItemStack inHand = getCarried();
-        if (inHand.getItem() == Items.ELYTRA) {
-            ItemStack chest = serverPlayer.getItemBySlot(EquipmentSlot.CHEST);
-            if (!(GenesisItems.get(chest) instanceof DragonWingsItem || GenesisItems.get(chest) instanceof WingsItem)) {
-                info.cancel();
-                return;
-            }
-        }
-
         boolean validSlot = slotId >= 0 && slotId < menu.slots.size();
         ItemStack slotItem = validSlot ? menu.slots.get(slotId).getItem() : ItemStack.EMPTY;
 
@@ -58,10 +49,19 @@ public abstract class ContainerMenuMixin {
         }
 
         if (validSlot) {
-            ItemStack slotStack = menu.slots.get(slotId).getItem();
-            if (slotStack.getItem() == Items.ELYTRA) {
+            Slot targetSlot = menu.slots.get(slotId);
+            ItemStack slotStack = targetSlot.getItem();
+
+            boolean tryingToEquipElytra =
+                (carried.getItem() == Items.ELYTRA && genesis$isChestSlot(targetSlot, serverPlayer)) ||
+                    (slotStack.getItem() == Items.ELYTRA && clickType == ClickType.QUICK_MOVE);
+
+            if (tryingToEquipElytra) {
                 ItemStack chest = serverPlayer.getItemBySlot(EquipmentSlot.CHEST);
-                if (!(GenesisItems.get(chest) instanceof DragonWingsItem || GenesisItems.get(chest) instanceof WingsItem)) {
+                boolean wearingGenesisFlight =
+                    GenesisItems.get(chest) instanceof DragonWingsItem ||
+                        GenesisItems.get(chest) instanceof WingsItem;
+                if (!wearingGenesisFlight) {
                     info.cancel();
                     return;
                 }
@@ -114,5 +114,10 @@ public abstract class ContainerMenuMixin {
         boolean slotIsBundle = slotItem.getItem() instanceof BundleItem;
 
         return (carriedIsUltimate && slotIsBundle) || (slotIsUltimate && carriedIsBundle);
+    }
+    @Unique
+    private boolean genesis$isChestSlot(Slot slot, ServerPlayer player) {
+        if (slot.container != player.getInventory()) return false;
+        return slot.getContainerSlot() == 38;
     }
 }

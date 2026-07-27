@@ -13,7 +13,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import java.util.List;
 
 public class DragonSteelSwordItem extends GenesisItem {
-    private static final int DRAGON_SWORD_COLOR = 0x64C4FF;
+    private static final int DRAGON_SWORD_COLOR = 0x8a00c2;
     private static final int LORE_COLOR = 0x888888;
     private static final Component DISPLAY_NAME = Component
         .literal("Dragon Steel Sword")

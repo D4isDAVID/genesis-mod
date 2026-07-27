@@ -18,7 +18,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import java.util.List;
 
 public class DragonSteelChestplateItem extends GenesisItem{
-    private static final int DRAGON_CHESTPLATE_COLOR = 0x64C4FF;
+    private static final int DRAGON_CHESTPLATE_COLOR = 0x404040;
     private static final int LORE_COLOR = 0x888888;
     private static final Component DISPLAY_NAME = Component
         .literal("Dragon Steel Chestplate")

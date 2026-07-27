@@ -13,7 +13,7 @@ import net.minecraft.world.item.component.ItemLore;
 import java.util.List;
 
 public class ExploreresCharmItem extends GenesisItem {
-    private static final int EXPLORERS_CHARM_COLOR = 0x64C4FF;
+    private static final int EXPLORERS_CHARM_COLOR = 0x008000;
     private static final int LORE_COLOR = 0x888888;
     private static final Component DISPLAY_NAME = Component
         .literal("Explorers Charm")
