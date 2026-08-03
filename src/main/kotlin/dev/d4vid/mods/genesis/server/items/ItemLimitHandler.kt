@@ -78,7 +78,7 @@ class ItemLimitHandler {
 
         var overLimit = false
 
-        scanItems(player.inventory.withIndex()) item@{ index, stack, isInv ->
+        scanItems(player.inventory.withIndex()) item@{ index, stack, isInv, applyLimits ->
             if (stack.isEmpty) {
                 return@item
             }
@@ -90,6 +90,10 @@ class ItemLimitHandler {
                     overLimit = true
                 }
 
+                return@item
+            }
+
+            if (!applyLimits) {
                 return@item
             }
 
@@ -132,21 +136,18 @@ class ItemLimitHandler {
     private fun scanItems(
         items: Iterable<IndexedValue<ItemStack>>,
         isInv: Boolean = true,
-        itemHandler: (index: Int, stack: ItemStack, isInv: Boolean) -> Unit,
+        applyLimits: Boolean = true,
+        itemHandler: (index: Int, stack: ItemStack, isInv: Boolean, applyLimits: Boolean) -> Unit,
     ) {
         for ((index, stack) in items) {
-            itemHandler(index, stack, isInv)
+            itemHandler(index, stack, isInv, applyLimits)
 
-            if (config.scanItemBundleContents) {
-                stack.get(DataComponents.BUNDLE_CONTENTS)?.let {
-                    scanItems(it.items().withIndex(), false, itemHandler)
-                }
+            stack.get(DataComponents.BUNDLE_CONTENTS)?.let {
+                scanItems(it.items().withIndex(), false, config.scanItemBundleContents, itemHandler)
             }
 
-            if (config.scanItemContainers) {
-                stack.get(DataComponents.CONTAINER)?.let {
-                    scanItems(it.nonEmptyItems().withIndex(), false, itemHandler)
-                }
+            stack.get(DataComponents.CONTAINER)?.let {
+                scanItems(it.nonEmptyItems().withIndex(), false, config.scanItemContainers, itemHandler)
             }
         }
     }

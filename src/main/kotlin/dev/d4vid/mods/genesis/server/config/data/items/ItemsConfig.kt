@@ -6,8 +6,10 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 import kotlinx.serialization.json.putJsonObject
+import net.minecraft.core.component.DataComponents
 import net.minecraft.resources.Identifier
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.component.CustomData
 
 @Serializable
 data class ItemsConfig(
@@ -158,7 +160,10 @@ data class ItemsConfig(
     }
 
     fun shouldDiscardItem(stack: ItemStack): Boolean {
-        return discard.any { it.matchItem(stack) }
+        return discard.any {
+            it.matchItem(stack) && !stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag()
+                .getBooleanOr("genesis.overrule_discard", false)
+        }
     }
 
     fun getLimitForItem(stack: ItemStack): ItemsLimitConfig? {
