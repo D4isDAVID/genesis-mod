@@ -1,92 +1,71 @@
 package dev.d4vid.mods.genesis.server.custom.item;
 
-import dev.d4vid.mods.genesis.server.custom.item.util.ItemEnchantmentsBuilder;
-import dev.d4vid.mods.genesis.server.custom.item.util.ToolRulesBuilder;
+import dev.d4vid.mods.genesis.server.custom.item.legendary.LegendaryItem;
 import dev.d4vid.mods.genesis.server.event.GenesisCustomItemEvents;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
+import net.minecraft.world.entity.boss.enderdragon.phases.DragonDeathPhase;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.component.Tool;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 
 import java.util.List;
-import java.util.Optional;
 
-public class DrillItem extends GenesisItem {
+public class DrillItem extends LegendaryItem {
+    private static final int DRILL_COLOR = 0xD3D3D3;
     private static final int LORE_COLOR = 0x888888;
-    private static final Component DISPLAY_NAME = Component
-        .literal("Drill")
-        .withStyle(s -> s.withItalic(false).withBold(true).withColor(0xD3D3D3));
 
-    public DrillItem() {
-        super("drill", Items.NETHERITE_PICKAXE, DISPLAY_NAME);
+    private float speed;
 
-        GenesisCustomItemEvents.INSTANCE.getALLOW_ITEM_SWAP().register((player, stack) -> {
-            if (this.is(stack)) {
-                this.toggle(player, stack);
-                return false;
+    protected DrillItem(String name, Item baseItem, float speed) {
+        super(name, baseItem);
+        EnderDragon
+
+        this.speed = speed;
+
+        set(DataComponents.ITEM_MODEL, getId());
+        set(DataComponents.CUSTOM_NAME, Component
+            .literal("Drill")
+            .withStyle(s -> s.withItalic(false).withBold(true).withColor(DRILL_COLOR)));
+
+        addSetter(DataComponents.LORE, this::getLore);
+        addSetter(DataComponents.ENCHANTMENTS, this::getEnchantments);
+        addSetter(DataComponents.TOOL, this::getTool);
+
+        GenesisCustomItemEvents.INSTANCE.getALLOW_PLAYER_ACTION().register((player, packet) -> {
+            if (packet.getAction() != ServerboundPlayerActionPacket.Action.SWAP_ITEM_WITH_OFFHAND) {
+                return true;
             }
 
-            return true;
+            ItemStack stack = player.getMainHandItem();
+            if (!this.is(stack)) {
+                return true;
+            }
+
+            toggle(player, stack);
+            return false;
         });
     }
 
-    @Override
-    protected void build(RegistryAccess registries, ItemStack item) {
-        item.set(DataComponents.TOOL, new Tool(
-            new ToolRulesBuilder(registries)
-                .add(BlockTags.MINEABLE_WITH_PICKAXE, Optional.of(9.0f), Optional.of(true))
-                .add(BlockTags.MINEABLE_WITH_SHOVEL, Optional.of(9.0f), Optional.of(true))
-                .add(BlockTags.MINEABLE_WITH_AXE, Optional.of(9.0f), Optional.of(true))
-                .add(BlockTags.MINEABLE_WITH_HOE, Optional.of(9.0f), Optional.of(true))
-                .add(BlockTags.SWORD_INSTANTLY_MINES, Optional.of(9.0f), Optional.of(true))
-                .build(),
-            1.0f,
-            1,
-            true
-        ));
-
-        boolean silkTouch = isSilkTouch(registries, item);
-
-        enchant(registries, item, silkTouch);
-        applyLore(item, silkTouch);
+    private ItemLore getLore(DataComponentSetter.Data data) {
+        return getLore(data.registries(), data.stack());
     }
 
-    private void toggle(ServerPlayer player, ItemStack item) {
-        RegistryAccess registries = player.level().registryAccess();
-        boolean silkTouch = !isSilkTouch(registries, item);
-
-        enchant(registries, item, silkTouch);
-        applyLore(item, silkTouch);
-
-        player.sendSystemMessage(getToggleMessage(silkTouch), true);
-    }
-
-    private void enchant(RegistryAccess registries, ItemStack item, boolean silkTouch) {
-        ItemEnchantmentsBuilder enchantments = new ItemEnchantmentsBuilder(registries)
-            .add(Enchantments.EFFICIENCY, 5)
-            .add(Enchantments.MENDING, 1)
-        .add(Enchantments.UNBREAKING, 3);
-
-        if (silkTouch) {
-            enchantments.add(Enchantments.SILK_TOUCH, 1);
-        } else {
-            enchantments.add(Enchantments.FORTUNE, 3);
-        }
-
-        enchantments.enchant(item);
-    }
-
-    private void applyLore(ItemStack item, boolean silkTouch) {
-        item.set(DataComponents.LORE, new ItemLore(List.of(
+    private ItemLore getLore(HolderLookup.Provider registries, ItemStack stack) {
+        boolean silkTouch = isSilkTouch(registries, stack);
+        return new ItemLore(List.of(
             Component.empty(),
             Component.empty()
                 .append("Press [")
@@ -98,24 +77,55 @@ public class DrillItem extends GenesisItem {
                 .append(Component.literal(" / "))
                 .append(Component.literal("Fortune").withStyle(s -> s.withBold(!silkTouch)))
                 .withStyle(s -> s.withItalic(true).withColor(LORE_COLOR))
-        )));
+        ));
     }
 
-    private boolean isSilkTouch(RegistryAccess registries, ItemStack item) {
+    private ItemEnchantments getEnchantments(DataComponentSetter.Data data) {
+        return getEnchantments(data.registries(), data.stack());
+    }
+
+    private ItemEnchantments getEnchantments(HolderLookup.Provider registries, ItemStack stack) {
+        boolean silkTouch = isSilkTouch(registries, stack);
+        ItemEnchantmentsBuilder enchantments = new ItemEnchantmentsBuilder(registries)
+            .add(Enchantments.EFFICIENCY, 5)
+            .add(Enchantments.MENDING, 1)
+            .add(Enchantments.UNBREAKING, 3);
+        if (silkTouch) {
+            enchantments.add(Enchantments.SILK_TOUCH, 1);
+        } else {
+            enchantments.add(Enchantments.FORTUNE, 3);
+        }
+        return enchantments.build();
+    }
+
+    private Tool getTool(DataComponentSetter.Data data) {
+        return getTool(data.registries());
+    }
+
+    private Tool getTool(HolderLookup.Provider registries) {
+        return new Tool(
+            new ToolRulesBuilder(registries)
+                .add(BlockTags.MINEABLE_WITH_PICKAXE, speed, true)
+                .add(BlockTags.MINEABLE_WITH_SHOVEL, speed, true)
+                .add(BlockTags.MINEABLE_WITH_AXE, speed, true)
+                .add(BlockTags.MINEABLE_WITH_HOE, speed, true)
+                .add(BlockTags.SWORD_INSTANTLY_MINES, speed, true)
+                .build(),
+            1.0f,
+            1,
+            true
+        );
+    }
+
+    private void toggle(ServerPlayer player, ItemStack stack) {
+        RegistryAccess registries = player.level().registryAccess();
+    }
+
+    private boolean isSilkTouch(HolderLookup.Provider registries, ItemStack stack) {
         Holder<Enchantment> silkTouch = registries
             .lookupOrThrow(Registries.ENCHANTMENT)
             .getOrThrow(Enchantments.SILK_TOUCH);
 
-        return item.getEnchantments().getLevel(silkTouch) > 0;
-    }
-
-    private Component getToggleMessage(boolean silkTouch) {
-        return Component.empty()
-            .append(Component.literal("Drill: ").withStyle(s -> s.withBold(true)))
-            .append(Component.literal(silkTouch ? "Silk Touch" : "Fortune"));
-    }
-    @Override
-    public boolean canContain() {
-        return true;
+        return stack.getEnchantments().getLevel(silkTouch) > 0;
     }
 }

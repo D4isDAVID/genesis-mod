@@ -77,7 +77,7 @@ private fun giveItem(
 ) {
     val id = Identifier.fromNamespaceAndPath(Genesis.MOD_ID, itemName)
     val item = GenesisItems.REGISTRY[id] ?: throw UNKNOWN_ITEM.create(itemName)
-    val stack = item.assemble(context.source.registryAccess())
+    val stack = item.build(context.source.registryAccess())
 
     val message = itemGiven(target, stack, count)
     target.inventory.add(stack)

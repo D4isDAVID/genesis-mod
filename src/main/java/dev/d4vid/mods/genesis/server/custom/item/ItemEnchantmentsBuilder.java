@@ -1,25 +1,18 @@
-package dev.d4vid.mods.genesis.server.custom.item.util;
+package dev.d4vid.mods.genesis.server.custom.item;
 
-import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 
 public class ItemEnchantmentsBuilder {
-    private final Registry<Enchantment> registry;
+    private final HolderLookup.RegistryLookup<Enchantment> registry;
     private final ItemEnchantments.Mutable enchantments;
 
-    public ItemEnchantmentsBuilder(RegistryAccess registries) {
+    public ItemEnchantmentsBuilder(HolderLookup.Provider registries) {
         registry = registries.lookupOrThrow(Registries.ENCHANTMENT);
         enchantments = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
-    }
-
-    public void enchant(ItemStack item) {
-        item.set(DataComponents.ENCHANTMENTS, build());
     }
 
     public ItemEnchantments build() {

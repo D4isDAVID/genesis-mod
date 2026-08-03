@@ -38,7 +38,7 @@ class RecipeManagerMixin {
             input[i] = recipeInput.getItem(i);
         }
 
-        boolean result = GenesisRecipeEvents.INSTANCE.getALLOW().invoker().allow(null, input, stack);
+        boolean result = GenesisRecipeEvents.INSTANCE.getALLOW().invoker().allow(input, stack);
 
         if (!result) {
             callback.setReturnValue(Optional.empty());

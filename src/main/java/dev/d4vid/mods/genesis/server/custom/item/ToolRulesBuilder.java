@@ -1,21 +1,21 @@
-package dev.d4vid.mods.genesis.server.custom.item.util;
+package dev.d4vid.mods.genesis.server.custom.item;
 
-import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.component.Tool;
 import net.minecraft.world.level.block.Block;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class ToolRulesBuilder {
-    private final Registry<Block> registry;
+    private final HolderLookup.RegistryLookup<Block> registry;
     private final ArrayList<Tool.Rule> rules;
 
-    public ToolRulesBuilder(RegistryAccess registries) {
+    public ToolRulesBuilder(HolderLookup.Provider registries) {
         registry = registries.lookupOrThrow(Registries.BLOCK);
         rules = new ArrayList<>();
     }
@@ -24,8 +24,8 @@ public class ToolRulesBuilder {
         return rules;
     }
 
-    public ToolRulesBuilder add(TagKey<Block> key, Optional<Float> speed, Optional<Boolean> correctForDrops) {
-        rules.add(new Tool.Rule(registry.getOrThrow(key), speed, correctForDrops));
+    public ToolRulesBuilder add(TagKey<Block> key, @Nullable Float speed, @Nullable Boolean correctForDrops) {
+        rules.add(new Tool.Rule(registry.getOrThrow(key), Optional.ofNullable(speed), Optional.ofNullable(correctForDrops)));
         return this;
     }
 }

@@ -21,7 +21,7 @@ class MerchantOffersMixin {
         }
 
         ItemStack resultItem = offer.getResult();
-        boolean result = GenesisRecipeEvents.INSTANCE.getALLOW().invoker().allow(null, new ItemStack[]{stack, stack2}, resultItem);
+        boolean result = GenesisRecipeEvents.INSTANCE.getALLOW().invoker().allow(new ItemStack[]{stack, stack2}, resultItem);
 
         if (!result) {
             callback.setReturnValue(null);
